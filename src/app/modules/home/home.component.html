@@ -1,60 +1,132 @@
-<div class="content-inside">
-  <!-- <div class="tabs">
-  <a href="#">Amazon</a> 
-  <a href="#">Netflix</a> 
-  <a href="#">Youtube TV</a> 
-  <a href="#">Disney Plus</a> 
-</div> -->
 <div class="center">
-    <h1>2020 releases</h1>
     <span *ngIf="error" class="error">{{error}}</span>
-  </div>
-  
-  <div class="row">
-    <div class="col">
-      <div class="card">
-      <span class="card-header netflix">Netflix</span>
-        <div class="item" *ngFor="let movie of netFlix; let i = index">
-          <span class="item-content" [ngClass]="{'dn': i>4}">
-              <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.7) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
-              <span class="movie-index">{{i + 1}}</span>  
-              <!-- <img src="https://image.tmdb.org/t/p/w440_and_h660_face{{movie?.poster_path}}" alt="{{movie.title}} poster">  -->
-              {{movie.title}}
+</div>
+<div class="tabs">
+  <button (click)="myMovies = 'nf'; getSelectedMovies()">Netflix</button>
+  <button (click)="myMovies = 'amz'; getSelectedMovies()">Amazon Prime</button>
+  <button (click)="myMovies = 'd'; getSelectedMovies()">Disney+</button>
+</div>
+<div class="content-inside" *ngIf="netFlixSlide.length > 0">
+<div class="slide-container">
+    <app-slider [showBullets]="true" [title]="title"> 
+        <ng-container *ngFor="let movies of getSelectedMovies(); let i = index">
+           <div class="my-container slider__contents">
+           <a [routerLink]="" class="item" *ngFor="let movie of movies; let i = index">
+                
+               <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+                 <span class="movie-index">{{movie?.rank}}</span>
+                 <span class="info">
+                     <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                       Genre: {{movie?.details?.genres[0]?.name}}</p> 
+                 </span>
+               </span>
+         
+           </a>
+           </div>
+        </ng-container> 
+     </app-slider>
+</div>
+<!-- <div class="slide-container">
+    <app-slider [showBullets]="true" [title]="'amazon prime'">
+        <ng-container *ngFor="let movies of amzSlide; let i = index">
+           <div class="my-container">
+           <a [routerLink]="" class="item" *ngFor="let movie of movies; let i = index">
+                
+               <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+                 <span class="movie-index">{{movie?.rank}}</span>
+                 <span class="info">
+                     <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                       Genre: {{movie?.details?.genres[0]?.name}}</p> 
+                 </span>
+               </span>
+         
+           </a>
+           </div>
+        </ng-container> 
+     </app-slider>
+</div>
+<div class="slide-container">
+    <app-slider [showBullets]="true" [title]="'disney +'">
+        <ng-container *ngFor="let movies of disneySlide; let i = index">
+           <div class="my-container">
+           <a [routerLink]="" class="item" *ngFor="let movie of movies; let i = index">
+                
+               <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+                 <span class="movie-index">{{movie?.rank}}</span>
+                 <span class="info">
+                     <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                       Genre: {{movie?.details?.genres[0]?.name}}</p> 
+                 </span>
+               </span>
+         
+           </a>
+           </div>
+        </ng-container> 
+     </app-slider>
+</div> -->
+
+<!-- <div class="page-container">
+    <div class="arrow-left" (click)="paginateNf('back')"></div>
+    <div class="center">
+        <span class="card-header netflix">Netflix </span>
+    </div>
+    <div class="arrow-right" (click)="paginateNf('forward')"></div>
+</div>
+<div class="my-container">
+    <a [routerLink]="" class="item" *ngFor="let movie of netFlix; let i = index" [ngClass]="{'dn' : i>nfPage || i<=nfAmount}">
+        <span class="item-content">
+            <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+              <span class="movie-index">{{i + 1}}</span>
+              <span class="info">
+                  <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                    Genre: {{movie?.details?.genres[0]?.name}}</p> 
               </span>
-          </span>
-        
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card">
-        <span class="card-header amz">Amazon Prime</span>
-        <div class="item" *ngFor="let movie of amazon; let i = index">
-            <span class="item-content" [ngClass]="{'dn': i>4}">
-                <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.7) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
-                <span class="movie-index">{{i + 1}}</span>  
-                <!-- <img src="https://image.tmdb.org/t/p/w440_and_h660_face{{movie?.poster_path}}" alt="{{movie.title}} poster">  -->
-                {{movie.title}}
-                </span>
             </span>
-        
-        </div>
-      </div>
+        </span>  
+    </a>
+    
+</div>
+
+<div class="page-container">
+    <div class="arrow-left" (click)="paginateAmz('back')"></div>
+    <div class="center">
+        <span class="card-header amz">Amazon Prime </span>
     </div>
-    <div class="col">
-      <div class="card">
-          <span class="card-header disney">Disney+</span>
-        <div class="item" *ngFor="let movie of disney; let i = index">
-            <span class="item-content" [ngClass]="{'dn': i>4}">
-                <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.7) 50%, rgba(2, 28, 46,0.8) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
-                <span class="movie-index">{{i + 1}}</span>   
-                <!-- <img src="https://image.tmdb.org/t/p/w440_and_h660_face{{movie?.poster_path}}" alt="{{movie.title}} poster">  -->
-                {{movie.title}}
-                </span>
+    <div class="arrow-right" (click)="paginateAmz('forward')"></div>
+</div>
+<div class="my-container">
+    <a [routerLink]="" class="item" *ngFor="let movie of amazon; let i = index" [ngClass]="{'dn' : i>amzPage || i<=amzAmount}">
+        <span class="item-content">
+            <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+              <span class="movie-index">{{i + 1}}</span>
+              <span class="info">
+                  <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                    Genre: {{movie?.details?.genres[0]?.name}}</p> 
+              </span>
             </span>
-        </div>
-      </div>
+        </span>  
+    </a>
+</div>
+<div class="page-container">
+    <div class="arrow-left" (click)="paginateDis('back', disney.length)"></div>
+    <div class="center">
+        <span class="card-header disney">Disney+</span>
     </div>
-  </div>
+    <div class="arrow-right" (click)="paginateDis('forward', disney.length)"></div>
+</div>  
+<div class="my-container">
+    <a [routerLink]="" class="item" *ngFor="let movie of disney; let i = index" [ngClass]="{'dn' : i>disPage || i<=disAmount}">
+        <span class="item-content">
+            <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
+              <span class="movie-index">{{i + 1}}</span>
+              <span class="info">
+                  <p>Cast: {{movie?.credit1}}, {{movie?.credit2}} <br>
+                    Genre: {{movie?.details?.genres[0]?.name}}</p> 
+              </span>
+            </span>
+        </span>  
+    </a>
+
+</div> -->
 </div>
 

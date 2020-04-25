@@ -1,0 +1,35 @@
+<div class="page-container page-slider">
+    <div class="arrow-left" (click)="navigate('backward', true)"></div>
+    <div class="center">
+        <span class="card-header {{title}}">{{title}} </span>
+    </div>
+    <div class="arrow-right" (click)="navigate('forward', true)"></div>
+</div>
+<div class="slider">
+  <input  *ngFor="let bullet of slides; let i = index;"
+          [ngClass]="{'hidden': !showBullets}"
+          type="radio"
+          [name]="'slider' + sliderId"
+          [title]="'slide' + sliderId + i"
+          [checked]="i === 0 ? 'checked' : null"
+          (click)="setIndex(i)"
+          class="slider__nav index{{i}}"
+          #nav /> 
+
+  <div class="slider__index" *ngIf="showIndex && slides">
+    {{index + 1}} of {{slides.length}}
+  </div>
+
+  <div class="slider__inner" #slider>
+    <ng-container *ngIf="!isContent">
+      <div *ngFor="let slide of slides"
+            [innerHtml]="slide.content"
+            class="slider__contents"
+            #slides>
+      </div>
+    </ng-container>
+    <ng-container #slidesContent *ngIf="isContent">
+      <ng-content></ng-content>
+    </ng-container>
+  </div>
+</div>
