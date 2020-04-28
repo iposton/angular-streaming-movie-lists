@@ -6,6 +6,9 @@ import { join } from 'path';
 import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
+const CryptoJS = require("crypto-js");
+let ciphertext = null;
+//import { bodyParser } from 'body-parser';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
@@ -22,7 +25,14 @@ export function app() {
   server.set('views', distFolder);
 
   // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
+  try {
+    server.get('/heroku-env', (req, res) => {
+      ciphertext = CryptoJS.AES.encrypt(process.env.TOKEN, 'movieTime').toString();
+      res.status(200).json(ciphertext)
+    });
+  } catch(e) {
+    console.log(e, 'try catch error');
+  }
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'

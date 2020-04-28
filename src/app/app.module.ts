@@ -1,12 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import {TransferHttpCacheModule } from '@nguniversal/common';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './modules/home/home.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { WindowRefService } from './services/window-ref.service';
+//import { TransferHttpInterceptorService } from './services/transfer-http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -16,10 +18,13 @@ import { WindowRefService } from './services/window-ref.service';
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    TransferHttpCacheModule,
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [WindowRefService],
+  providers: [
+    WindowRefService
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
