@@ -15,7 +15,6 @@ export class WindowRefService {
   }
 
   getWindow (): any {
-    console.log(this.platformId, 'platformId')
     if (isPlatformBrowser(this.platformId))
       return window;
     else

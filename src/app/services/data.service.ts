@@ -11,7 +11,6 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getEnv() {
-    console.log("trying to get heroku env...");
     try {
       this.env = this.http.get('/heroku-env')
       return this.env;

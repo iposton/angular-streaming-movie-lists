@@ -157,7 +157,7 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
       if (slides && slides.length > 0) {
         this.slides = slides;
-        this.detectActiveSlide(this.slides[this.index], this.slidesContent.nativeElement.parentNode.childNodes);
+        //this.detectActiveSlide(this.slides[this.index], this.slidesContent.nativeElement.parentNode.childNodes);
       }
         
     }
@@ -167,7 +167,7 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   public ngOnChanges(changes: SimpleChanges) :void {
     if (changes.title != null && changes.title.currentValue != changes.title.previousValue && this.slidesContent != null) {
-        console.log('try to build slides again');
+        //console.log('try to build slides again');
         setTimeout (() => {
             let slides = null;
             slides = this.buildSlidesFromContent(
@@ -176,7 +176,7 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       
             if (slides && slides.length > 0) {
               this.slides = slides;
-              this.detectActiveSlide(this.slides[this.index], this.slidesContent.nativeElement.parentNode.childNodes);
+             // this.detectActiveSlide(this.slides[this.index], this.slidesContent.nativeElement.parentNode.childNodes);
               if (this.slider != null && this.slides) {
                 this.slider.nativeElement.style.width = this.slides.length * 100 + '%'
               }
@@ -204,25 +204,24 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     this.index = index;
     this.activeIndex = index;
     let contents = this.slidesContent.nativeElement.parentNode.childNodes;
-    this.detectActiveSlide(this.slides[this.index], contents);
+    //this.detectActiveSlide(this.slides[this.index], contents);
   }
 
-  public detectActiveSlide(slide, slides) {
-    slide.className += ' active';
-    if (this.index != 0 && this.slides[0] != null) {
-      this.slides[0].classList.remove('active');
-    }
-    if (this.index != 1 && this.slides[1] != null) {
-      this.slides[1].classList.remove('active');
-    }
-    if (this.index != 2 && this.slides[2] != null) {
-      this.slides[2].classList.remove('active');
-    }
-    if (this.index != 3 && this.slides[3] != null) {
-      this.slides[3].classList.remove('active');
-    }
-
-  }
+  // public detectActiveSlide(slide, slides) {
+  //   slide.className += ' active';
+  //   if (this.index != 0 && this.slides[0] != null) {
+  //     this.slides[0].classList.remove('active');
+  //   }
+  //   if (this.index != 1 && this.slides[1] != null) {
+  //     this.slides[1].classList.remove('active');
+  //   }
+  //   if (this.index != 2 && this.slides[2] != null) {
+  //     this.slides[2].classList.remove('active');
+  //   }
+  //   if (this.index != 3 && this.slides[3] != null) {
+  //     this.slides[3].classList.remove('active');
+  //   }
+  // }
 
   public navigate(direction:string, triggered?:boolean) :void {
     let contents = this.slidesContent.nativeElement.parentNode.childNodes;
@@ -249,7 +248,7 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.timer && triggered)
       this.timer.reset();
     //this.setSlideHeight(this.slides[this.index]);
-    this.detectActiveSlide(this.slides[this.index], contents);
+    //this.detectActiveSlide(this.slides[this.index], contents);
   }
 
   private setSlideHeight(slide:any, padding?:any) {

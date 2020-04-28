@@ -39,7 +39,6 @@ export class HomeComponent implements OnInit {
 
       this.dataService
         .getEnv().subscribe(res => {
-        console.log(res, 'token');
         let bytes  = CryptoJS.AES.decrypt(res, 'movieTime');
         let originalText = bytes.toString(CryptoJS.enc.Utf8);
         this.apiKey = originalText;
