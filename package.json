@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start:heroku": "node dist/server/main.js",
-    "postinstall": "npm run build:ssr",
+    "heroku-postbuild": "npm run build:ssr",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "~9.1.1",
     "@angular/platform-server": "^9.1.3",
     "@angular/router": "~9.1.1",
+    "@angular/service-worker": "~9.1.1",
     "@nguniversal/express-engine": "^9.1.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
