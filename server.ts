@@ -1,5 +1,5 @@
 import 'zone.js/dist/zone-node';
-
+import {enableProdMode} from '@angular/core';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
@@ -9,6 +9,8 @@ import { existsSync } from 'fs';
 const CryptoJS = require("crypto-js");
 let ciphertext = null;
 //import { bodyParser } from 'body-parser';
+
+enableProdMode();
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {

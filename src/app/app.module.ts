@@ -19,6 +19,7 @@ import { WindowRefService } from './services/window-ref.service';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     TransferHttpCacheModule,
+    BrowserTransferStateModule,
     AppRoutingModule,
     HttpClientModule
   ],
