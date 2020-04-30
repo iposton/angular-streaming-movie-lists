@@ -5,6 +5,11 @@ import { forkJoin } from 'rxjs';
 import { DataService } from '../../services/data.service';
 import * as CryptoJS from 'crypto-js';
 
+import {
+  WindowRefService,
+  ICustomWindow
+} from '../../services/window-ref.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -33,9 +38,13 @@ export class HomeComponent implements OnInit {
   public amzUrl: string = '';
   public dPlusUrl: string = '';
   public submitting: boolean = true;
+  public isMobile      :boolean = false;
+  private window        :ICustomWindow;
+
 
   constructor(private http: HttpClient, 
-    private dataService: DataService) {
+    private dataService: DataService,
+    private windowRef: WindowRefService) {
 
       this.dataService
         .getEnv().subscribe(res => {
@@ -213,15 +222,19 @@ export class HomeComponent implements OnInit {
 
   public sortData() {
     //console.log('trying to sort', this.netFlixDetails);
-    
-    for (let movie of this.netFlix) {
-      for (let details of this.netFlixDetails[0]) { 
-       
-        if (movie.id === details.id) {
-          movie.details = details;
+    try {
+      for (let movie of this.netFlix) {
+        for (let details of this.netFlixDetails[0]) { 
+         
+          if (movie.id === details.id) {
+            movie.details = details;
+          }
         }
       }
+    } catch(e) {
+      console.log(e, 'error');
     }
+    
 
     for (let movie of this.netFlix) {
       for (let credits of this.netFlixCredits[0]) { 
@@ -237,15 +250,19 @@ export class HomeComponent implements OnInit {
       }
     }
 
-    for (let movie of this.amazon) {
-      for (let details of this.amazonDetails[0]) { 
-       
-        if (movie.id === details.id) {
-          movie.details = details;
+    try {
+      for (let movie of this.amazon) {
+        for (let details of this.amazonDetails[0]) { 
+        
+          if (movie.id === details.id) {
+            movie.details = details;
+          }
         }
       }
+    } catch(e) {
+      console.log(e, 'error');
     }
-
+    
     for (let movie of this.amazon) {
       for (let credits of this.amazonCredits[0]) { 
         //console.log(credits, 'credits')
@@ -260,13 +277,17 @@ export class HomeComponent implements OnInit {
       }
     }
 
-    for (let movie of this.disney) {
-      for (let details of this.disneyDetails[0]) { 
-       
-        if (movie.id === details.id) {
-          movie.details = details;
+    try {
+      for (let movie of this.disney) {
+        for (let details of this.disneyDetails[0]) { 
+         
+          if (movie.id === details.id) {
+            movie.details = details;
+          }
         }
       }
+    } catch(e) {
+      console.log(e, 'error');
     }
 
     for (let movie of this.disney) {
@@ -287,20 +308,42 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     //this.loadData();
+    try {
+      if (window.innerWidth <= 500) {
+        console.log('isMobile true');
+        this.isMobile = true;
+      } else {
+        console.log('isMobile?', this.isMobile);
+      }  
+    } catch(e) {
+      console.log(e, 'window error');
+    } 
   }
 
   public getSelectedMovies() {
     if (this.myMovies === 'nf') {
       this.title = 'netflix';
-      return this.netFlixSlide;
+      if (this.isMobile) {
+        return this.netFlix;
+      } else {
+        return this.netFlixSlide;
+      } 
     }
     if (this.myMovies === 'amz') {
       this.title = 'amazon prime';
-      return this.amzSlide;
+      if (this.isMobile) {
+        return this.amazon;
+      } else {
+        return this.amzSlide;
+      } 
     }
     if (this.myMovies === 'd') {
       this.title = 'disney +';
-      return this.disneySlide;
+      if (this.isMobile) {
+        return this.disney;
+      } else {
+        return this.disneySlide;
+      }  
     }
   }
 

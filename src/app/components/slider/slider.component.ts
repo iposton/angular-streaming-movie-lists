@@ -98,12 +98,12 @@ export class SliderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   public ngOnInit() {
     this.sliderId = this.generateId();
-   try {
-     if (this.window.matchMedia('(max-width: 425px)').matches)
-      this.isMobile = true;
-   } catch(e) {
-     
-   } 
+  //  try {
+  //    if (window.matchMedia('(max-width: 425px)').matches)
+  //     this.isMobile = true;
+  //  } catch(e) {
+  //    console.log(e, 'window error');
+  //  } 
   }
 
   public ngAfterViewInit() {
