@@ -9,9 +9,46 @@
 </div>
 <footer>
   <div class="row">
-    <div class="col logo-col"><img src="./assets/images/sl.png" alt="logo"></div>
-    <div class="col">About</div>
+    <div class="col logo-col">SL</div>
+    <div class="col">
+      <span class="about" (click)="isOpen = true">About</span>
+    </div>
     <div class="col">
       <span>Data sourced from <img src="./assets/images/tmdb.svg" alt="logo"></span></div>  
   </div>
 </footer>
+<div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+          <span class="header-title">About Streaming Lists</span>
+          <span class="right" (click)="isOpen = false">X</span>
+      </div>
+      <div class="content">  
+          <p>I made this app because if I wanted to find a movie to watch I would spend hours
+             scrolling through options on Netflix before maybe finding something. I would have
+              to search Google and Twitter for a current top 20 lists in order to find something.
+               I wanted to create a more consolidated popular list of things to watch on the major
+                streaming platforms.</p>
+
+          <p>With this app I plan to make it easier to navigate popular movies on the big streaming platforms
+              such as Netflix, Prime Video (Amazon), and Disney+.</p>
+          
+          <p>I will be adding new features to come for example a search feature with the ability to
+             sort by genre. Also I will be adding a feature for showing a popular list of TV series to
+              help find the next big show to binge.</p>
+          
+          <p>I am using <a href="https://www.themoviedb.org/?language=en-US" atl="TMDB link" target="_blank">themoviedb.org</a> api to get all the current info I need to build my idea.</p>
+          
+          <p>This is a Progressive Web App using Angular 9, and nguniversal (server side rendering).</p>
+          
+          <p>I am a web developer from Los Angeles and I enjoy building fun apps with angular. Thanks
+             for stopping by! ☺</p>
+          
+      </div>  
+      <div class="modal-footer">
+         Built by Ian Poston 2020 
+            <a class="twitter-icon" href="https://twitter.com/intent/follow?screen_name=ianposton&commit=Log%20in%20and%20follow%20%40ianposton&session%5Busername_or_email%5D=ianposton&tw_p=followbutton&region=follow_link" target="_blank"> 
+              <img src="./assets/images/twitter.png" alt="twitter profile" /></a>
+      </div>
+    </div>
+</div>

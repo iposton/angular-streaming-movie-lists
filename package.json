@@ -27,9 +27,8 @@
     "@angular/router": "~9.1.1",
     "@angular/service-worker": "~9.1.1",
     "@nguniversal/express-engine": "^9.1.0",
-    "cors": "^2.8.5",
-    "crypto-js": "^4.0.0",
     "express": "^4.17.1",
+    "request": "^2.88.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "xmlhttprequest": "^1.8.0",
@@ -57,8 +56,5 @@
     "ts-node": "^8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
-  },
-  "browser": {
-    "crypto": false
   }
 }

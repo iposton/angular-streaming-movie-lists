@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public isOpen: boolean = false;
   title = 'streaming-lists';
+
+  public navigate(link) {
+    window.location.href = link;
+  }
 }

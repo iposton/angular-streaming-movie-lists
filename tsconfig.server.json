@@ -9,6 +9,7 @@
   },
   "files": [
     "src/main.server.ts",
+    "api/api.ts",
     "server.ts"
   ],
   "angularCompilerOptions": {

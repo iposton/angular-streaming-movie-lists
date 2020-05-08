@@ -6,8 +6,8 @@ import { join } from 'path';
 import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
-const CryptoJS = require("crypto-js");
-let ciphertext = null;
+let api = require('./api/api.ts');
+const bodyParser = require('body-parser');
 
 enableProdMode();
 
@@ -18,6 +18,8 @@ export function app() {
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
   const domino = require('domino');
   const win = domino.createWindow(indexHtml);
+  const apiKey = process.env.TOKEN;
+  server.use(bodyParser.urlencoded({extended: true}));
   // mock
   global['window'] = win;
   global['document'] = win.document;
@@ -31,14 +33,18 @@ export function app() {
   server.set('views', distFolder);
 
   // Example Express Rest API endpoints
-  try {
-    server.get('/heroku-env', (req, res) => {
-      ciphertext = CryptoJS.AES.encrypt(process.env.TOKEN, 'movieTime').toString();
-      res.status(200).json(ciphertext)
-    });
-  } catch(e) {
-    console.log(e, 'try catch error');
-  }
+  server.get('/data', async (req, res) => {
+    const data =  await api.data.getAllMovies(apiKey);
+    res.status(200).json(data);
+  })
+
+  server.post('/search', async (req, res) => {
+    let searchquery = req.body.query;
+    let encsearchquery = encodeURIComponent(searchquery);
+    const data =  await api.data.search(encsearchquery, apiKey);
+    res.status(200).json(data);
+  })
+
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'
