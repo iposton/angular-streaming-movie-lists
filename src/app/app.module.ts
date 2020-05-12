@@ -12,12 +12,14 @@ import { WindowRefService } from './services/window-ref.service';
 import { TransferStateInterceptor } from './interceptors/transfer-state.interceptor';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { GoogleAnalyticsGtagComponent } from './components/google-analytics-gtag/google-analytics-gtag.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    SliderComponent
+    SliderComponent,
+    GoogleAnalyticsGtagComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

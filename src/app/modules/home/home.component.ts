@@ -194,7 +194,7 @@ export class HomeComponent implements OnInit {
 
   public getSelectedMovies() {
     if (this.myMovies === 'nf') {
-      this.gaService.eventEmitter("netflix", "popular", "movies", "click", 10);
+      // this.gaService.eventEmitter("netflix", "popular", "movies", "click", 10);
       this.title = 'netflix';
       if (this.isMobile) {
         return this.netFlix;
@@ -203,7 +203,7 @@ export class HomeComponent implements OnInit {
       }
     }
     if (this.myMovies === 'amz') {
-      this.gaService.eventEmitter("prime video", "popular", "movies", "click", 10);
+      // this.gaService.eventEmitter("primevideo", "popular", "movies", "click", 10);
       this.title = 'amazon prime';
       if (this.isMobile) {
         return this.amazon;
@@ -212,7 +212,7 @@ export class HomeComponent implements OnInit {
       }
     }
     if (this.myMovies === 'd') {
-      this.gaService.eventEmitter("disney", "popular", "movies", "click", 10);
+      // this.gaService.eventEmitter("disney", "popular", "movies", "click", 10);
       this.title = 'disney +';
       if (this.isMobile) {
         return this.disney;

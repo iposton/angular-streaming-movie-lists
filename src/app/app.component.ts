@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
       { name: 'robots', content: 'index, follow' },
       { name: 'author', content: 'Ian Poston' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      // { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
       { charset: 'UTF-8' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:site', content: '@StreamingLists' },
