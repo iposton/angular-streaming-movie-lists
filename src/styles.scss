@@ -357,10 +357,13 @@ footer {
     .logo-col {
       color: #E5B4D5;
       font-weight: 100;
-      img {
-        height: 25px;
-        width: 25px!important;
+      .logo-link {
+        transition: linear .3s;
       }
+     .logo-link:hover {
+       cursor: pointer;
+       opacity: .7;
+     }
     }
     .col {
       flex: 0 0 32%;

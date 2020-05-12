@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DatePipe } from '@angular/common';
 
@@ -40,7 +41,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private gaService: GoogleAnalyticsService
   ) {
     this.dataService.getData().subscribe(res => {
       //console.log(res, 'movies from server');
@@ -192,6 +194,7 @@ export class HomeComponent implements OnInit {
 
   public getSelectedMovies() {
     if (this.myMovies === 'nf') {
+      this.gaService.eventEmitter("netflix", "popular", "movies", "click", 10);
       this.title = 'netflix';
       if (this.isMobile) {
         return this.netFlix;
@@ -200,6 +203,7 @@ export class HomeComponent implements OnInit {
       }
     }
     if (this.myMovies === 'amz') {
+      this.gaService.eventEmitter("prime video", "popular", "movies", "click", 10);
       this.title = 'amazon prime';
       if (this.isMobile) {
         return this.amazon;
@@ -208,6 +212,7 @@ export class HomeComponent implements OnInit {
       }
     }
     if (this.myMovies === 'd') {
+      this.gaService.eventEmitter("disney", "popular", "movies", "click", 10);
       this.title = 'disney +';
       if (this.isMobile) {
         return this.disney;
