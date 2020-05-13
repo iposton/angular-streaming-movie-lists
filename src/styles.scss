@@ -359,10 +359,12 @@ footer {
       font-weight: 100;
       .logo-link {
         transition: linear .3s;
+        margin: 0 auto;
+        width: auto;
       }
      .logo-link:hover {
        cursor: pointer;
-       opacity: .7;
+       filter: brightness(105%);
      }
     }
     .col {
@@ -552,7 +554,7 @@ footer {
       .content {
         overflow: scroll;
         text-align: left;
-        margin-top: 50px;
+        margin-top: 40px;
         padding: 0 10px 0 10px;
         
         .twitter-icon {
