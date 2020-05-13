@@ -16,7 +16,7 @@ header {
   background: rgb(31,32,32);
   background: linear-gradient(90deg, rgba(31,32,32,1) 0%, rgba(8,54,55,1) 50%, rgba(2,55,57,1) 100%);
   height: 64px;
-  width: 100vw;
+  // width: 100%;
   color: #E5B4D5;
   padding-left: 10px;
   text-transform: uppercase;
@@ -34,6 +34,7 @@ header {
  color: #fff;
  min-height: 100%;
  margin-bottom: -50px;
+ max-width: 1800px;
   .tabs {
     button {
       filter: brightness(85%);
@@ -364,7 +365,7 @@ footer {
       }
      .logo-link:hover {
        cursor: pointer;
-       filter: brightness(105%);
+       filter: brightness(110%);
      }
     }
     .col {
