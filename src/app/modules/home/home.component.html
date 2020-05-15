@@ -2,9 +2,16 @@
     <span *ngIf="error" class="error">{{error}}</span>
 </div>
 <div class="tabs">
-  <button class="netflix-btn" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">Netflix</button>
-  <button class="amz-btn" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">Prime Video</button>
-  <button class="disney-btn" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">Disney+</button>
+  <button *ngIf="!submitting" class="netflix-btn" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">Netflix</button>
+  <button *ngIf="!submitting" class="amz-btn" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">Prime Video</button>
+  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">Disney+</button>
+  <select name="cat" id="cat" (change)="onChange($event.target.value)">
+      <option value="movies"> Movies </option>
+      <option value="tv"> TV </option>
+  </select>
+</div>
+<div class="center" *ngIf="submitting">
+    <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>
 </div>
 <div class="center" *ngIf="submitting">
     <div class="lds-ring">
@@ -27,7 +34,7 @@
                      <p><span *ngIf="movie?.credit1">Cast: {{movie?.credit1}}, {{movie?.credit2}} <br></span>
                        Genre: {{movie?.details?.genres[0]?.name}} <br>
                        <span class="star-rating" *ngFor="let star of movie.rating"> <span>☆</span> </span> <br>
-                       <span (click)="openTrailer(movie)">Trailer</span>
+                       <span class="trailer-link" (click)="openTrailer(movie, type)">Trailer</span>
                       </p> 
                  </span>
                </span>
@@ -49,7 +56,7 @@
                      <p><span *ngIf="movie?.credit1">Cast: {{movie?.credit1}}, {{movie?.credit2}} <br></span>
                        Genre: {{movie?.details?.genres[0]?.name}} <br>
                        <span class="star-rating" *ngFor="let star of movie.rating"> <span>☆</span> </span> <br>
-                       <span (click)="openTrailer(movie)">Trailer</span>
+                       <span class="trailer-link" (click)="openTrailer(movie, type)">Trailer</span>
                       </p> 
                  </span>
                </span>
@@ -63,7 +70,7 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false; selectedMovie = null; trailerUrl = null">
     <div class="modal trailer-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
-          <span class="header-title" *ngIf="selectedMovie != null">{{selectedMovie?.title}} ({{selectedMovie?.release_date | date: 'y'}})</span>
+          <span class="header-title" *ngIf="selectedMovie != null">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? selectedMovie?.release_date : selectedMovie?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="isOpen = false; selectedMovie = null; trailerUrl = null">X</span>
       </div>
       <div class="content"> 
