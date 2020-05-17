@@ -31,18 +31,25 @@ let searchInfo = [
     results: []
   }
 ];
-let utcDate = new Date();
-utcDate.setHours(utcDate.getHours() - 8);
-let myDate = new Date(utcDate);
-let dailyDate = myDate.toISOString().slice(0, 10);
+
+let startDate = '2020-01-01';
 import { forkJoin } from 'rxjs';
 
-methods.getAllMovies = async (apiKey: string) => {
-  
+methods.getDate = async () => {
+  let utcDate = new Date();
+  utcDate.setHours(utcDate.getHours() - 8);
+  let myDate = new Date(utcDate);
+  return myDate.toISOString().slice(0, 10);
+}
+
+methods.getAllMovies = async (year: string, apiKey: string) => {
+  let dailyDate = methods.getDate();
+  startDate = year === '20' ?  '2020-01-01' : '2019-01-01';
+  dailyDate = year === '20' ? await methods.getDate() : '2019-12-31';
   let apiRoot = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`;
-  let nfUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=2020-01-01&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=en&with_ott_monetization_types=&with_ott_providers=8&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let amzUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=2020-01-01&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=9&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=2020-01-01&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=337&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let nfUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=en&with_ott_monetization_types=&with_ott_providers=8&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let amzUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=9&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=337&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
 
   let nfPromise = new Promise((resolve, reject) => {
     request(nfUrl, {}, async function(err, res, body) {
@@ -50,10 +57,10 @@ methods.getAllMovies = async (apiKey: string) => {
       let netflixCredits = [];
       //console.log(body, 'got body');
       if (typeof body !== 'undefined') {
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         let data = JSON.parse(body);
         mainMovies[0]['nfMovies'] = data['results'];
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-
+  
         const details = async() => {
           forkJoin(
             data['results'].map( m =>
@@ -204,11 +211,14 @@ methods.getAllMovies = async (apiKey: string) => {
   return mainMovies;
 };
 
-methods.getAllTv = async (apiKey: string) => {
+methods.getAllTv = async (year: string, apiKey: string) => {
+  let dailyDate = methods.getDate();
+  startDate = year === '20' ?  '2020-01-01' : '2019-01-01';
+  dailyDate = year === '20' ? await methods.getDate() : '2019-12-31';
   let apiRoot = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}`;
-  let nfUrl = `${apiRoot}&air_date.gte=2020-01-01&air_date.lte=2020-05-13&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=8&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let amzUrl = `${apiRoot}&air_date.gte=2020-01-01&air_date.lte=2020-05-13&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=9&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=2020-01-01&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=337&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let nfUrl = `${apiRoot}&air_date.gte=${startDate}&air_date.lte=2020-05-13&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=8&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let amzUrl = `${apiRoot}&air_date.gte=${startDate}&air_date.lte=2020-05-13&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=9&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=2020-10-14&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=337&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
 
   let nfPromise = new Promise((resolve, reject) => {
     request(nfUrl, {}, async function(err, res, body) {
@@ -216,10 +226,9 @@ methods.getAllTv = async (apiKey: string) => {
       let netflixCredits = [];
       //console.log(body, 'got body');
       if (typeof body !== 'undefined') {
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         let data = JSON.parse(body);
         mainTv[0]['nfTv'] = data['results'];
-        
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         const details = async () => {
           forkJoin(
             data['results'].map( m =>

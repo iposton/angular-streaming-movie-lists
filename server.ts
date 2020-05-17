@@ -33,13 +33,17 @@ export function app() {
   server.set('views', distFolder);
 
   // Example Express Rest API endpoints
-  server.get('/data', async (req, res) => {
-    const data =  await api.data.getAllMovies(apiKey);
+  server.post('/data', async (req, res) => {
+    let searchquery = req.body.query;
+    let encsearchquery = encodeURIComponent(searchquery);
+    const data =  await api.data.getAllMovies(encsearchquery, apiKey);
     res.status(200).json(data);
   })
 
-  server.get('/tv', async (req, res) => {
-    const data =  await api.data.getAllTv(apiKey);
+  server.post('/tv', async (req, res) => {
+    let searchquery = req.body.query;
+    let encsearchquery = encodeURIComponent(searchquery);
+    const data =  await api.data.getAllTv(encsearchquery, apiKey);
     res.status(200).json(data);
   })
 

@@ -9,11 +9,15 @@
       <option value="movies"> Movies </option>
       <option value="tv"> TV </option>
   </select>
+  <select name="year" id="year" (change)="onYearChange($event.target.value)">
+      <option value="20"> 2020 </option>
+      <option value="19"> 2019 </option>
+  </select>
 </div>
-<div class="center" *ngIf="submitting">
+<div class="center load-msg" *ngIf="submitting">
     <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>
 </div>
-<div class="center" *ngIf="submitting">
+<div class="center load-spin" *ngIf="submitting">
     <div class="lds-ring">
       <div></div>
       <div></div>
@@ -70,7 +74,7 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false; selectedMovie = null; trailerUrl = null">
     <div class="modal trailer-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
-          <span class="header-title" *ngIf="selectedMovie != null">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? selectedMovie?.release_date : selectedMovie?.first_air_date | date: 'y'}})</span>
+          <span class="header-title" *ngIf="selectedMovie != null">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="isOpen = false; selectedMovie = null; trailerUrl = null">X</span>
       </div>
       <div class="content"> 

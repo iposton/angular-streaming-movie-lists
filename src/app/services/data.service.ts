@@ -11,18 +11,22 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getData() {
+  getData(item) {
+    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
+    let searchterm = `query=${item}`;
     try {
-      this.movies = this.http.get('/data')
+      this.movies = this.http.post('/data', searchterm, {headers});
       return this.movies;
     } catch (e) {
       console.log(e, 'error')
     }
   }
 
-  getTv() {
+  getTv(item) {
+    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
+    let searchterm = `query=${item}`;
     try {
-      this.tv = this.http.get('/tv')
+      this.tv = this.http.post('/tv', searchterm, {headers});
       return this.tv;
     } catch (e) {
       console.log(e, 'error')
