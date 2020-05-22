@@ -97,7 +97,7 @@ methods.getAllMovies = async (year: string, apiKey: string) => {
               )
             )
           );
-          await sleep(1300);
+          await sleep(1500);
           resolve();
         }
         credits();
@@ -266,7 +266,7 @@ methods.getAllTv = async (year: string, apiKey: string) => {
               )
             )
           );
-          await sleep(1300);
+          await sleep(1500);
           resolve();
         }
         credits();
