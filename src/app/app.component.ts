@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
       { name: 'author', content: 'Ian Poston' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { charset: 'UTF-8' },
-      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:card', content: 'summary' },
       { name: 'twitter:site', content: '@StreamingLists' },
       { name: 'twitter:title', content: this.title },
       { name: 'twitter:description', content: 'Popular movies streaming on netflix, prime video and disney +.' },

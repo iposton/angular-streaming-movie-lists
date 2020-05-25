@@ -764,6 +764,16 @@ footer {
       }
     }
   }
+  .container {
+      .wrapper {
+        .genres {
+          span {
+            width: 45px;
+            margin: 2px;
+          }
+        }
+      }
+  }
 }
 @media (max-width: 400px) { 
   #overlay.active {
