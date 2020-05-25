@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit {
   public trailerUrl: any;
   public selectedMovie: any;
   public year: string = '20';
+  public genre: string = "";
 
   constructor(
     private dataService: DataService,
@@ -82,10 +83,20 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public setGenre(genre: string) {
+    if (this.genre != genre && this.type === 'movies') {
+      this.genre = genre;
+      this.loadMovies();
+    } else if (this.genre != genre && this.type === 'tv') {
+      this.genre = genre;
+      this.loadTv();
+    }
+  }
+
   public loadMovies() {
     this.submitting = true;
     this.type = 'movies';
-    this.dataService.getData(this.year).subscribe(res => {
+    this.dataService.getData(this.year, this.genre).subscribe(res => {
       //console.log(res, 'movies from server');
       this.netFlix = res[0].nfMovies;
       this.amazon = res[0].amzMovies;
@@ -109,7 +120,7 @@ export class HomeComponent implements OnInit {
   public loadTv() {
     this.submitting = true;
     this.type = 'tv';
-    this.dataService.getTv(this.year).subscribe(res => {
+    this.dataService.getTv(this.year, this.genre).subscribe(res => {
       //console.log(res, 'tv from server');
       this.netFlixTv = res[0].nfTv;
       this.amazonTv = res[0].amzTv;

@@ -36,14 +36,18 @@ export function app() {
   server.post('/data', async (req, res) => {
     let searchquery = req.body.query;
     let encsearchquery = encodeURIComponent(searchquery);
-    const data =  await api.data.getAllMovies(encsearchquery, apiKey);
+    let genrequery = req.body.genre;
+    let encgenrequery = encodeURIComponent(genrequery);
+    const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, apiKey);
     res.status(200).json(data);
   })
 
   server.post('/tv', async (req, res) => {
     let searchquery = req.body.query;
     let encsearchquery = encodeURIComponent(searchquery);
-    const data =  await api.data.getAllTv(encsearchquery, apiKey);
+    let genrequery = req.body.genre;
+    let encgenrequery = encodeURIComponent(genrequery);
+    const data =  await api.data.getAllTv(encsearchquery, encgenrequery, apiKey);
     res.status(200).json(data);
   })
 
