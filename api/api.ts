@@ -28,7 +28,10 @@ let mainTv = [
 ];
 let searchInfo = [
   {
-    results: []
+    results: [],
+    related: [],
+    details: [],
+    credits: []
   }
 ];
 
@@ -383,6 +386,7 @@ methods.getAllTv = async (year: string, genre: string, apiKey: string) => {
 
 methods.search = async (id: string, apiKey: string) => {
   let apiUrl = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}&language=en-US`;
+  let recUrl = `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${apiKey}&language=en-US`;
   let searchPromise = new Promise((resolve, reject) => {
     request(apiUrl, {}, function(err, res, body) {
       let data = JSON.parse(body);
@@ -390,12 +394,68 @@ methods.search = async (id: string, apiKey: string) => {
       resolve();
     });
   });
+
+  let relatedPromise = new Promise((resolve, reject) => {
+    let relatedDetails = [];
+    let relatedCredits = [];
+    request(recUrl, {}, function(err, res, body) {
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+      let data = JSON.parse(body);
+      let results = data['results'];
+      results.length = 5;
+      searchInfo[0].related = results;
+      const details = async () => {
+        forkJoin(
+          results.map( m =>
+            request(
+              `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                relatedDetails.push(data);
+                if (relatedDetails.length > 1) {
+                  return searchInfo[0]['details'] = relatedDetails;
+                }
+              }
+            )
+          )
+        );
+      }
+
+      const credits = async () => {
+        
+        await details();
+        forkJoin(
+          results.map( m =>
+            request(
+              `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                relatedCredits.push(data);
+                if (relatedCredits.length > 1) {
+                  searchInfo[0]['credits'] = relatedCredits;
+                  //let result = await Promise.resolve(netflixCredits);
+                }
+              }
+            )
+          )
+        );
+        await sleep(500);
+        resolve();
+      }
+      credits();
+    });
+  });
+
   let result = await searchPromise;
+  let result2 = await relatedPromise;
   return searchInfo[0];
 };
 
 methods.searchtv = async (id: string, apiKey: string) => {
   let apiUrl = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=${apiKey}&language=en-US`;
+  let recUrl = `https://api.themoviedb.org/3/tv/${id}/recommendations?api_key=${apiKey}&language=en-US`;
   let searchPromise = new Promise((resolve, reject) => {
     request(apiUrl, {}, function(err, res, body) {
       let data = JSON.parse(body);
@@ -403,7 +463,64 @@ methods.searchtv = async (id: string, apiKey: string) => {
       resolve();
     });
   });
+
+  let relatedPromise = new Promise((resolve, reject) => {
+    let relatedDetails = [];
+    let relatedCredits = [];
+    request(recUrl, {}, function(err, res, body) {
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+      let data = JSON.parse(body);
+      searchInfo[0].related = data['results'];
+      let results = data['results'];
+      results.length = 5;
+      searchInfo[0].related = results;
+      const details = async () => {
+        forkJoin(
+          results.map( m =>
+            request(
+              `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                relatedDetails.push(data);
+                if (relatedDetails.length > 1) {
+                  return searchInfo[0]['details'] = relatedDetails;
+                }
+              }
+            )
+          )
+        );
+      }
+
+      const credits = async () => {
+        
+        await details();
+        forkJoin(
+          results.map( m =>
+            request(
+              `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                relatedCredits.push(data);
+                if (relatedCredits.length > 1) {
+                  searchInfo[0]['credits'] = relatedCredits;
+                  //let result = await Promise.resolve(netflixCredits);
+                }
+              }
+            )
+          )
+        );
+        await sleep(500);
+        resolve();
+      }
+      credits();
+      //resolve();
+    });
+  });
+
   let result = await searchPromise;
+  let result2 = await relatedPromise;
   return searchInfo[0];
 };
 

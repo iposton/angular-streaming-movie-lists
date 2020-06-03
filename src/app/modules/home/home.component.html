@@ -94,11 +94,11 @@
           <span class="right" (click)="isOpen = false; selectedMovie = null; trailerUrl = null">X</span>
       </div>
       <div class="content"> 
-        <div class="row">
+        <div id="top" class="row">
           <div *ngIf="trailerUrl != null" class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           <div class="col-overview">
             <span class="star-rating" *ngFor="let star of selectedMovie?.rating"> <span>☆</span> </span> <span> {{selectedMovie?.rating?.length}}/10 </span> 
-            <span *ngIf="selectedMovie?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
+            <span *ngIf="selectedMovie?.details != null && selectedMovie?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
             <hr>
             <span>{{selectedMovie?.overview}} </span> <br>
             
@@ -111,7 +111,25 @@
               </span>
             </span>
           </div>
-        </div>           
+        </div> 
+        <div class="row">
+            <span class="rec-title">Recommended</span>
+        </div>
+        <div class="row">
+          <div class="col related-col" *ngFor="let rel of related; let i = index">
+              <span class="item" [ngClass]="{'dn': i > 4}">
+                  <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rel?.poster_path +')' }">
+                    <span class="info">
+                        <p><span *ngIf="rel?.credit1">Cast: {{rel?.credit1}}, {{rel?.credit2}} <br></span>
+                          Genre: {{rel?.details?.genres[0]?.name}} <br>
+                          <span class="star-rating" *ngFor="let star of rel.rating"> <span>☆</span> </span> <br>
+                          <span class="trailer-link" (click)="openTrailer(rel, type)">Trailer</span>
+                        </p> 
+                    </span>
+                  </span>
+              </span>
+          </div>
+        </div>          
       </div>  
     </div>
 </div>

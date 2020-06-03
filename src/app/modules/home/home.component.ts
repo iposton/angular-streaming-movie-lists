@@ -53,6 +53,9 @@ export class HomeComponent implements OnInit {
   public selectedMovie: any;
   public year: string = '20';
   public genre: string = "";
+  public related: Array<any>;
+  public relatedDetails: Array<any>;
+  public relatedCredits: Array<any>;
 
   constructor(
     private dataService: DataService,
@@ -421,8 +424,14 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public goTo() {
+    document.querySelector("div[id=top]").scrollIntoView();
+  }
+
   public openTrailer(movie, cat) {
+    this.isOpen = false;
     this.selectedMovie = movie;
+    this.goTo();
     if (cat === 'movies') {
       this.dataService.search(movie.id).subscribe(res => {
 
@@ -431,6 +440,41 @@ export class HomeComponent implements OnInit {
             this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
+           
+            // let element = document.getElementById('top');    
+            // element.scrollIntoView(true);
+            this.related = res['related'];
+            this.relatedDetails = res['details'];
+            this.relatedCredits = res['credits'];
+            
+            for (let rel of this.related) {
+              for (let details of this.relatedDetails) {
+                if (rel.id === details.id) {
+                  rel.details = details;
+                  rel.rating = Array(Math.round(rel.vote_average)).fill(0);
+                }
+              }
+            }
+
+            for (let rel of this.related) {
+              for (let credits of this.relatedCredits) {
+                //console.log(credits, 'credits')
+                if (rel.id === credits.id) {
+                  rel.credits = credits;
+                  if (credits.cast[0] != null) {
+                    rel.credit1 = credits.cast[0]['name'];
+                    rel.credit1Pic = credits.cast[0]['profile_path'];
+                    rel.credit1Char = credits.cast[0]['character'];
+                  }
+                  if (credits.cast[1] != null) {
+                    rel.credit2 = credits.cast[1]['name'];
+                    rel.credit2Pic = credits.cast[1]['profile_path'];
+                    rel.credit2Char = credits.cast[1]['character'];
+                  }
+                }
+              }
+            }
+
             this.isOpen = true;
           }
         }
@@ -443,6 +487,40 @@ export class HomeComponent implements OnInit {
             this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
+            //document.querySelector("div[id=top]").scrollIntoView();
+            // let element = document.getElementById('top');    
+            // element.scrollIntoView(true);
+            this.related = res['related'];
+            this.relatedDetails = res['details'];
+            this.relatedCredits = res['credits'];
+            
+            for (let rel of this.related) {
+              for (let details of this.relatedDetails) {
+                if (rel.id === details.id) {
+                  rel.details = details;
+                  rel.rating = Array(Math.round(rel.vote_average)).fill(0);
+                }
+              }
+            }
+
+            for (let rel of this.related) {
+              for (let credits of this.relatedCredits) {
+                //console.log(credits, 'credits')
+                if (rel.id === credits.id) {
+                  rel.credits = credits;
+                  if (credits.cast[0] != null) {
+                    rel.credit1 = credits.cast[0]['name'];
+                    rel.credit1Pic = credits.cast[0]['profile_path'];
+                    rel.credit1Char = credits.cast[0]['character'];
+                  }
+                  if (credits.cast[1] != null) {
+                    rel.credit2 = credits.cast[1]['name'];
+                    rel.credit2Pic = credits.cast[1]['profile_path'];
+                    rel.credit2Char = credits.cast[1]['character'];
+                  }
+                }
+              }
+            }
             this.isOpen = true;
           }
         }
