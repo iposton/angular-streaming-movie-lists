@@ -2,17 +2,25 @@
     <span *ngIf="error" class="error">{{error}}</span>
 </div>
 <div class="tabs">
-  <button *ngIf="!submitting" class="netflix-btn" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">Netflix</button>
-  <button *ngIf="!submitting" class="amz-btn" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">Prime Video</button>
-  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">Disney+</button>
-  <select name="cat" id="cat" (change)="onChange($event.target.value)">
-      <option value="movies"> Movies </option>
-      <option value="tv"> TV </option>
-  </select>
-  <select name="year" id="year" (change)="onYearChange($event.target.value)">
-      <option value="20"> 2020 </option>
-      <option value="19"> 2019 </option>
-  </select>
+  <button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npd' ? 'Netflix' : 'HBO'}}</button>
+  <button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npd' ? 'Prime Video' : 'Hulu'}}</button>
+  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npd' ? 'Disney+' : 'Apple TV'}}</button>
+</div>
+<div class="tabs">
+    <select name="cat" id="cat" (change)="onChange($event.target.value)">
+        <option value="movies"> Movies </option>
+        <option value="tv"> TV </option>
+    </select>
+    <select name="year" id="year" (change)="onYearChange($event.target.value)">
+        <option value="20"> 2020 </option>
+        <option value="19"> 2019 </option>
+        <option value="18"> 2018 </option>
+        <option value="17"> 2017 </option>
+    </select>
+    <select name="provider" id="provider" (change)="onProviderChange($event.target.value)">
+        <option value="npd"> Netflix </option>
+        <option value="hha"> HBO </option>
+    </select>
 </div>
 <div class="genres center">
   <span [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 

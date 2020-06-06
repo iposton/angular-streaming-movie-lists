@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit {
   public trailerUrl: any;
   public selectedMovie: any;
   public year: string = '20';
+  public provider: string = 'npd';
   public genre: string = "";
   public related: Array<any>;
   public relatedDetails: Array<any>;
@@ -86,6 +87,16 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public onProviderChange(provider: string) {
+    if (this.year != provider && this.type === 'movies') {
+      this.provider = provider;
+      this.loadMovies();
+    } else if (this.provider != provider && this.type === 'tv') {
+      this.provider = provider;
+      this.loadTv();
+    }
+  }
+
   public setGenre(genre: string) {
     if (this.genre != genre && this.type === 'movies') {
       this.genre = genre;
@@ -99,7 +110,8 @@ export class HomeComponent implements OnInit {
   public loadMovies() {
     this.submitting = true;
     this.type = 'movies';
-    this.dataService.getData(this.year, this.genre).subscribe(res => {
+    console.log(this.provider, 'provider')
+    this.dataService.getData(this.year, this.genre, this.provider).subscribe(res => {
       //console.log(res, 'movies from server');
       this.netFlix = res[0].nfMovies;
       this.amazon = res[0].amzMovies;
@@ -123,7 +135,7 @@ export class HomeComponent implements OnInit {
   public loadTv() {
     this.submitting = true;
     this.type = 'tv';
-    this.dataService.getTv(this.year, this.genre).subscribe(res => {
+    this.dataService.getTv(this.year, this.genre, this.provider).subscribe(res => {
       //console.log(res, 'tv from server');
       this.netFlixTv = res[0].nfTv;
       this.amazonTv = res[0].amzTv;
@@ -373,7 +385,7 @@ export class HomeComponent implements OnInit {
   public getSelectedMovies() {
     if (this.myMovies === 'nf') {
       // this.gaService.eventEmitter("netflix", "popular", "movies", "click", 10);
-      this.title = 'netflix';
+      this.title = this.provider === 'npd' ? 'netflix' : 'hbo';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.netFlix;
@@ -390,7 +402,7 @@ export class HomeComponent implements OnInit {
     }
     if (this.myMovies === 'amz') {
       // this.gaService.eventEmitter("primevideo", "popular", "movies", "click", 10);
-      this.title = 'amazon prime';
+      this.title = this.provider === 'npd' ? 'amazon prime' : 'hulu';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.amazon;
@@ -407,7 +419,7 @@ export class HomeComponent implements OnInit {
     }
     if (this.myMovies === 'd') {
       // this.gaService.eventEmitter("disney", "popular", "movies", "click", 10);
-      this.title = 'disney +';
+      this.title = this.provider === 'npd' ? 'disney +' : 'apple tv';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.disney;

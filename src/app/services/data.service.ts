@@ -11,9 +11,9 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getData(item, genre) {
+  getData(item, genre, pro) {
     let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
-    let searchterm = `query=${item}&genre=${genre}`;
+    let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
     try {
       this.movies = this.http.post('/data', searchterm, {headers});
       return this.movies;
@@ -22,9 +22,9 @@ export class DataService {
     }
   }
 
-  getTv(item, genre) {
+  getTv(item, genre, pro) {
     let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
-    let searchterm = `query=${item}&genre=${genre}`;
+    let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
     try {
       this.tv = this.http.post('/tv', searchterm, {headers});
       return this.tv;

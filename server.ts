@@ -38,7 +38,9 @@ export function app() {
     let encsearchquery = encodeURIComponent(searchquery);
     let genrequery = req.body.genre;
     let encgenrequery = encodeURIComponent(genrequery);
-    const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, apiKey);
+    let proquery = req.body.pro;
+    let encproquery = encodeURIComponent(proquery);
+    const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, encproquery, apiKey);
     res.status(200).json(data);
   })
 
@@ -47,7 +49,9 @@ export function app() {
     let encsearchquery = encodeURIComponent(searchquery);
     let genrequery = req.body.genre;
     let encgenrequery = encodeURIComponent(genrequery);
-    const data =  await api.data.getAllTv(encsearchquery, encgenrequery, apiKey);
+    let proquery = req.body.pro;
+    let encproquery = encodeURIComponent(proquery);
+    const data =  await api.data.getAllTv(encsearchquery, encgenrequery, encproquery, apiKey);
     res.status(200).json(data);
   })
 

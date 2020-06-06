@@ -37,7 +37,7 @@ header {
       filter: brightness(85%);
       background:#000;
       text-transform: uppercase;
-      padding: 8px;
+      padding: 5px;
       border: none;
       color: #fff;
       transition: linear .3s;
@@ -51,6 +51,15 @@ header {
     }
     .disney-btn {
       background: #111D4E;
+    }
+    .netflix-btn.hha {
+      background: #000;
+    }
+    .amz-btn.hha {
+      background: #1DE883;
+    }
+    .disney-btn.hha {
+      background: #000;
     }
   
     button:hover,
@@ -752,8 +761,11 @@ footer {
   .container {
     .wrapper {
       .tabs {
+        button {
+          width: 100px;
+        }
         select {
-          padding: 7px;
+          padding: 5px;
           border: none!important;
           appearance: none!important;
           -webkit-appearance: none;
@@ -762,7 +774,7 @@ footer {
           background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
           background-position: 100% 50%;
           background-repeat: no-repeat;
-          width: 70px;
+          width: 102px;
         }
       }
     }
