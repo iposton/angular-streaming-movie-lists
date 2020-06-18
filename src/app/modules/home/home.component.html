@@ -22,21 +22,23 @@
         <option value="hha"> HBO </option>
     </select>
 </div>
-<div class="genres center">
-  <span [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
-  <span [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
-  <span [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
-  <span [ngClass]="{'active': genre === '10749'}" (click)="setGenre('10749')">Romance</span> 
-  <span [ngClass]="{'active': genre === '27'}" (click)="setGenre('27')">Horror</span> 
-  <span [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
+<div class="genres center" *ngIf="gTop">
+  <span class="btn" [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
+  <span class="btn" [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
+  <span class="btn" [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
+  <span class="btn" [ngClass]="{'active': genre === '10749'}" (click)="setGenre('10749')">Romance</span> 
+  <span class="btn" [ngClass]="{'active': genre === '27'}" (click)="setGenre('27')">Horror</span> 
+  <span class="btn" [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
+  <span (click)="gBottom = true; gTop = false;">&#9660;</span>
 </div>
-<div class="genres center">
-    <span [ngClass]="{'active': genre === '80'}" (click)="setGenre('80')">Crime</span> 
-    <span [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
-    <span [ngClass]="{'active': genre === '10402'}" (click)="setGenre('10402')">Music</span> 
-    <span [ngClass]="{'active': genre === '878'}" (click)="setGenre('878')">Sci-Fi</span> 
-    <span [ngClass]="{'active': genre === '53'}" (click)="setGenre('53')">Thriller</span> 
-    <span [ngClass]="{'active': genre === '37'}" (click)="setGenre('37')">Western</span>
+<div class="genres center" *ngIf="gBottom">
+    <span class="btn" [ngClass]="{'active': genre === '80'}" (click)="setGenre('80')">Crime</span> 
+    <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
+    <span class="btn" [ngClass]="{'active': genre === '10402'}" (click)="setGenre('10402')">Music</span> 
+    <span class="btn" [ngClass]="{'active': genre === '878'}" (click)="setGenre('878')">Sci-Fi</span> 
+    <span class="btn" [ngClass]="{'active': genre === '53'}" (click)="setGenre('53')">Thriller</span> 
+    <span class="btn" [ngClass]="{'active': genre === '37'}" (click)="setGenre('37')">Western</span>
+    <span (click)="gTop = true; gBottom = false;">&#9650;</span>
 </div>
 <div class="center load-msg" *ngIf="submitting">
     <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>

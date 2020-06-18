@@ -73,7 +73,7 @@ header {
   }
   .genres {
     margin-top: 15px;
-    span {
+    span.btn {
       border: 1px solid #fff;
       color: #fff;
       padding: 4px;
@@ -247,6 +247,7 @@ footer {
     transition: transform 500ms;
     text-decoration: none;
     color: #fff;
+    transform: scale(1);
 
     .bg {
       //transition: transform 500ms;
@@ -811,6 +812,7 @@ footer {
     }
   }
 }
+
 @media (max-width: 500px) { 
   #overlay.active {
     .modal {
@@ -821,9 +823,11 @@ footer {
       }
     }
   }
+
   .page-container {
     width: 100%;
   }
+
   footer {
     .row {
       .col {
@@ -850,7 +854,24 @@ footer {
         }
       }
   }
+
+  .row .col.related-col .item .bg {
+    height: 150px;
+  }
+
+  .my-container .item .bg .info {
+    width: 90%
+  }
+
+  .my-container .item .bg {
+    height: 250px;
+  }
+
+  #overlay.active .modal .modal-header .header-title {
+    font-size: 16px;
+  }
 }
+
 @media (max-width: 400px) { 
   #overlay.active {
     .modal {

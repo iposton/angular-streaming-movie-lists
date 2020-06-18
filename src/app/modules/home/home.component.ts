@@ -57,6 +57,8 @@ export class HomeComponent implements OnInit {
   public related: Array<any>;
   public relatedDetails: Array<any>;
   public relatedCredits: Array<any>;
+  public gTop: boolean = true;
+  public gBottom: boolean = false;
 
   constructor(
     private dataService: DataService,
