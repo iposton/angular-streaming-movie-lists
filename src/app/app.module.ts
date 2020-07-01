@@ -9,17 +9,21 @@ import { HomeComponent } from './modules/home/home.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { WindowRefService } from './services/window-ref.service';
 //import { TransferHttpInterceptorService } from './services/transfer-http-interceptor.service';
-//import { TransferStateInterceptor } from './interceptors/transfer-state.interceptor';
+import { TransferStateInterceptor } from './interceptors/transfer-state.interceptor';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { GoogleAnalyticsGtagComponent } from './components/google-analytics-gtag/google-analytics-gtag.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SliderComponent,
-    GoogleAnalyticsGtagComponent
+    GoogleAnalyticsGtagComponent,
+    DialogComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -30,11 +34,11 @@ import { GoogleAnalyticsGtagComponent } from './components/google-analytics-gtag
   ],
   providers: [
      WindowRefService,
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: TransferStateInterceptor,
-    //   multi: true
-    // }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TransferStateInterceptor,
+      multi: true
+    }
 ],
   bootstrap: [AppComponent]
 })

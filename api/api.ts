@@ -549,4 +549,4 @@ methods.searchtv = async (id: string, apiKey: string) => {
   return searchInfo[0];
 };
 
-exports.data = methods;
+export const api = {data: methods};

@@ -6,7 +6,7 @@ import { join } from 'path';
 import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
-let api = require('./api/api.ts');
+import { api } from './api/api';
 const bodyParser = require('body-parser');
 
 enableProdMode();
@@ -34,14 +34,18 @@ export function app() {
 
   // Example Express Rest API endpoints
   server.post('/data', async (req, res) => {
-    let searchquery = req.body.query;
-    let encsearchquery = encodeURIComponent(searchquery);
-    let genrequery = req.body.genre;
-    let encgenrequery = encodeURIComponent(genrequery);
-    let proquery = req.body.pro;
-    let encproquery = encodeURIComponent(proquery);
-    const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, encproquery, apiKey);
-    res.status(200).json(data);
+    try {
+      let searchquery = req.body.query;
+      let encsearchquery = encodeURIComponent(searchquery);
+      let genrequery = req.body.genre;
+      let encgenrequery = encodeURIComponent(genrequery);
+      let proquery = req.body.pro;
+      let encproquery = encodeURIComponent(proquery);
+      const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, encproquery, apiKey);
+      res.status(200).json(data);
+    } catch(e) {
+      // console.log(e, 'error');
+    }
   })
 
   server.post('/tv', async (req, res) => {

@@ -1,8 +1,17 @@
 <div class="container">
+
+  <app-dialog
+  [isOpen]="isRemOpen"
+  [data]="reminders"
+  [title]="dialogTitle"
+  [type]="'something'"
+  (close)="isRemOpen = false"></app-dialog>
+   
   <header class="navbar">
-      <div class="content">
-        <h2>Streaming Lists</h2> 
-      </div>
+    <span class="left header-title">Streaming Lists</span>
+    <div class="right reminder-block">
+      <span class="reminders-btn" (click)="open()">Reminders</span> 
+    </div>
   </header>
   <div class="wrapper">
       <router-outlet></router-outlet>

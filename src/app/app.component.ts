@@ -8,7 +8,11 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class AppComponent implements OnInit {
   public isOpen: boolean = false;
-  title = 'Streaming Lists | Netflix, Prime, Disney+';
+  public isRemOpen: boolean = false;
+  public title = 'Streaming Lists | Netflix, Prime, Disney+';
+  public dialogTitle: string = '';
+  public reminders: any;
+  public currentItem: string;
 
   constructor(
     private metaTagService: Meta,
@@ -17,6 +21,13 @@ export class AppComponent implements OnInit {
 
   public navigate(link) {
     window.location.href = link;
+  }
+
+  public open() {
+    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
+    this.reminders = this.currentItem;
+    this.dialogTitle = "Reminders";
+    this.isRemOpen = true;
   }
 
   ngOnInit() {

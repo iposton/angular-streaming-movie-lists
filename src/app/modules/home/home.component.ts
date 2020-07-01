@@ -59,6 +59,13 @@ export class HomeComponent implements OnInit {
   public relatedCredits: Array<any>;
   public gTop: boolean = true;
   public gBottom: boolean = false;
+  public showSnack: boolean = false;
+  public showRank: boolean = true;
+  public hoveredItem: string = '';
+  public hoverRank: number = 99;
+  public currentItem: string;
+  public reminders: any;
+  public reminderAlert: string = "";
 
   constructor(
     private dataService: DataService,
@@ -109,10 +116,46 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public addReminder(item) {
+    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
+    this.reminders = this.currentItem;
+
+    if (this.reminders != null) {
+      this.reminders.forEach((reminder, index) => {
+        if (reminder.id === item.id) {
+          this.showSnack = true;
+          this.reminderAlert = "This reminder already exists.";
+          setTimeout(()=> {
+            this.showSnack = false;
+            this.reminderAlert = "";
+          }, 2950); 
+        }
+      });
+    }
+  
+    if (this.reminderAlert === '' && !this.showSnack) {
+      this.reminders.push({
+        newReminder: item,
+        dateAdded: new Date().toISOString().slice(0,10),
+        id: item.id
+      });
+      // this.newTodo = '';
+      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
+
+      this.showSnack = true;
+      this.reminderAlert = "Reminder Added";
+      setTimeout(()=> {
+        this.showSnack = false;
+        this.reminderAlert = "";
+      }, 2950);
+
+    }
+     
+  }
+
   public loadMovies() {
     this.submitting = true;
     this.type = 'movies';
-    console.log(this.provider, 'provider')
     this.dataService.getData(this.year, this.genre, this.provider).subscribe(res => {
       //console.log(res, 'movies from server');
       this.netFlix = res[0].nfMovies;
@@ -179,6 +222,7 @@ export class HomeComponent implements OnInit {
         for (let details of this.netFlixDetails) {
           if (movie.id === details.id) {
             movie.details = details;
+            movie.type = 'movies';
             movie.rating = Array(Math.round(movie.vote_average)).fill(0);
           }
         }
@@ -192,6 +236,7 @@ export class HomeComponent implements OnInit {
         //console.log(credits, 'credits')
         if (movie.id === credits.id) {
           movie.credits = credits;
+          movie.type = 'movies';
           if (credits.cast[0] != null) {
             movie.credit1 = credits.cast[0]['name'];
             movie.credit1Pic = credits.cast[0]['profile_path'];
@@ -210,6 +255,7 @@ export class HomeComponent implements OnInit {
       for (let movie of this.amazon) {
         for (let details of this.amazonDetails) {
           if (movie.id === details.id) {
+            movie.type = 'movies';
             movie.details = details;
             movie.rating = Array(Math.round(movie.vote_average)).fill(0);
           }
@@ -223,6 +269,7 @@ export class HomeComponent implements OnInit {
       for (let credits of this.amazonCredits) {
         //console.log(credits, 'credits')
         if (movie.id === credits.id) {
+          movie.type = 'movies';
           movie.credits = credits;
           if (credits.cast[0] != null) {
             movie.credit1 = credits.cast[0]['name'];
@@ -242,6 +289,7 @@ export class HomeComponent implements OnInit {
       for (let movie of this.disney) {
         for (let details of this.disneyDetails) {
           if (movie.id === details.id) {
+            movie.type = 'movies';
             movie.details = details;
             movie.rating = Array(Math.round(movie.vote_average)).fill(0);
           }
@@ -255,6 +303,7 @@ export class HomeComponent implements OnInit {
       for (let credits of this.disneyCredits) {
         //console.log(credits, 'credits')
         if (movie.id === credits.id) {
+          movie.type = 'movies';
           movie.credits = credits;
           if (credits.cast[0] != null) {
             movie.credit1 = credits.cast[0]['name'];
@@ -277,6 +326,7 @@ export class HomeComponent implements OnInit {
       for (let tv of this.netFlixTv) {
         for (let details of this.netFlixTvDetails) {
           if (tv.id === details.id) {
+            tv.type = 'tv';
             tv.details = details;
             tv.rating = Array(Math.round(tv.vote_average)).fill(0);
           }
@@ -290,6 +340,7 @@ export class HomeComponent implements OnInit {
       for (let credits of this.netFlixTvCredits) {
         //console.log(credits, 'credits')
         if (tv.id === credits.id) {
+          tv.type = 'tv';
           tv.credits = credits;
           if (credits.cast[0] != null) {
             tv.credit1 = credits.cast[0]['name'];
@@ -309,6 +360,7 @@ export class HomeComponent implements OnInit {
       for (let tv of this.amazonTv) {
         for (let details of this.amazonTvDetails) {
           if (tv.id === details.id) {
+            tv.type = 'tv';
             tv.details = details;
             tv.rating = Array(Math.round(tv.vote_average)).fill(0);
           }
@@ -322,6 +374,7 @@ export class HomeComponent implements OnInit {
       for (let credits of this.amazonTvCredits) {
         //console.log(credits, 'credits')
         if (tv.id === credits.id) {
+          tv.type = 'tv';
           tv.credits = credits;
           if (credits.cast[0] != null) {
             tv.credit1 = credits.cast[0]['name'];
@@ -341,6 +394,7 @@ export class HomeComponent implements OnInit {
       for (let tv of this.disneyTv) {
         for (let details of this.disneyTvDetails) {
           if (tv.id === details.id) {
+            tv.type = 'tv';
             tv.details = details;
             tv.rating = Array(Math.round(tv.vote_average)).fill(0);
           }
@@ -354,6 +408,7 @@ export class HomeComponent implements OnInit {
       for (let credits of this.disneyTvCredits) {
         //console.log(credits, 'credits')
         if (tv.id === credits.id) {
+          tv.type = 'tv';
           tv.credits = credits;
           if (credits.cast[0] != null) {
             tv.credit1 = credits.cast[0]['name'];
@@ -501,9 +556,7 @@ export class HomeComponent implements OnInit {
             this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
-            //document.querySelector("div[id=top]").scrollIntoView();
-            // let element = document.getElementById('top');    
-            // element.scrollIntoView(true);
+           
             this.related = res['related'];
             this.relatedDetails = res['details'];
             this.relatedCredits = res['credits'];
