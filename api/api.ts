@@ -34,6 +34,7 @@ let searchInfo = [
     credits: []
   }
 ];
+let searchQueryInfo = [];
 
 let startDate = '2020-01-01';
 let pro1 = "8";
@@ -427,7 +428,8 @@ methods.search = async (id: string, apiKey: string) => {
       const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
       let data = JSON.parse(body);
       let results = data['results'];
-      results.length = 5;
+      if (results.length > 5)
+        results.length = 5;
       searchInfo[0].related = results;
       const details = async () => {
         forkJoin(
@@ -497,7 +499,8 @@ methods.searchtv = async (id: string, apiKey: string) => {
       let data = JSON.parse(body);
       searchInfo[0].related = data['results'];
       let results = data['results'];
-      results.length = 5;
+      if (results.length > 5)
+        results.length = 5;
       searchInfo[0].related = results;
       const details = async () => {
         forkJoin(
@@ -548,5 +551,19 @@ methods.searchtv = async (id: string, apiKey: string) => {
   let result2 = await relatedPromise;
   return searchInfo[0];
 };
+
+methods.searchTrending = async (term: string, apiKey: string) => {
+  //let searchQuery = `https://www.themoviedb.org/search/trending?language=en-US&query=${term}`;
+  let searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
+  let searchPromise = new Promise((resolve, reject) => {
+    request(searchQuery, {}, function(err, res, body) {
+      let data = JSON.parse(body);
+      searchQueryInfo = data['results'];
+      resolve();
+    });
+  });
+  let result = await searchPromise;
+  return searchQueryInfo;
+}
 
 export const api = {data: methods};

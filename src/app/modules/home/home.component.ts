@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -66,13 +66,16 @@ export class HomeComponent implements OnInit {
   public currentItem: string;
   public reminders: any;
   public reminderAlert: string = "";
+  public testBrowser: boolean;
 
   constructor(
     private dataService: DataService,
     private sanitizer: DomSanitizer,
-    private gaService: GoogleAnalyticsService
+    private gaService: GoogleAnalyticsService,
+    @Inject(PLATFORM_ID) platformId: string
   ) {
-    this.loadMovies();
+    this.testBrowser = isPlatformBrowser(platformId);
+    //this.loadMovies();
   }
 
   public onChange(cat: string) {
@@ -139,7 +142,7 @@ export class HomeComponent implements OnInit {
         dateAdded: new Date().toISOString().slice(0,10),
         id: item.id
       });
-      // this.newTodo = '';
+
       localStorage.setItem('currentItem', JSON.stringify(this.reminders));
 
       this.showSnack = true;
@@ -149,8 +152,7 @@ export class HomeComponent implements OnInit {
         this.reminderAlert = "";
       }, 2950);
 
-    }
-     
+    } 
   }
 
   public loadMovies() {
@@ -427,15 +429,17 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.loadData();
-    try {
-      if (window.innerWidth <= 500) {
-        this.isMobile = true;
-      } else {
-        //console.log('isMobile?', this.isMobile);
+    if (this.testBrowser) {
+      this.loadMovies();
+      try {
+        if (window.innerWidth <= 500) {
+          this.isMobile = true;
+        } else {
+          //console.log('isMobile?', this.isMobile);
+        }
+      } catch (e) {
+        console.log(e, 'window error');
       }
-    } catch (e) {
-      console.log(e, 'window error');
     }
   }
 
@@ -503,13 +507,15 @@ export class HomeComponent implements OnInit {
     this.goTo();
     if (cat === 'movies') {
       this.dataService.search(movie.id).subscribe(res => {
-
+        console.log(res, 'trailer res')
         if (res['results'][0] != null) {
           if (res['results'][0].site === 'YouTube') {
             this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
-           
+          }
+         
+        if (res['related'][0] != null) {
             // let element = document.getElementById('top');    
             // element.scrollIntoView(true);
             this.related = res['related'];
@@ -518,7 +524,7 @@ export class HomeComponent implements OnInit {
             
             for (let rel of this.related) {
               for (let details of this.relatedDetails) {
-                if (rel.id === details.id) {
+                if (rel != null && rel.id === details.id) {
                   rel.details = details;
                   rel.rating = Array(Math.round(rel.vote_average)).fill(0);
                 }
@@ -543,9 +549,8 @@ export class HomeComponent implements OnInit {
                 }
               }
             }
-
-            this.isOpen = true;
           }
+          this.isOpen = true;
         }
       });
     } else {

@@ -1,0 +1,52 @@
+<div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
+    <div class="modal trailer-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+          <span class="header-title" *ngIf="selectedMovie != null && showTrailer">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
+          <span class="right" (click)="closeModal()">X</span>
+      </div>
+      <div class="content"> 
+        <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
+        <div id="top" class="row" *ngIf="showTrailer">
+          <div *ngIf="trailerUrl != null" class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
+          <div class="col-overview">
+            <span class="star-rating" *ngFor="let star of selectedMovie?.rating"> <span>☆</span> </span> <span> {{selectedMovie?.rating?.length}}/10 </span> 
+            <span *ngIf="selectedMovie?.details != null && selectedMovie?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
+            <hr>
+            <span>{{selectedMovie?.overview}} </span> <br>
+            
+            <span class="row cast" *ngIf="selectedMovie?.credits">
+              <span class="col-cast" *ngFor="let actor of selectedMovie?.credits?.cast; let i = index"> 
+                <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
+                    <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
+                    {{actor?.name}} <br> ({{actor?.character}})
+                </span>
+              </span>
+            </span>
+          </div>
+        </div> 
+        <div class="row search-row">
+          <input type="search" class="form-control" placeholder="search" [formControl]="searchField">
+          <span class="rec-title">{{ (results | async)?.length ? 'Results' : 'Search' }}</span>
+        </div>
+        <div class="row">
+          <div class="no-rem" *ngIf="(results | async)?.length === 0">Nothing matches this search.</div>
+          <div [ngClass]="{'dn': item?.poster_path == null}" class="col related-col" *ngFor="let item of results | async">
+              <span class="item">
+                  <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
+                   <div class="item-row">
+                    <span class="info">
+                        <p>
+                          <!-- <span *ngIf="rem?.newReminder?.credit1">Cast: {{rem?.newReminder?.credit1}}, {{rem?.newReminder?.credit2}} <br></span>
+                          Genre: {{rem?.newReminder?.details?.genres[0]?.name}} <br> -->
+                          <span class="star-rating" *ngFor="let star of rating(item)"> <span>☆</span> </span> <br>
+                          <span class="trailer-link" (click)="openTrailer(item)">Trailer</span>
+                        </p> 
+                    </span>
+                    </div>
+                  </span>
+              </span>
+          </div>
+        </div>          
+      </div>  
+    </div>
+</div>

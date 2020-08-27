@@ -27,7 +27,18 @@ header {
       padding-top: 10px;
     }
 
+    .search {
+      text-align: center;
+    }
+
+    .search:before {
+      content: "\ea27";
+    }
+
     .reminder-block {
+
+      // display: inline-block;
+      float: right;
 
       .reminders-btn {
         padding: 8px;
@@ -150,6 +161,21 @@ footer {
 
 //global
 
+input[type="search"] {
+  background: black;
+  color: #fff;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none !important;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  border: 1px solid #fff;
+  bottom: 0;
+  position: absolute;
+}
+
 .right {
   float: right;
 }
@@ -185,6 +211,7 @@ footer {
     display: block;
     width: 100%;
     border-bottom: 1px solid #fff;
+    padding-top: 10px;
   }
 
   .no-rem {
@@ -192,6 +219,10 @@ footer {
     font-weight: 100;
     color: #fff;
     padding: 25px;
+  }
+
+  .col.related-col.dn {
+    display: none;
   }
 
   .col.related-col {
@@ -885,9 +916,15 @@ footer {
             width: 3%;
           }
         }
+
         .twitter-icon:hover {
           cursor: pointer;
         }
+
+        .search-row {
+          position: relative;
+        }
+
       }
       
     }

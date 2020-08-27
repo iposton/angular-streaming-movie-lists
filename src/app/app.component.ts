@@ -8,8 +8,9 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class AppComponent implements OnInit {
   public isOpen: boolean = false;
+  public isSearchOpen: boolean = false;
   public isRemOpen: boolean = false;
-  public title = 'Streaming Lists | Netflix, Prime, Disney+';
+  public title = 'Streaming Lists | Netflix, Prime, Disney+, HBO, HULU';
   public dialogTitle: string = '';
   public reminders: any;
   public currentItem: string;
@@ -21,6 +22,10 @@ export class AppComponent implements OnInit {
 
   public navigate(link) {
     window.location.href = link;
+  }
+
+  public openSearch() {
+    this.isSearchOpen = true;
   }
 
   public open() {

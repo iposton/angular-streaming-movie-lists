@@ -6,9 +6,17 @@
   [title]="dialogTitle"
   [type]="'something'"
   (close)="isRemOpen = false"></app-dialog>
+
+  <app-search-dialog
+  [isOpen]="isSearchOpen"
+  (close)="isSearchOpen = false"></app-search-dialog>
    
   <header class="navbar">
     <span class="left header-title">Streaming Lists</span>
+    
+    <div class="center reminder-block">
+        <span class="reminders-btn" (click)="openSearch()">Search</span>
+    </div>
     <div class="right reminder-block">
       <span class="reminders-btn" (click)="open()">Reminders</span> 
     </div>
@@ -50,7 +58,7 @@
           <p>I am using <a href="https://www.themoviedb.org/?language=en-US" atl="TMDB link" target="_blank">themoviedb.org</a> api to get all the current info I need to build my idea. 
             <b>This product uses the TMDb API but is not endorsed or certified by TMDb.</b></p>
           
-          <p>This is a Progressive Web App using Angular 9, and nguniversal (server side rendering).</p>
+          <p>This is a Progressive Web App using Angular 10, and nguniversal (server side rendering).</p>
           
           <p>I am a web developer from Los Angeles and I enjoy building fun apps with angular. Thanks
              for stopping by! ☺</p>

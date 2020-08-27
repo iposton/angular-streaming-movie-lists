@@ -73,6 +73,13 @@ export function app() {
     res.status(200).json(data);
   })
 
+  server.post('/searchtrending', async (req, res) => {
+    let searchquery = req.body.query;
+    let encsearchquery = encodeURIComponent(searchquery);
+    const data =  await api.data.searchTrending(encsearchquery, apiKey);
+    res.status(200).json(data);
+  })
+
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'

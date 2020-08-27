@@ -6,6 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './modules/home/home.component';
+import { ReactiveFormsModule, FormControl, FormsModule } from "@angular/forms";
 import { SliderComponent } from './components/slider/slider.component';
 import { WindowRefService } from './services/window-ref.service';
 //import { TransferHttpInterceptorService } from './services/transfer-http-interceptor.service';
@@ -15,6 +16,7 @@ import { environment } from '../environments/environment';
 import { GoogleAnalyticsGtagComponent } from './components/google-analytics-gtag/google-analytics-gtag.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { SearchDialogComponent } from './components/search-dialog/search-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,13 +25,16 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     SliderComponent,
     GoogleAnalyticsGtagComponent,
     DialogComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    SearchDialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserTransferStateModule,
     AppRoutingModule,
     HttpClientModule,
+    ReactiveFormsModule, 
+    FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

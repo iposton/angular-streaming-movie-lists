@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+const headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,6 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getData(item, genre, pro) {
-    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
     let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
     try {
       this.movies = this.http.post('/data', searchterm, {headers});
@@ -23,7 +24,6 @@ export class DataService {
   }
 
   getTv(item, genre, pro) {
-    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
     let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
     try {
       this.tv = this.http.post('/tv', searchterm, {headers});
@@ -34,7 +34,6 @@ export class DataService {
   }
 
   search(item) {
-    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
     let searchterm = `query=${item}`;
     try {
       this.result = this.http.post('/search', searchterm, {headers});
@@ -45,10 +44,19 @@ export class DataService {
   }
 
   searchtv(item) {
-    let headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-urlencoded');
     let searchterm = `query=${item}`;
     try {
       this.result = this.http.post('/searchtv', searchterm, {headers});
+      return this.result;
+    } catch (e) {
+      console.log(e, 'error')
+    }
+  }
+
+  searchTrending(item: string): Observable<any> {
+    let searchterm = `query=${item}`;
+    try {
+      this.result = this.http.post('/searchtrending', searchterm, {headers});
       return this.result;
     } catch (e) {
       console.log(e, 'error')
