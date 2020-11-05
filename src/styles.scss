@@ -1000,8 +1000,7 @@ footer {
     button {
       padding: 8px;
       width: 145px;
-    }
-    
+    }  
 }
 
 //mobile queries
@@ -1047,6 +1046,9 @@ footer {
       height: 400px;
       min-width: 600px;
     }
+  }
+  #snackbar {
+    left: 50%;
   }
 }
 @media (max-width: 600px) {

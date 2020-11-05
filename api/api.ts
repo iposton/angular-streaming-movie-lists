@@ -55,7 +55,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
   dailyDate = year === '20' ? await methods.getDate() : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : '2017-12-31';
  
   if (provider === 'hha') {
-    pro1 = "27";
+    pro1 = "384";
     pro2 = "15";
     pro3 = "350";
   } else if (provider === 'npd') {
@@ -235,7 +235,7 @@ methods.getAllTv = async (year: string, genre: string, provider: string, apiKey:
   dailyDate = year === '20' ? await methods.getDate() : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : '2017-12-31';
   
   if (provider === 'hha') {
-    pro1 = "27";
+    pro1 = "384";
     pro2 = "15";
     pro3 = "350";
   } else if (provider === 'npd') {

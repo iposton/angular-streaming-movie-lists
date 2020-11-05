@@ -116,6 +116,12 @@ export class HomeComponent implements OnInit {
     } else if (this.genre != genre && this.type === 'tv') {
       this.genre = genre;
       this.loadTv();
+    } else if (this.genre == genre && this.type === 'movies') {
+      this.genre = '';
+      this.loadMovies();
+    } else if (this.genre == genre && this.type === 'tv') {
+      this.genre = '';
+      this.loadTv();
     }
   }
 
