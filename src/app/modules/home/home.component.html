@@ -2,9 +2,9 @@
     <span *ngIf="error" class="error">{{error}}</span>
 </div>
 <div class="tabs">
-  <button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npd' ? 'Netflix' : 'HBO'}}</button>
-  <button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npd' ? 'Prime Video' : 'Hulu'}}</button>
-  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npd' ? 'Disney+' : 'Apple TV'}}</button>
+  <button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npy' ? 'Netflix' : provider === 'hha' ? 'HBO' : 'Netflix'}}</button>
+  <button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npy' ? 'Prime Video' : provider === 'hha' ?  'Hulu' : 'Disney+'}}</button>
+  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npy' ? 'YouTube TV' : provider === 'hha' ? 'Apple TV' : 'PBS Kids'}}</button>
 </div>
 <div class="tabs">
     <select name="cat" id="cat" (change)="onChange($event.target.value)">
@@ -16,13 +16,15 @@
         <option value="19"> 2019 </option>
         <option value="18"> 2018 </option>
         <option value="17"> 2017 </option>
+        <option value="16"> 2016 </option>
     </select>
     <select name="provider" id="provider" (change)="onProviderChange($event.target.value)">
-        <option value="npd"> Netflix </option>
+        <option value="npy"> Netflix </option>
         <option value="hha"> HBO </option>
+        <option value="nkpkd"> Kids </option>
     </select>
 </div>
-<div class="genres center" *ngIf="gTop">
+<div class="genres center" *ngIf="gTop && provider != 'nkpkd'">
   <span class="btn" [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
   <span class="btn" [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
   <span class="btn" [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
@@ -31,7 +33,7 @@
   <span class="btn" [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
   <span (click)="gBottom = true; gTop = false;">&#9660;</span>
 </div>
-<div class="genres center" *ngIf="gBottom">
+<div class="genres center" *ngIf="gBottom && provider != 'nkpkd'">
     <span class="btn" [ngClass]="{'active': genre === '80'}" (click)="setGenre('80')">Crime</span> 
     <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
     <span class="btn" [ngClass]="{'active': genre === '10402'}" (click)="setGenre('10402')">Music</span> 

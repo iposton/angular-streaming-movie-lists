@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
   public trailerUrl: any;
   public selectedMovie: any;
   public year: string = '20';
-  public provider: string = 'npd';
+  public provider: string = 'npy';
   public genre: string = "";
   public related: Array<any>;
   public relatedDetails: Array<any>;
@@ -86,6 +86,9 @@ export class HomeComponent implements OnInit {
         this.type = cat;
     } else {
       this.type = cat;
+      if (this.netFlix == null) {
+        this.loadMovies();
+      }
     }
   }
 
@@ -100,10 +103,12 @@ export class HomeComponent implements OnInit {
   }
 
   public onProviderChange(provider: string) {
-    if (this.year != provider && this.type === 'movies') {
+    if (this.provider != provider && this.type === 'movies') {
+      this.netFlixTv = null
       this.provider = provider;
       this.loadMovies();
     } else if (this.provider != provider && this.type === 'tv') {
+      this.netFlix = null;
       this.provider = provider;
       this.loadTv();
     }
@@ -452,7 +457,7 @@ export class HomeComponent implements OnInit {
   public getSelectedMovies() {
     if (this.myMovies === 'nf') {
       // this.gaService.eventEmitter("netflix", "popular", "movies", "click", 10);
-      this.title = this.provider === 'npd' ? 'netflix' : 'hbo';
+      this.title = this.provider === 'npy' ? 'netflix' : this.provider === 'hha' ? 'hbo' : 'netflix kids';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.netFlix;
@@ -469,7 +474,7 @@ export class HomeComponent implements OnInit {
     }
     if (this.myMovies === 'amz') {
       // this.gaService.eventEmitter("primevideo", "popular", "movies", "click", 10);
-      this.title = this.provider === 'npd' ? 'amazon prime' : 'hulu';
+      this.title = this.provider === 'npy' ? 'amazon prime' : this.provider === 'hha' ? 'hulu' : 'disney +';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.amazon;
@@ -486,7 +491,7 @@ export class HomeComponent implements OnInit {
     }
     if (this.myMovies === 'd') {
       // this.gaService.eventEmitter("disney", "popular", "movies", "click", 10);
-      this.title = this.provider === 'npd' ? 'disney +' : 'apple tv';
+      this.title = this.provider === 'npy' ? 'youtube tv' : this.provider === 'hha' ? 'apple tv' : 'pbs kids';
       if (this.isMobile) {
         if (this.type === 'movies') {
           return this.disney;
