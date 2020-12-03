@@ -105,10 +105,12 @@ export class HomeComponent implements OnInit {
   public onProviderChange(provider: string) {
     if (this.provider != provider && this.type === 'movies') {
       this.netFlixTv = null
+      this.genre = '';
       this.provider = provider;
       this.loadMovies();
     } else if (this.provider != provider && this.type === 'tv') {
       this.netFlix = null;
+      this.genre = '';
       this.provider = provider;
       this.loadTv();
     }
