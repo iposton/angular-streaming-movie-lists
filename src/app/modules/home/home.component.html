@@ -42,6 +42,10 @@
     <span class="btn" [ngClass]="{'active': genre === '37'}" (click)="setGenre('37')">Western</span>
     <span (click)="gTop = true; gBottom = false;">&#9650;</span>
 </div>
+<div class="genres center kids" *ngIf="provider === 'nkpkd'">
+  <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span> 
+  <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
+</div>
 <div class="center load-msg" *ngIf="submitting">
     <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>
 </div>

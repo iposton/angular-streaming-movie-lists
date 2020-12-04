@@ -61,7 +61,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
   } else if (provider === 'nkpkd') {
     pro1 = "175";
     pro2 = "337";
-    pro3 = "293"
+    pro3 = "293";
   } else if (provider === 'npy') {
     pro1 = "8";
     pro2 = "9";
