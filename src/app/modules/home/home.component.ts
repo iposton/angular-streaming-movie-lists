@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
   public trailerKey: any;
   public trailerUrl: any;
   public selectedMovie: any;
-  public year: string = '20';
+  public year: string = '21';
   public provider: string = 'npy';
   public genre: string = "";
   public related: Array<any>;
@@ -215,6 +215,8 @@ export class HomeComponent implements OnInit {
       this.sortTv();
     });
   }
+
+  
 
   public rank(array) {
     array.forEach((item, index) => {

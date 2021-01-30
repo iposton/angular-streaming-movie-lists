@@ -36,7 +36,7 @@ let searchInfo = [
 ];
 let searchQueryInfo = [];
 
-let startDate = '2020-01-01';
+let startDate = '2021-01-01';
 let pro1 = "8";
 let pro2 = "9";
 let pro3 = "235%7C211%7C361%7C363%7C506%7C123";
@@ -51,8 +51,8 @@ methods.getDate = async () => {
 
 methods.getAllMovies = async (year: string, genre: string, provider: string, apiKey: string) => {
   let dailyDate = methods.getDate();
-  startDate = year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : '2016-01-01';
-  dailyDate = year === '20' ? await methods.getDate() : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : '2016-12-31';
+  startDate = year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
+  dailyDate = year === '21' ? await methods.getDate() : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
  
   if (provider === 'hha') {
     pro1 = "384";
@@ -236,8 +236,8 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
 
 methods.getAllTv = async (year: string, genre: string, provider: string, apiKey: string) => {
   let dailyDate = methods.getDate();
-  startDate = year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : '2016-01-01';
-  dailyDate = year === '20' ? await methods.getDate() : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : '2016-12-31';
+  startDate = year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
+  dailyDate = year === '21' ? await methods.getDate() : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
   
   if (provider === 'hha') {
     pro1 = "384";
