@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { UtilService } from '../../services/util.service';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DatePipe, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -72,6 +73,7 @@ export class HomeComponent implements OnInit {
     private dataService: DataService,
     private sanitizer: DomSanitizer,
     private gaService: GoogleAnalyticsService,
+    private util: UtilService,
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.testBrowser = isPlatformBrowser(platformId);
@@ -235,212 +237,31 @@ export class HomeComponent implements OnInit {
 
   public sortData() {
     try {
-      for (let movie of this.netFlix) {
-        for (let details of this.netFlixDetails) {
-          if (movie.id === details.id) {
-            movie.details = details;
-            movie.type = 'movies';
-            movie.rating = Array(Math.round(movie.vote_average)).fill(0);
-          }
-        }
-      }
+      this.util.relatedInfo(this.netFlix, this.netFlixDetails, 'details', 'movies', this.provider, 1)
+      this.util.relatedInfo(this.netFlix, this.netFlixCredits, 'credits', 'movies', this.provider, 1)
+      this.util.relatedInfo(this.amazon, this.amazonDetails, 'details', 'movies', this.provider, 2)
+      this.util.relatedInfo(this.amazon, this.amazonCredits, 'credits', 'movies', this.provider, 2)
+      this.util.relatedInfo(this.disney, this.disneyDetails, 'details', 'movies', this.provider, 3)
+      this.util.relatedInfo(this.disney, this.disneyCredits, 'credits', 'movies', this.provider, 3)
+      this.submitting = false;
     } catch (e) {
       console.log(e, 'error');
     }
-
-    for (let movie of this.netFlix) {
-      for (let credits of this.netFlixCredits) {
-        //console.log(credits, 'credits')
-        if (movie.id === credits.id) {
-          movie.credits = credits;
-          movie.type = 'movies';
-          if (credits.cast[0] != null) {
-            movie.credit1 = credits.cast[0]['name'];
-            movie.credit1Pic = credits.cast[0]['profile_path'];
-            movie.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            movie.credit2 = credits.cast[1]['name'];
-            movie.credit2Pic = credits.cast[1]['profile_path'];
-            movie.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-
-    try {
-      for (let movie of this.amazon) {
-        for (let details of this.amazonDetails) {
-          if (movie.id === details.id) {
-            movie.type = 'movies';
-            movie.details = details;
-            movie.rating = Array(Math.round(movie.vote_average)).fill(0);
-          }
-        }
-      }
-    } catch (e) {
-      console.log(e, 'error');
-    }
-
-    for (let movie of this.amazon) {
-      for (let credits of this.amazonCredits) {
-        //console.log(credits, 'credits')
-        if (movie.id === credits.id) {
-          movie.type = 'movies';
-          movie.credits = credits;
-          if (credits.cast[0] != null) {
-            movie.credit1 = credits.cast[0]['name'];
-            movie.credit1Pic = credits.cast[0]['profile_path'];
-            movie.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            movie.credit2 = credits.cast[1]['name'];
-            movie.credit2Pic = credits.cast[1]['profile_path'];
-            movie.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-
-    try {
-      for (let movie of this.disney) {
-        for (let details of this.disneyDetails) {
-          if (movie.id === details.id) {
-            movie.type = 'movies';
-            movie.details = details;
-            movie.rating = Array(Math.round(movie.vote_average)).fill(0);
-          }
-        }
-      }
-    } catch (e) {
-      console.log(e, 'error');
-    }
-
-    for (let movie of this.disney) {
-      for (let credits of this.disneyCredits) {
-        //console.log(credits, 'credits')
-        if (movie.id === credits.id) {
-          movie.type = 'movies';
-          movie.credits = credits;
-          if (credits.cast[0] != null) {
-            movie.credit1 = credits.cast[0]['name'];
-            movie.credit1Pic = credits.cast[0]['profile_path'];
-            movie.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            movie.credit2 = credits.cast[1]['name'];
-            movie.credit2Pic = credits.cast[1]['profile_path'];
-            movie.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-    this.submitting = false;
+    
   }
 
   public sortTv() {
     try {
-      for (let tv of this.netFlixTv) {
-        for (let details of this.netFlixTvDetails) {
-          if (tv.id === details.id) {
-            tv.type = 'tv';
-            tv.details = details;
-            tv.rating = Array(Math.round(tv.vote_average)).fill(0);
-          }
-        }
-      }
+      this.util.relatedInfo(this.netFlixTv, this.netFlixTvDetails, 'details', 'tv', this.provider, 1)
+      this.util.relatedInfo(this.netFlixTv, this.netFlixTvCredits, 'credits', 'tv', this.provider, 1)
+      this.util.relatedInfo(this.amazonTv, this.amazonTvDetails, 'details', 'tv', this.provider, 2)
+      this.util.relatedInfo(this.amazonTv, this.amazonTvCredits, 'credits', 'tv', this.provider, 2)
+      this.util.relatedInfo(this.disneyTv, this.disneyTvDetails, 'details', 'tv', this.provider, 3)
+      this.util.relatedInfo(this.disneyTv, this.disneyTvCredits, 'credits', 'tv', this.provider, 3)
+      this.submitting = false;
     } catch (e) {
       console.log(e, 'error');
     }
-
-    for (let tv of this.netFlixTv) {
-      for (let credits of this.netFlixTvCredits) {
-        //console.log(credits, 'credits')
-        if (tv.id === credits.id) {
-          tv.type = 'tv';
-          tv.credits = credits;
-          if (credits.cast[0] != null) {
-            tv.credit1 = credits.cast[0]['name'];
-            tv.credit1Pic = credits.cast[0]['profile_path'];
-            tv.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            tv.credit2 = credits.cast[1]['name'];
-            tv.credit2Pic = credits.cast[1]['profile_path'];
-            tv.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-
-    try {
-      for (let tv of this.amazonTv) {
-        for (let details of this.amazonTvDetails) {
-          if (tv.id === details.id) {
-            tv.type = 'tv';
-            tv.details = details;
-            tv.rating = Array(Math.round(tv.vote_average)).fill(0);
-          }
-        }
-      }
-    } catch (e) {
-      console.log(e, 'error');
-    }
-
-    for (let tv of this.amazonTv) {
-      for (let credits of this.amazonTvCredits) {
-        //console.log(credits, 'credits')
-        if (tv.id === credits.id) {
-          tv.type = 'tv';
-          tv.credits = credits;
-          if (credits.cast[0] != null) {
-            tv.credit1 = credits.cast[0]['name'];
-            tv.credit1Pic = credits.cast[0]['profile_path'];
-            tv.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            tv.credit2 = credits.cast[1]['name'];
-            tv.credit2Pic = credits.cast[1]['profile_path'];
-            tv.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-
-    try {
-      for (let tv of this.disneyTv) {
-        for (let details of this.disneyTvDetails) {
-          if (tv.id === details.id) {
-            tv.type = 'tv';
-            tv.details = details;
-            tv.rating = Array(Math.round(tv.vote_average)).fill(0);
-          }
-        }
-      }
-    } catch (e) {
-      console.log(e, 'error');
-    }
-
-    for (let tv of this.disneyTv) {
-      for (let credits of this.disneyTvCredits) {
-        //console.log(credits, 'credits')
-        if (tv.id === credits.id) {
-          tv.type = 'tv';
-          tv.credits = credits;
-          if (credits.cast[0] != null) {
-            tv.credit1 = credits.cast[0]['name'];
-            tv.credit1Pic = credits.cast[0]['profile_path'];
-            tv.credit1Char = credits.cast[0]['character'];
-          }
-          if (credits.cast[1] != null) {
-            tv.credit2 = credits.cast[1]['name'];
-            tv.credit2Pic = credits.cast[1]['profile_path'];
-            tv.credit2Char = credits.cast[1]['character'];
-          }
-        }
-      }
-    }
-    this.submitting = false;
   }
 
   ngOnInit(): void {

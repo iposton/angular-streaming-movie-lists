@@ -10,6 +10,7 @@ export class DataService {
   public movies: any;
   public tv: any;
   public result: any;
+  public trending: any;
 
   constructor(private http: HttpClient) { }
 
@@ -58,6 +59,15 @@ export class DataService {
     try {
       this.result = this.http.post('/searchtrending', searchterm, {headers});
       return this.result;
+    } catch (e) {
+      console.log(e, 'error')
+    }
+  }
+
+  getTrending(): Observable<any> {
+    try {
+      this.trending = this.http.post('/trending', {headers});
+      return this.trending;
     } catch (e) {
       console.log(e, 'error')
     }

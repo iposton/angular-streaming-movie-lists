@@ -5,7 +5,18 @@
   [data]="reminders"
   [title]="dialogTitle"
   [type]="'something'"
-  (close)="isRemOpen = false"></app-dialog>
+  [showTitles]="''"
+  [content]="content"
+  [loading]="loading"
+  [loadingTitle]="loadingTitle"
+  [selectedMovie]="selectedMovie"
+  [selected]="selected"
+  [selectedTV]="selectedTV"
+  [dialogUrl]="dialogUrl"
+  [trailerUrl]="trailerUrl"
+  [trailerUrlTV]="trailerUrlTV"
+  [showTrailer]="showTrailer"
+  (close)="isRemOpen = false; showTrailer = false"></app-dialog>
 
   <app-search-dialog
   [isOpen]="isSearchOpen"
@@ -13,13 +24,25 @@
    
   <header class="navbar">
     <span class="left header-title">Streaming Lists</span>
-    
-    <div class="center reminder-block">
-        <span class="reminders-btn" (click)="openSearch()">Search</span>
-    </div>
-    <div class="right reminder-block">
-      <span class="reminders-btn" (click)="open()">Reminders</span> 
-    </div>
+    <span *ngIf="!mobile"> 
+      <div class="center reminder-block">
+          <span class="reminders-btn" (click)="openSearch()">Search</span>
+      </div>
+      <div class="right reminder-block">
+        <span class="reminders-btn" (click)="open('')">Reminders</span> 
+      </div>
+      <div class="right reminder-block">
+        <span class="reminders-btn" (click)="open('trending')">Trending</span> 
+      </div>
+    </span>
+    <span *ngIf="mobile" class="mobile-menu"> 
+        <span (click)="menu = !menu" class="title">{{!menu ? 'Menu' : 'X'}}</span>
+        <ul *ngIf="menu" [ngClass]="{'mobile-list' : menu}">
+          <li (click)="open('trending')">Trending</li>
+          <li (click)="open('')">Reminders</li>
+          <li (click)="openSearch()">Search</li>
+        </ul>
+    </span>
   </header>
   <div class="wrapper">
       <router-outlet></router-outlet>

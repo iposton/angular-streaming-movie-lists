@@ -49,6 +49,8 @@ header {
         cursor: pointer;
         transition: .3s linear;
         font-size: 12px;
+        width: 68px;
+        text-align: center;
       }
 
       .reminders-btn:hover {
@@ -227,6 +229,26 @@ input[type="search"] {
     padding-top: 10px;
   }
 
+  .reminderbar {
+    margin-top: 3px;
+    .tab {
+      background: #fff;
+      color: #000;
+      margin-right: 5px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      padding: 0 5px;
+      transition: linear .3s;
+    }
+    .tab.active {
+      background: #ccc;
+    }
+    .tab:hover {
+      cursor: pointer;
+      background: #ccc;
+    }
+  }
+
   .no-rem {
     font-size: 24px;
     font-weight: 100;
@@ -234,11 +256,13 @@ input[type="search"] {
     padding: 25px;
   }
 
-  .col.related-col.dn {
+  .col.related-col.dn,
+  .col.related-col.dn2 {
     display: none;
   }
 
   .col.related-col {
+    
     .item {
       .bg {
         background-size: cover!important;
@@ -247,6 +271,43 @@ input[type="search"] {
         position: relative;
         height: 250px;
 
+        .probar {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 2px;
+          opacity: 0.8;
+          color: #fff;
+          text-transform: uppercase;
+        }
+
+        .Netflix, .netflix {
+          background: #e00713;  
+        }
+
+        .HBO, .hbo {
+          background: #8440C1;
+        }
+
+        .Amazon,
+        .Prime,
+        .prime {
+          background: #00A3DB;
+        }
+
+        .Hulu,
+        .hulu {
+          background:  #1DE883;
+        }
+
+        .Disney,
+        .disney {
+          background:  #111D4E;
+        }
+        
         .item-row {
           width: 100%;
     
@@ -378,10 +439,7 @@ input[type="search"] {
       display: none;
     }
   }
-
-
 }
-
 
 .center {
   text-align: center;
@@ -941,6 +999,30 @@ footer {
       }
       
     }
+    .modal.Trending,
+    .modal.Reminders {
+      height: 100%;
+      min-width: 100%;
+      #top {
+        height: 500px;
+        background-size: cover!important;
+        background-repeat: no-repeat!important;
+      }
+      
+      .row .col {
+        flex: 0 0 11%;
+      }
+
+      .content {  
+        .col-trailer {
+          align-self: center;
+          text-align: center;
+        }
+        .col-overview {
+          align-self: center;
+        }
+      }
+    }
     .trailer-modal {
       background: #000;
       .content {
@@ -1085,6 +1167,37 @@ footer {
 }
 
 @media (max-width: 500px) { 
+  .mobile-menu {
+    .title {
+      float: right;
+      margin: 27px 10px 0 0;
+      font-size: 14px;
+      font-weight: 100;
+    }
+
+    .mobile-list {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      background: #fff;
+      color: #222;
+      z-index: 3;
+      list-style: none;
+      text-align: center;
+      width: 100px;
+      padding: 5px 10px;
+    }
+
+    .mobile-list li {
+      margin-bottom: 5px;
+    }
+
+    .mobile-list li:hover,
+    .mobile-list li.active {
+      color: #444;
+      border: 1px solid #444;
+    }
+  }
   #overlay.active {
     .modal {
       height: 400px;
@@ -1093,6 +1206,20 @@ footer {
         width: 400px;
       }
     }
+  }
+
+  #overlay.active .modal.Trending #top,
+  #overlay.active .modal.Reminders #top {
+    height: auto;
+  }
+
+  #overlay.active .modal.Trending .row .col,
+  #overlay.active .modal.Reminders .row .col {
+    flex: 0 0 28%;
+  }
+
+  .row .col.related-col .item .bg .probar {
+    bottom: 90%;
   }
 
   .page-container {

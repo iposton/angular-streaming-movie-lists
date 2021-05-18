@@ -1,23 +1,24 @@
+<!-- back drop /t/p/w533_and_h300_bestv2/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg -->
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
-    <div class="modal trailer-modal" (click)="$event.stopPropagation()">
+    <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
       <div class="modal-header">
-          <span class="header-title" *ngIf="selectedMovie != null && showTrailer">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
+          <span class="header-title" *ngIf="selected != null && showTrailer">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="closeModal()">X</span>
       </div>
       <div class="content"> 
         <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
-        <div id="top" class="row" *ngIf="showTrailer">
-          <div *ngIf="trailerUrl != null" class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
+        <div id="top" class="row" *ngIf="showTrailer" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selected?.backdrop_path +')' }">
+          <div *ngIf="dialogUrl != null" class="col-trailer"><iframe [src]="dialogUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           <div class="col-overview">
-            <span class="star-rating" *ngFor="let star of selectedMovie?.rating"> <span>☆</span> </span> <span> {{selectedMovie?.rating?.length}}/10 </span> 
-            <span *ngIf="selectedMovie?.details != null && selectedMovie?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
+            <span class="star-rating" *ngFor="let star of selected?.rating"> <span>☆</span> </span> <span> {{selected?.rating?.length}}/10 </span> 
+            <span *ngIf="selected?.details != null && selected?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selected?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
             <hr>
-            <span>{{selectedMovie?.overview}} </span> <br>
+            <span>{{selected?.overview}} </span> <br>
             
-            <span class="row cast" *ngIf="selectedMovie?.credits">
-              <span class="col-cast" *ngFor="let actor of selectedMovie?.credits?.cast; let i = index"> 
+            <span class="row cast" *ngIf="selected?.credits">
+              <span class="col-cast" *ngFor="let actor of selected?.credits?.cast; let i = index"> 
                 <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
-                    <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
+                    <img *ngIf="actor?.profile_path" src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
                     {{actor?.name}} <br> ({{actor?.character}})
                 </span>
               </span>
@@ -25,29 +26,69 @@
           </div>
         </div> 
         <div class="row">
-            <span class="rec-title">{{title}}</span>
+            <span class="rec-title">{{title}}</span> 
+            <span *ngIf="title === 'Reminders'" class="reminderbar">
+              <span class="tab" [ngClass]="{'active': showTitles === 'netflix'}" (click)="filterTitles('netflix')">Netflix</span> 
+              <span class="tab" [ngClass]="{'active': showTitles === 'hbo'}" (click)="filterTitles('hbo')">HBO</span>
+              <span class="tab" [ngClass]="{'active': showTitles === 'prime'}" (click)="filterTitles('prime')">Prime</span>
+              <span class="tab" [ngClass]="{'active': showTitles === 'disney'}" (click)="filterTitles('disney')">Disney</span>
+              <span class="tab" [ngClass]="{'active': showTitles === 'hulu'}" (click)="filterTitles('hulu')">Hulu</span>
+              <span class="tab" [ngClass]="{'active': showTitles === 'apple'}" (click)="filterTitles('apple')">Apple</span>
+              <span class="tab" [ngClass]="{'active': showTitles === 'youtube'}" (click)="filterTitles('youtube')">YouTube</span>
+            </span>
+            <span *ngIf="title === 'Trending'" class="reminderbar">
+                <span class="tab" [ngClass]="{'active': content === 'movies'}" (click)="content = 'movies'; selected = selectedMovie; dialogUrl = trailerUrl; goTo()">Movies</span> 
+                <span class="tab" [ngClass]="{'active': content === 'tv'}" (click)="content = 'tv'; selected = selectedTV; dialogUrl = trailerUrlTV; goTo()">TV</span>
+            </span>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="loading">
+            <app-spinner *ngIf="loading" [size]="'lg'" [color]="'white'" [title]="loadingTitle"></app-spinner>
+        </div>
+        <div class="row" *ngIf="data != null && !loading"> 
           <div class="no-rem" *ngIf="data != null && data.length === 0">There are no reminders.</div>
-          <div class="col related-col" *ngFor="let rem of data; let i = index">
+          <div class="col related-col" *ngFor="let rem of getData(data,content); let i = index" [ngClass]="{'dn': showTitles != '' && rem[content]?.provider != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
               <span class="item">
-                  <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.newReminder?.poster_path +')' }">
+
+                  <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
                     <div class="item-row">
                         <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                            <span class="movie-index" (click)="rmv(rem?.newReminder, data)">&#8722; <span class="tooltip">Remove</span> </span>
+                            <span class="movie-index" (click)="rmv(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
                         </span>
                     </div>
                     <div class="item-row">
                     <span class="info">
-                        <p><span *ngIf="rem?.newReminder?.credit1">Cast: {{rem?.newReminder?.credit1}}, {{rem?.newReminder?.credit2}} <br></span>
-                          Genre: {{rem?.newReminder?.details?.genres[0]?.name}} <br>
-                          <span class="star-rating" *ngFor="let star of rem?.newReminder.rating"> <span>☆</span> </span> <br>
-                          <span class="trailer-link" (click)="openTrailer(rem?.newReminder)">Trailer</span> <br>
+                        <p><span *ngIf="rem[content]?.credit1">Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}} <br></span>
+                          Genre: {{rem[content]?.details?.genres[0]?.name}} <br>
+                          <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br>
+                          <span class="trailer-link" (click)="openTrailer(rem[content])">Trailer</span> <br>
                           <span>Added: {{rem.dateAdded}}</span>
                         </p> 
                     </span>
+                    <span *ngIf="rem[content]?.provider != null" class="{{rem[content]?.provider}} probar">
+                        {{rem[content]?.provider}}
+                    </span>
                     </div>
                   </span>
+                  <span *ngIf="title === 'Trending'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
+                    <div class="item-row">
+                       
+                    </div>
+                    <div class="item-row">
+                    <span class="info">
+                        <p><span *ngIf="rem?.credit1">Cast: {{rem?.credit1}}, {{rem?.credit2}} <br></span>
+                          Genre: {{rem?.details?.genres[0]?.name}} <br>
+                          <span class="star-rating" *ngFor="let star of rem?.rating"> <span>☆</span> </span> <br>
+                          <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
+                          <!-- <span>Provider: {{getProvider(rem?.provider)}}</span> -->
+                        </p> 
+                    </span>
+                    <span class="{{getProvider(rem?.provider)}} probar">
+                      {{getProvider(rem?.provider)}}
+                    </span>
+                    
+                    </div>
+                  </span>
+                 
               </span>
           </div>
         </div>          

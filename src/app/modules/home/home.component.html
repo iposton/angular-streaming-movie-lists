@@ -134,7 +134,7 @@
             <span class="row cast" *ngIf="selectedMovie?.credits">
               <span class="col-cast" *ngFor="let actor of selectedMovie?.credits?.cast; let i = index"> 
                 <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
-                    <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
+                    <img *ngIf="actor?.profile_path != null" src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
                     {{actor?.name}} <br> ({{actor?.character}})
                 </span>
               </span>
