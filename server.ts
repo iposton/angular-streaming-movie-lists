@@ -80,6 +80,11 @@ export function app() {
     res.status(200).json(data);
   })
 
+  server.post('/trending', async (req, res) => {
+    const data =  await api.data.getTrending(apiKey);
+    res.status(200).json(data);
+  })
+
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'

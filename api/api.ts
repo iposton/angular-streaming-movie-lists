@@ -80,8 +80,6 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
     pro3 = "235%7C211%7C361%7C363%7C506%7C123"; //YT,FF,TMC,TNT,TBS,FX
   }
   
-//https://api.themoviedb.org/3/movie/{movie_id}/watch/providers?api_key=
-//https://api.themoviedb.org/3/trending/movieortv/day?api_key=
   let apiRoot = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`;
   let nfUrl = `${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=en&with_ott_monetization_types=&with_ott_providers=${pro1}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
   let amzUrl = `${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro2}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;

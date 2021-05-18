@@ -104,18 +104,37 @@ export class AppComponent implements OnInit {
       this.isRemOpen = true;
       this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
       this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null;
-      this.dataService.search(this.selected.id).subscribe(r => {
-        if (r['results'][0] != null) {
-          if (r['results'][0].site === 'YouTube') {
-            this.trailerUrl = this.util.sanitize(r['results'][0])
-            this.dialogUrl = this.trailerUrl;
-          }
-          this.showTrailer = true;
-        }  
-        this.reminders = this.currentItem;
+      try {
+        if (this.selected.type === 'movies') {
+          this.dataService.search(this.selected.id).subscribe(r => {
+            if (r['results'][0] != null) {
+              if (r['results'][0].site === 'YouTube') {
+                this.trailerUrl = this.util.sanitize(r['results'][0])
+                this.dialogUrl = this.trailerUrl;
+              }
+              this.showTrailer = true;
+            }  
+            this.reminders = this.currentItem;
+            this.loading = false;
+          })
+        } else {
+          this.dataService.searchtv(this.selected.id).subscribe(r => {
+            if (r['results'][0] != null) {
+              if (r['results'][0].site === 'YouTube') {
+                this.trailerUrl = this.util.sanitize(r['results'][0])
+                this.dialogUrl = this.trailerUrl;
+              }
+              this.showTrailer = true;
+            }  
+            this.reminders = this.currentItem;
+            this.loading = false;
+          })
+        }
+        
+      } catch(e) {
         this.loading = false;
-      })
-      
+        console.log('error', e)
+      }
     }
     
     
