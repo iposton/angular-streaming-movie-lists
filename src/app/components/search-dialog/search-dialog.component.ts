@@ -1,9 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormControl } from "@angular/forms";
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
-import { DataService } from '../../services/data.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, OnInit, Output, EventEmitter, Input, Inject, PLATFORM_ID } from '@angular/core'
+import { DataService } from '../../services/data.service'
+import { UtilService } from '../../services/util.service'
+import { DomSanitizer } from '@angular/platform-browser'
+import { isPlatformBrowser } from '@angular/common'
 
 @Component({
   selector: 'app-search-dialog',
@@ -21,35 +20,44 @@ export class SearchDialogComponent implements OnInit {
   public myMovies: any;
   public submitting: boolean = false;
   public loading: boolean = false;
-  public results: Observable<any>;
-  public searchField: FormControl;
-
-  constructor(private dataService: DataService, private sanitizer: DomSanitizer) { }
+  public results: Array<any> = [];
+  public testBrowser: boolean;
+  
+  constructor(public dataService: DataService, private util: UtilService, private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) platformId: string) {
+    this.testBrowser = isPlatformBrowser(platformId);
+    console.log(this.testBrowser, 'is browser? constructor')
+   }
 
   public closeModal() {
     this.isOpen = false;
     this.selectedMovie = null; 
     this.trailerUrl = null;
     this.showTrailer = false;
-    this.searchField.setValue('');
     this.close.emit(); 
   }
 
   ngOnInit(): void {
-    this.searchField = new FormControl();
-    this.results = this.searchField.valueChanges.pipe(
-      debounceTime(400),
-      distinctUntilChanged(),
-      tap(_ => { 
-        this.loading = true; 
-      }),
-      switchMap(term => this.dataService.searchTrending(term)),
-      tap(_ => (this.loading = false))
-    );
   }
 
-  doSearch(term: string) {
-    this.dataService.searchTrending(term);
+  public doSearch(e) {
+    if (e.target.value.length > 2) {
+      this.dataService.searchTrending(e.target.value).subscribe(res => {
+        this.format(res)
+      })
+    }
+    if (e.target.value.length == 0) {
+      this.results = []
+      this.selectedMovie = null 
+      this.trailerUrl = null
+      this.showTrailer = false
+    }
+  }
+
+  public format(data) {
+    this.util.relatedInfo(data[0].results, data[0].providers, 'providers', 'movies', '', 0)
+    this.util.relatedInfo(data[0].results, data[0].credits, 'credits', 'movies', '', 0)
+    this.loading = false
+    this.results = data[0].results
   }
 
   public goTo() {
@@ -79,6 +87,28 @@ export class SearchDialogComponent implements OnInit {
           this.submitting = false;
         }
       })
+  }
+
+  public getProvider(pro) {
+    try {
+      if (pro === 'unknown') {
+        return ''
+      } else if (pro['flatrate'] != null) {
+        if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
+          return 'prime'
+        } else {
+          return pro.flatrate[0].provider_name.toLowerCase()
+        } 
+      } else if (pro['buy'] != null) {
+        return ''
+      } else if (pro['rent'] != null) {
+        return ''
+      } else {
+        return ''
+      }
+    } catch(e) {
+      console.log(e, 'error')
+    }
   }
 
 }

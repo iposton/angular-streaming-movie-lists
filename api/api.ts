@@ -24,7 +24,7 @@ let mainMovies = [
     disneyDetails: [],
     disneyCredits: []
   }
-];
+]
 let mainTv = [
   {
     nfTv: [],
@@ -37,7 +37,7 @@ let mainTv = [
     disneyTvDetails: [],
     disneyTvCredits: []
   }
-];
+]
 let searchInfo = [
   {
     results: [],
@@ -45,8 +45,14 @@ let searchInfo = [
     details: [],
     credits: []
   }
+]
+let searchQueryInfo = [
+  {
+    results: [],
+    providers: [],
+    credits: []
+  }
 ];
-let searchQueryInfo = [];
 
 let startDate = '2021-01-01';
 let pro1 = "8";
@@ -133,7 +139,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
             )
           );
           await sleep(1500);
-          resolve();
+          resolve('done');
         }
         credits();
       }
@@ -182,7 +188,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
               )
             )
           );
-          resolve();
+          resolve('done');
         }
 
         credits();
@@ -235,7 +241,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
         }
 
         await credits();
-        resolve();
+        resolve('done');
       }
     });
   });
@@ -318,10 +324,10 @@ methods.getAllTv = async (year: string, genre: string, provider: string, apiKey:
             )
           );
           await sleep(1500);
-          resolve();
+          resolve('done');
         }
         credits();
-        //resolve();
+        //resolve('done');
       }
     });
   });
@@ -370,7 +376,7 @@ methods.getAllTv = async (year: string, genre: string, provider: string, apiKey:
         }
 
         await credits();
-        resolve();
+        resolve('done');
       }
     });
   });
@@ -419,7 +425,7 @@ methods.getAllTv = async (year: string, genre: string, provider: string, apiKey:
         }
 
         await credits();
-        resolve();
+        resolve('done');
       }
     });
   });
@@ -439,7 +445,7 @@ methods.search = async (id: string, apiKey: string) => {
     request(apiUrl, {}, function(err, res, body) {
       let data = JSON.parse(body);
       searchInfo[0].results = data['results'];
-      resolve();
+      resolve('done');
     });
   });
 
@@ -491,7 +497,7 @@ methods.search = async (id: string, apiKey: string) => {
           )
         );
         await sleep(500);
-        resolve();
+        resolve('done');
       }
       credits();
     });
@@ -509,7 +515,7 @@ methods.searchtv = async (id: string, apiKey: string) => {
     request(apiUrl, {}, function(err, res, body) {
       let data = JSON.parse(body);
       searchInfo[0].results = data['results'];
-      resolve();
+      resolve('done');
     });
   });
 
@@ -562,10 +568,10 @@ methods.searchtv = async (id: string, apiKey: string) => {
           )
         );
         await sleep(500);
-        resolve();
+        resolve('done');
       }
       credits();
-      //resolve();
+      //resolve('done');
     });
   });
 
@@ -574,16 +580,62 @@ methods.searchtv = async (id: string, apiKey: string) => {
   return searchInfo[0];
 };
 
-methods.searchTrending = async (term: string, apiKey: string) => {
+methods.searchTrending = async (term: string, apiKey: string, cat: string) => {
   //let searchQuery = `https://www.themoviedb.org/search/trending?language=en-US&query=${term}`;
-  let searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
+  let type = cat === 'tv' ? 'tv' : 'movie'
+  let searchQuery = `https://api.themoviedb.org/3/search/${type}?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
   let searchPromise = new Promise((resolve, reject) => {
     request(searchQuery, {}, function(err, res, body) {
-      let data = JSON.parse(body);
-      searchQueryInfo = data['results'];
-      resolve();
-    });
-  });
+      let mvProviders = []
+      let mvCredits = []
+      if (typeof body !== 'undefined') {
+          const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+          let data = JSON.parse(body)
+          searchQueryInfo[0]['results'] = data['results']
+
+          const providers = async() => {
+            forkJoin(
+              data['results'].map( m =>
+                request(
+                  `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
+                  {},
+                  async function(err, res, body) {
+                    let data = await JSON.parse(body);
+                    mvProviders.push(data);
+                    if (mvProviders.length > 1) {
+                      return searchQueryInfo[0]['providers'] = mvProviders;
+                    }
+                  }
+                )
+              )
+            )  
+          }
+
+          const credits = async() => {
+            await providers();
+            
+            forkJoin(
+              data['results'].map( m =>
+                request(
+                  `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+                  {},
+                  async function(err, res, body) {
+                    let data = await JSON.parse(body);
+                    mvCredits.push(data);
+                    if (mvCredits.length > 1) {
+                      searchQueryInfo[0]['credits'] = mvCredits;         
+                    }
+                  }
+                )
+              )
+            );
+            await sleep(1500);
+            resolve('done');
+          }
+        credits() 
+      }
+    })
+  })
   let result = await searchPromise;
   return searchQueryInfo;
 }
@@ -618,7 +670,7 @@ methods.getTrending = async (apiKey: string) => {
                 }
               )
             )
-          );
+          )
         }
   
         const details = async() => {
@@ -658,7 +710,7 @@ methods.getTrending = async (apiKey: string) => {
             )
           );
           await sleep(1500);
-          resolve();
+          resolve('done');
         }
         credits();
       }
@@ -731,7 +783,7 @@ methods.getTrending = async (apiKey: string) => {
             )
           );
           await sleep(500);
-          resolve();
+          resolve('done');
         }
         credits();
       }

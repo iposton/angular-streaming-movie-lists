@@ -40,13 +40,14 @@ export class DialogComponent implements OnInit {
   public type               :any;
   @Output() close = new EventEmitter();
 
-
-  // public showTrailer: boolean = false;
-  //public selectedMovie: any;
-  // public trailerUrl: any;
-  public myMovies: any;
-  public hoveredItem: string = '';
-  public submitting: boolean = false;
+  public myMovies: any
+  public hoveredItem: string = ''
+  public submitting: boolean = false
+  public currentItem: string
+  public reminders: any
+  public showSnack: boolean = false
+  public showRank: boolean = true
+  public reminderAlert: string = ""
 
   constructor( private dataService: DataService,
                private util: UtilService) { }
@@ -61,8 +62,43 @@ export class DialogComponent implements OnInit {
         this.dialogUrl = null;
         this.showTrailer = false;
       }
-    })
-    
+    })  
+  }
+
+  public addReminder(item) {
+    console.log(item, '')
+    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
+    this.reminders = this.currentItem;
+
+    if (this.reminders != null) {
+      this.reminders.forEach((reminder, index) => {
+        if (reminder.id === item.id) {
+          this.showSnack = true;
+          this.reminderAlert = "This reminder already exists.";
+          setTimeout(()=> {
+            this.showSnack = false;
+            this.reminderAlert = "";
+          }, 2950); 
+        }
+      });
+    }
+  
+    if (this.reminderAlert === '' && !this.showSnack) {
+      this.reminders.push({
+        newReminder: item,
+        dateAdded: new Date().toISOString().slice(0,10),
+        id: item.id
+      });
+
+      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
+
+      this.showSnack = true;
+      this.reminderAlert = "Reminder Added";
+      setTimeout(()=> {
+        this.showSnack = false;
+        this.reminderAlert = "";
+      }, 2950);
+    } 
   }
 
   public closeModal() {
@@ -140,9 +176,9 @@ export class DialogComponent implements OnInit {
         return ''
       } else if (pro['flatrate'] != null) {
         if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
-          return 'Prime Video'
+          return 'prime'
         } else {
-          return pro.flatrate[0].provider_name;
+          return pro.flatrate[0].provider_name.toLowerCase()
         } 
       } else if (pro['buy'] != null) {
         return ''
@@ -154,6 +190,10 @@ export class DialogComponent implements OnInit {
     } catch(e) {
       console.log(e, 'error')
     }
+  }
+
+  public typeOf(value) {
+    return typeof value;
   }
 
 }

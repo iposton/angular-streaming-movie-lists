@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   constructor(
     private metaTagService: Meta,
     private titleService: Title,
-    private dataService: DataService,
+    public dataService: DataService,
     private util: UtilService
   ) { }
 

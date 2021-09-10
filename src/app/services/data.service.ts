@@ -10,7 +10,9 @@ export class DataService {
   public movies: any;
   public tv: any;
   public result: any;
+  public searchRes: any;
   public trending: any;
+  public type: string = '';
 
   constructor(private http: HttpClient) { }
 
@@ -54,11 +56,11 @@ export class DataService {
     }
   }
 
-  searchTrending(item: string): Observable<any> {
-    let searchterm = `query=${item}`;
+  searchTrending(item) {
+    let searchterm = `query=${item}&cat=${this.type}`;
     try {
-      this.result = this.http.post('/searchtrending', searchterm, {headers});
-      return this.result;
+      this.searchRes = this.http.post('/searchtrending', searchterm, {headers});
+      return this.searchRes;
     } catch (e) {
       console.log(e, 'error')
     }

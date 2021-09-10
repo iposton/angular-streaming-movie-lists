@@ -18,7 +18,7 @@ export function app() {
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
   const domino = require('domino');
   const win = domino.createWindow(indexHtml);
-  const apiKey = process.env.TOKEN;
+  const apiKey = process.env.TOKEN
   server.use(bodyParser.urlencoded({extended: true}));
   // mock
   global['window'] = win;
@@ -76,7 +76,9 @@ export function app() {
   server.post('/searchtrending', async (req, res) => {
     let searchquery = req.body.query;
     let encsearchquery = encodeURIComponent(searchquery);
-    const data =  await api.data.searchTrending(encsearchquery, apiKey);
+    let catquery = req.body.cat;
+    let enccatquery = encodeURIComponent(catquery);
+    const data =  await api.data.searchTrending(encsearchquery, apiKey, enccatquery);
     res.status(200).json(data);
   })
 

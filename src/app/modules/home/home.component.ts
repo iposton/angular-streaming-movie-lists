@@ -81,6 +81,7 @@ export class HomeComponent implements OnInit {
   }
 
   public onChange(cat: string) {
+    this.dataService.type = cat
     if (cat === 'tv') {
       if (this.netFlixTv == null)
         this.loadTv();
@@ -267,6 +268,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     if (this.testBrowser) {
       this.loadMovies();
+      this.dataService.type = this.type
       try {
         if (window.innerWidth <= 500) {
           this.isMobile = true;

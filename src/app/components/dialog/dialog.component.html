@@ -1,6 +1,7 @@
 <!-- back drop /t/p/w533_and_h300_bestv2/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg -->
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
     <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
+      <div id="snackbar" [ngClass]="{'show' : showSnack}">{{reminderAlert}} <span *ngIf="reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
       <div class="modal-header">
           <span class="header-title" *ngIf="selected != null && showTrailer">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="closeModal()">X</span>
@@ -46,7 +47,7 @@
         </div>
         <div class="row" *ngIf="data != null && !loading"> 
           <div class="no-rem" *ngIf="data != null && data.length === 0">There are no reminders.</div>
-          <div class="col related-col" *ngFor="let rem of getData(data,content); let i = index" [ngClass]="{'dn': showTitles != '' && rem[content]?.provider != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
+          <div class="col related-col" *ngFor="let rem of getData(data,content); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
               <span class="item">
 
                   <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
@@ -64,14 +65,16 @@
                           <span>Added: {{rem.dateAdded}}</span>
                         </p> 
                     </span>
-                    <span *ngIf="rem[content]?.provider != null" class="{{rem[content]?.provider}} probar">
-                        {{rem[content]?.provider}}
+                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
+                        {{typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider}}
                     </span>
                     </div>
                   </span>
                   <span *ngIf="title === 'Trending'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
                     <div class="item-row">
-                       
+                      <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                        <span class="movie-index" (click)="addReminder(rem)">&#43; <span class="tooltip">Add Reminder</span> </span>
+                      </span>
                     </div>
                     <div class="item-row">
                     <span class="info">
@@ -79,7 +82,6 @@
                           Genre: {{rem?.details?.genres[0]?.name}} <br>
                           <span class="star-rating" *ngFor="let star of rem?.rating"> <span>☆</span> </span> <br>
                           <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
-                          <!-- <span>Provider: {{getProvider(rem?.provider)}}</span> -->
                         </p> 
                     </span>
                     <span class="{{getProvider(rem?.provider)}} probar">
