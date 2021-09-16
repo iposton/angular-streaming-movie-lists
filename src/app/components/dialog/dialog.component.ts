@@ -177,6 +177,10 @@ export class DialogComponent implements OnInit {
       } else if (pro['flatrate'] != null) {
         if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
           return 'prime'
+        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
+          return 'imdb tv'
+        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
+          return 'apple tv'
         } else {
           return pro.flatrate[0].provider_name.toLowerCase()
         } 

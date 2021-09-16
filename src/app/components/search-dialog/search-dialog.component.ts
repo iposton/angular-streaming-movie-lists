@@ -21,7 +21,13 @@ export class SearchDialogComponent implements OnInit {
   public submitting: boolean = false;
   public loading: boolean = false;
   public results: Array<any> = [];
-  public testBrowser: boolean;
+  public testBrowser: boolean
+  public hoveredItem: string = ''
+  public currentItem: string
+  public reminders: any
+  public showSnack: boolean = false
+  public showRank: boolean = true
+  public reminderAlert: string = ""
   
   constructor(public dataService: DataService, private util: UtilService, private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) platformId: string) {
     this.testBrowser = isPlatformBrowser(platformId);
@@ -60,6 +66,42 @@ export class SearchDialogComponent implements OnInit {
     this.results = data[0].results
   }
 
+  public addReminder(item) {
+    console.log(item, '')
+    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
+    this.reminders = this.currentItem;
+
+    if (this.reminders != null) {
+      this.reminders.forEach((reminder, index) => {
+        if (reminder.id === item.id) {
+          this.showSnack = true;
+          this.reminderAlert = "This reminder already exists.";
+          setTimeout(()=> {
+            this.showSnack = false;
+            this.reminderAlert = "";
+          }, 2950); 
+        }
+      });
+    }
+  
+    if (this.reminderAlert === '' && !this.showSnack) {
+      this.reminders.push({
+        newReminder: item,
+        dateAdded: new Date().toISOString().slice(0,10),
+        id: item.id
+      });
+
+      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
+
+      this.showSnack = true;
+      this.reminderAlert = "Reminder Added";
+      setTimeout(()=> {
+        this.showSnack = false;
+        this.reminderAlert = "";
+      }, 2950);
+    } 
+  }
+
   public goTo() {
     document.querySelector("div[id=top]").scrollIntoView();
   }
@@ -96,6 +138,10 @@ export class SearchDialogComponent implements OnInit {
       } else if (pro['flatrate'] != null) {
         if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
           return 'prime'
+        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
+          return 'imdb tv'
+        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
+          return 'apple tv'
         } else {
           return pro.flatrate[0].provider_name.toLowerCase()
         } 

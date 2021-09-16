@@ -1,5 +1,6 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
     <div class="modal trailer-modal search" (click)="$event.stopPropagation()">
+      <div id="snackbar" [ngClass]="{'show' : showSnack}">{{reminderAlert}} <span *ngIf="reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
       <div class="modal-header">
           <span class="header-title" *ngIf="selectedMovie != null && showTrailer">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="closeModal()">X</span>
@@ -34,6 +35,11 @@
           <div [ngClass]="{'dn': item?.poster_path == null}" class="col related-col" *ngFor="let item of results">
               <span class="item">
                   <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
+                    <div class="item-row">
+                      <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                        <span class="movie-index" (click)="addReminder(item)">&#43; <span class="tooltip">Add Reminder</span> </span>
+                      </span>
+                    </div>
                    <div class="item-row">
                     <span class="info">
                         <p>

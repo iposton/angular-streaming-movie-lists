@@ -1216,12 +1216,15 @@ footer {
   }
 
   #overlay.active .modal.Trending #top,
-  #overlay.active .modal.Reminders #top {
+  #overlay.active .modal.Reminders #top,
+  #overlay.active .modal.search #top
+   {
     height: auto;
   }
 
   #overlay.active .modal.Trending .row .col,
-  #overlay.active .modal.Reminders .row .col {
+  #overlay.active .modal.Reminders .row .col,
+  #overlay.active .modal.search .row .col {
     flex: 0 0 28%;
   }
 
