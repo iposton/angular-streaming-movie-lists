@@ -89,7 +89,7 @@ header {
       background: #DE1D17;
     }
     .netflix-btn.hha {
-      background: #000;
+      background: #8440C1;
     }
     .amz-btn.hha {
       background: #1DE883;
@@ -199,6 +199,12 @@ input[type="search"] {
   float: left;
 }
 
+#topanchor {
+  h2 {
+    text-align: center;
+  }
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -227,6 +233,7 @@ input[type="search"] {
     width: 100%;
     border-bottom: 1px solid #fff;
     padding-top: 10px;
+    font-size: 18px;
   }
 
   .reminderbar {
@@ -1007,6 +1014,7 @@ footer {
     }
     .modal.Trending,
     .modal.Reminders,
+    .modal.Recommended,
     .modal.search {
       height: 100%;
       min-width: 100%;
@@ -1174,6 +1182,9 @@ footer {
 }
 
 @media (max-width: 500px) { 
+  input[type="search"] {
+    right: 15px;
+  }
   .mobile-menu {
     .title {
       float: right;

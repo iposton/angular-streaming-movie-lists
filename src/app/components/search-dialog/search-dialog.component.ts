@@ -27,7 +27,8 @@ export class SearchDialogComponent implements OnInit {
   public reminders: any
   public showSnack: boolean = false
   public showRank: boolean = true
-  public reminderAlert: string = ""
+  public reminderAlert: string = ''
+  public noTrailerMsg: string = ''
   
   constructor(public dataService: DataService, private util: UtilService, private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) platformId: string) {
     this.testBrowser = isPlatformBrowser(platformId);
@@ -60,8 +61,8 @@ export class SearchDialogComponent implements OnInit {
   }
 
   public format(data) {
-    this.util.relatedInfo(data[0].results, data[0].providers, 'providers', 'movies', '', 0)
-    this.util.relatedInfo(data[0].results, data[0].credits, 'credits', 'movies', '', 0)
+    this.util.relatedInfo(data[0].results, data[0].providers, 'providers', this.dataService.type, '', 0)
+    this.util.relatedInfo(data[0].results, data[0].credits, 'credits', this.dataService.type, '', 0)
     this.loading = false
     this.results = data[0].results
   }
@@ -103,7 +104,7 @@ export class SearchDialogComponent implements OnInit {
   }
 
   public goTo() {
-    document.querySelector("div[id=top]").scrollIntoView();
+    document.querySelector("div[id=topanchor]").scrollIntoView();
   }
 
   public rating(r) {
@@ -112,9 +113,11 @@ export class SearchDialogComponent implements OnInit {
   }
 
   public openTrailer(movie) {
-    this.submitting = true;
-    this.selectedMovie = movie;
-    this.goTo();
+    this.noTrailerMsg = ''
+    this.submitting = true
+    this.selectedMovie = movie
+    this.goTo()
+    
       this.dataService.search(movie.id).subscribe(res => {
 
         if (res['results'][0] != null) {
@@ -123,10 +126,13 @@ export class SearchDialogComponent implements OnInit {
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
           }
-          this.submitting = false;
-          this.showTrailer = true;
+          this.submitting = false
+          this.showTrailer = true
+          
         } else {
-          this.submitting = false;
+          this.noTrailerMsg = 'Trailer not available'
+          this.submitting = false
+          this.showTrailer = false
         }
       })
   }

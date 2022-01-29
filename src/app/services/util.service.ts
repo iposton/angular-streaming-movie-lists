@@ -41,9 +41,10 @@ export class UtilService {
               }
             }
               
-            item.details = e;
-            item.type = itemType; //'movies';
-            item.rating = Array(Math.round(item.vote_average)).fill(0);
+            item.details = e
+            item.type = itemType
+            item['media_type'] = itemType
+            item.rating = Array(Math.round(item.vote_average)).fill(0)
           }
 
           if (type === 'providers') {
@@ -56,6 +57,45 @@ export class UtilService {
       }
     }
     return items;
+  }
+
+  public recommend(rec, providers, recDetails, recCreds) {
+    for (let rel of rec) {
+      for (let pro of providers) {
+        if (rel != null && rel.id === pro.id) {
+          rel.provider = pro['results'].US != null ? pro['results'].US : 'unknown';
+        }
+      }
+    }
+    
+    for (let rel of rec) {
+      for (let details of recDetails) {
+        if (rel != null && rel.id === details.id) {
+          rel.details = details;
+          rel.rating = Array(Math.round(rel.vote_average)).fill(0);
+        }
+      }
+    }
+
+    for (let rel of rec) {
+      for (let credits of recCreds) {
+        //console.log(credits, 'credits')
+        if (rel.id === credits.id) {
+          rel.credits = credits;
+          if (credits.cast[0] != null) {
+            rel.credit1 = credits.cast[0]['name'];
+            rel.credit1Pic = credits.cast[0]['profile_path'];
+            rel.credit1Char = credits.cast[0]['character'];
+          }
+          if (credits.cast[1] != null) {
+            rel.credit2 = credits.cast[1]['name'];
+            rel.credit2Pic = credits.cast[1]['profile_path'];
+            rel.credit2Char = credits.cast[1]['character'];
+          }
+        }
+      }
+    }
+     return rec
   }
 
  public getFlatRate(items) {

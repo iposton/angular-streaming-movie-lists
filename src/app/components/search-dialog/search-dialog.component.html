@@ -7,6 +7,9 @@
       </div>
       <div class="content"> 
         <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
+        <div id="topanchor">
+          <div *ngIf="!showTrailer && noTrailerMsg"><h2>{{noTrailerMsg}}</h2></div>
+        </div>
         <div id="top" class="row" *ngIf="showTrailer" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selectedMovie?.backdrop_path +')' }">
           <div *ngIf="trailerUrl != null" class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           <div class="col-overview">

@@ -8,6 +8,9 @@
       </div>
       <div class="content"> 
         <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
+        <div id="topanchor">
+          <div *ngIf="!showTrailer && noTrailerMsg"><h2>{{noTrailerMsg}}</h2></div>
+        </div>
         <div id="top" class="row" *ngIf="showTrailer" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selected?.backdrop_path +')' }">
           <div *ngIf="dialogUrl != null" class="col-trailer"><iframe [src]="dialogUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           <div class="col-overview">
@@ -47,7 +50,7 @@
         </div>
         <div class="row" *ngIf="data != null && !loading"> 
           <div class="no-rem" *ngIf="data != null && data.length === 0">There are no reminders.</div>
-          <div class="col related-col" *ngFor="let rem of getData(data,content); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
+          <div class="col related-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
               <span class="item">
 
                   <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
@@ -70,7 +73,7 @@
                     </span>
                     </div>
                   </span>
-                  <span *ngIf="title === 'Trending'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
+                  <span *ngIf="title === 'Trending' || title === 'Recommended'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
                     <div class="item-row">
                       <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                         <span class="movie-index" (click)="addReminder(rem)">&#43; <span class="tooltip">Add Reminder</span> </span>

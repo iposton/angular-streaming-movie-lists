@@ -62,7 +62,9 @@ export function app() {
   server.post('/search', async (req, res) => {
     let searchquery = req.body.query;
     let encsearchquery = encodeURIComponent(searchquery);
-    const data =  await api.data.search(encsearchquery, apiKey);
+    let catquery = req.body.cat;
+    let enccatquery = encodeURIComponent(catquery);
+    const data =  await api.data.search(encsearchquery, apiKey, enccatquery);
     res.status(200).json(data);
   })
 

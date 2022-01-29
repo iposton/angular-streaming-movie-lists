@@ -37,7 +37,7 @@ export class DataService {
   }
 
   search(item) {
-    let searchterm = `query=${item}`;
+    let searchterm = `query=${item}&cat=${this.type}`;
     try {
       this.result = this.http.post('/search', searchterm, {headers});
       return this.result;

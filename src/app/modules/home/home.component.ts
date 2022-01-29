@@ -51,13 +51,16 @@ export class HomeComponent implements OnInit {
   public isOpen: boolean = false;
   public trailerKey: any;
   public trailerUrl: any;
+  public dialogUrl: any;
   public selectedMovie: any;
-  public year: string = '21';
+  public selected: any;
+  public year: string = '22';
   public provider: string = 'npy';
   public genre: string = "";
   public related: Array<any>;
   public relatedDetails: Array<any>;
   public relatedCredits: Array<any>;
+  public providers: Array<any>;
   public gTop: boolean = true;
   public gBottom: boolean = false;
   public showSnack: boolean = false;
@@ -68,6 +71,8 @@ export class HomeComponent implements OnInit {
   public reminders: any;
   public reminderAlert: string = "";
   public testBrowser: boolean;
+  public showTrailer: boolean;
+  public loading: boolean;
 
   constructor(
     private dataService: DataService,
@@ -77,6 +82,7 @@ export class HomeComponent implements OnInit {
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.testBrowser = isPlatformBrowser(platformId);
+    this.showTrailer = false;
     //this.loadMovies();
   }
 
@@ -340,10 +346,11 @@ export class HomeComponent implements OnInit {
   }
 
   public openTrailer(movie, cat) {
-    this.isOpen = false;
-    this.selectedMovie = movie;
-    this.goTo();
-    if (cat === 'movies') {
+    this.dataService.type = this.type === 'tv' ? 'tv' : 'movie'
+    this.loading = true
+    this.selectedMovie = movie
+    this.isOpen = true
+    //this.goTo();
       this.dataService.search(movie.id).subscribe(res => {
         console.log(res, 'trailer res')
         if (res['results'][0] != null) {
@@ -351,91 +358,27 @@ export class HomeComponent implements OnInit {
             this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
               `https://www.youtube.com/embed/${res['results'][0].key}`
             );
+            this.dialogUrl = this.trailerUrl;
+            console.log(this.trailerUrl, 'movie trailer');
+            
           }
          
         if (res['related'][0] != null) {
             // let element = document.getElementById('top');    
             // element.scrollIntoView(true);
-            this.related = res['related'];
-            this.relatedDetails = res['details'];
-            this.relatedCredits = res['credits'];
+            this.providers = res['providers']
+            this.relatedDetails = res['details']
+            this.relatedCredits = res['credits']
+            this.related = res['related']
+            this.selected = this.selectedMovie
+            this.loading = false
+            this.showTrailer = true
+
+            this.util.recommend(this.related, this.providers, this.relatedDetails, this.relatedCredits)
             
-            for (let rel of this.related) {
-              for (let details of this.relatedDetails) {
-                if (rel != null && rel.id === details.id) {
-                  rel.details = details;
-                  rel.rating = Array(Math.round(rel.vote_average)).fill(0);
-                }
-              }
-            }
-
-            for (let rel of this.related) {
-              for (let credits of this.relatedCredits) {
-                //console.log(credits, 'credits')
-                if (rel.id === credits.id) {
-                  rel.credits = credits;
-                  if (credits.cast[0] != null) {
-                    rel.credit1 = credits.cast[0]['name'];
-                    rel.credit1Pic = credits.cast[0]['profile_path'];
-                    rel.credit1Char = credits.cast[0]['character'];
-                  }
-                  if (credits.cast[1] != null) {
-                    rel.credit2 = credits.cast[1]['name'];
-                    rel.credit2Pic = credits.cast[1]['profile_path'];
-                    rel.credit2Char = credits.cast[1]['character'];
-                  }
-                }
-              }
-            }
-          }
-          this.isOpen = true;
-        }
-      });
-    } else {
-      this.dataService.searchtv(movie.id).subscribe(res => {
-
-        if (res['results'][0] != null) {
-          if (res['results'][0].site === 'YouTube') {
-            this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-              `https://www.youtube.com/embed/${res['results'][0].key}`
-            );
-           
-            this.related = res['related'];
-            this.relatedDetails = res['details'];
-            this.relatedCredits = res['credits'];
-            
-            for (let rel of this.related) {
-              for (let details of this.relatedDetails) {
-                if (rel.id === details.id) {
-                  rel.details = details;
-                  rel.rating = Array(Math.round(rel.vote_average)).fill(0);
-                }
-              }
-            }
-
-            for (let rel of this.related) {
-              for (let credits of this.relatedCredits) {
-                //console.log(credits, 'credits')
-                if (rel.id === credits.id) {
-                  rel.credits = credits;
-                  if (credits.cast[0] != null) {
-                    rel.credit1 = credits.cast[0]['name'];
-                    rel.credit1Pic = credits.cast[0]['profile_path'];
-                    rel.credit1Char = credits.cast[0]['character'];
-                  }
-                  if (credits.cast[1] != null) {
-                    rel.credit2 = credits.cast[1]['name'];
-                    rel.credit2Pic = credits.cast[1]['profile_path'];
-                    rel.credit2Char = credits.cast[1]['character'];
-                  }
-                }
-              }
-            }
-            this.isOpen = true;
           }
         }
       });
-    }
     
   }
 }

@@ -47,7 +47,8 @@ export class DialogComponent implements OnInit {
   public reminders: any
   public showSnack: boolean = false
   public showRank: boolean = true
-  public reminderAlert: string = ""
+  public reminderAlert: string = ''
+  public noTrailerMsg: string = ''
 
   constructor( private dataService: DataService,
                private util: UtilService) { }
@@ -115,37 +116,37 @@ export class DialogComponent implements OnInit {
   }
 
   public goTo() {
-    document.querySelector("div[id=top]").scrollIntoView();
+    document.querySelector("div[id=topanchor]").scrollIntoView();
   }
 
   public openTrailer(movie) {
-    //console.log('open', movie);
+    this.noTrailerMsg = ''
+    this.dataService.type = (movie.media_type || movie.type)  === 'tv' ? 'tv' : 'movie'
+    console.log('open', movie);
     this.submitting = true;
     this.selected = movie;
-    this.goTo();
-    if (movie.type === 'movies') {
-      this.dataService.search(movie.id).subscribe(res => {
+    this.goTo()
 
-        if (res['results'][0] != null) {
-          if (res['results'][0].site === 'YouTube') {
-            this.dialogUrl = this.util.sanitize(res['results'][0])
-          }
-          this.submitting = false;
-          this.showTrailer = true;
-        }
-      })
-    } else {
-      this.dataService.searchtv(movie.id).subscribe(res => {
+    this.dataService.search(movie.id).subscribe(res => {
+      if (this.title === 'Recommended') 
+        this.data = this.util.recommend(res['related'], res['providers'], res['details'], res['credits'])
 
-        if (res['results'][0] != null) {
-          if (res['results'][0].site === 'YouTube') {
-            this.dialogUrl = this.util.sanitize(res['results'][0])
-          }
-          this.submitting = false;
-          this.showTrailer = true;
+        //console.log(res['results'], 'trailer results')
+
+      if (res['results'][0] != null) {
+        if (res['results'][0].site === 'YouTube') {
+          this.dialogUrl = this.util.sanitize(res['results'][0])
         }
-      })
-    }
+        
+        this.submitting = false
+        this.showTrailer = true
+      } else {
+        this.submitting = false
+        this.noTrailerMsg = 'Trailer not available'
+        this.showTrailer = false
+      }
+
+    })
   }
 
   ngOnInit(): void {
@@ -159,12 +160,12 @@ export class DialogComponent implements OnInit {
     }
   }
 
-  public getData(data, c: string) {
-    if (c === 'newReminder') {
+  public getData(data, c: string, title) {
+    if (c === 'newReminder' || title === 'Recommended') {
       return data;
     } else {
       if (data != null) {
-        return data[c]
+      return data[c]
       }
         
     }

@@ -43,7 +43,8 @@ let searchInfo = [
     results: [],
     related: [],
     details: [],
-    credits: []
+    credits: [],
+    providers: []
   }
 ]
 let searchQueryInfo = [
@@ -69,8 +70,8 @@ methods.getDate = async () => {
 
 methods.getAllMovies = async (year: string, genre: string, provider: string, apiKey: string) => {
   let dailyDate = methods.getDate();
-  startDate = year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
-  dailyDate = year === '21' ? await methods.getDate() : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
+  startDate = year === '22' ?  '2022-01-01' : year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
+  dailyDate = year === '22' ? await methods.getDate() : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
  
   if (provider === 'hha') {
     pro1 = "384";
@@ -438,9 +439,10 @@ methods.getAllTv = async (year: string, genre: string, provider: string, apiKey:
 
 
 
-methods.search = async (id: string, apiKey: string) => {
-  let apiUrl = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}&language=en-US`;
-  let recUrl = `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${apiKey}&language=en-US`;
+methods.search = async (id: string, apiKey: string, cat: string) => {
+  let type = cat === 'tv' ? 'tv' : 'movie'
+  let apiUrl = `https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${apiKey}&language=en-US`;
+  let recUrl = `https://api.themoviedb.org/3/${type}/${id}/recommendations?api_key=${apiKey}&language=en-US`;
   let searchPromise = new Promise((resolve, reject) => {
     request(apiUrl, {}, function(err, res, body) {
       let data = JSON.parse(body);
@@ -450,8 +452,9 @@ methods.search = async (id: string, apiKey: string) => {
   });
 
   let relatedPromise = new Promise((resolve, reject) => {
-    let relatedDetails = [];
-    let relatedCredits = [];
+    let relatedDetails = []
+    let relatedCredits = []
+    let mvProviders = []
     request(recUrl, {}, function(err, res, body) {
       const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
       let data = JSON.parse(body);
@@ -459,11 +462,31 @@ methods.search = async (id: string, apiKey: string) => {
       if (results.length > 5)
         results.length = 5;
       searchInfo[0].related = results;
+
+      const providers = async() => {
+        forkJoin(
+          data['results'].map( m =>
+            request(
+              `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                mvProviders.push(data);
+                if (mvProviders.length > 1) {
+                  return searchInfo[0]['providers'] = mvProviders;
+                }
+              }
+            )
+          )
+        )  
+      }
+
       const details = async () => {
+        await providers();
         forkJoin(
           results.map( m =>
             request(
-              `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+              `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
               {},
               async function(err, res, body) {
                 let data = await JSON.parse(body);
@@ -483,7 +506,7 @@ methods.search = async (id: string, apiKey: string) => {
         forkJoin(
           results.map( m =>
             request(
-              `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+              `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
               {},
               async function(err, res, body) {
                 let data = await JSON.parse(body);
