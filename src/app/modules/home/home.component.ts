@@ -141,37 +141,72 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  public addReminder(item) {
-    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
-    this.reminders = this.currentItem;
+  public addItem(item, type) {
+    let name = ''
+    if (type === "rem") {
+      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [];
+      this.reminders = this.currentItem
+      name = "reminder"
+    } else {
+      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : [];
+      this.reminders = this.currentItem
+      name = "favorite"
+    }
+    
+  
 
     if (this.reminders != null) {
+      console.log(this.reminders, 'reminders')
+      if (type === "fav" && this.reminders.length === 5) {
+        this.showSnack = true
+        this.reminderAlert = "Max of 5 Favorites."
+        setTimeout(()=> {
+          this.showSnack = false
+          this.reminderAlert = ""
+        }, 2950)
+        return
+      }
+
       this.reminders.forEach((reminder, index) => {
         if (reminder.id === item.id) {
-          this.showSnack = true;
-          this.reminderAlert = "This reminder already exists.";
+          this.showSnack = true
+          this.reminderAlert = `This ${name} already exists.`;
           setTimeout(()=> {
-            this.showSnack = false;
-            this.reminderAlert = "";
-          }, 2950); 
+            this.showSnack = false
+            this.reminderAlert = ""
+          }, 2950)
+          return
         }
+           
       });
     }
   
-    if (this.reminderAlert === '' && !this.showSnack) {
-      this.reminders.push({
-        newReminder: item,
-        dateAdded: new Date().toISOString().slice(0,10),
-        id: item.id
-      });
+    if (this.reminderAlert === "" && !this.showSnack) {
 
-      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
+      if (type === "rem") {
+        this.reminders.push({
+          newReminder: item,
+          dateAdded: new Date().toISOString().slice(0,10),
+          id: item.id
+        })
+
+        localStorage.setItem('currentItem', JSON.stringify(this.reminders))
+      } else {
+        this.reminders.push({
+          favorite: item,
+          dateAdded: new Date().toISOString().slice(0,10),
+          id: item.id
+        })
+        //this.reminders.length = 5
+        localStorage.setItem('favorites', JSON.stringify(this.reminders))
+      }
+        
 
       this.showSnack = true;
-      this.reminderAlert = "Reminder Added";
+      this.reminderAlert = type === 'fav' ? "Favorite Added" : "Reminder Added"
       setTimeout(()=> {
-        this.showSnack = false;
-        this.reminderAlert = "";
+        this.showSnack = false
+        this.reminderAlert = ""
       }, 2950);
 
     } 
@@ -376,6 +411,10 @@ export class HomeComponent implements OnInit {
 
             this.util.recommend(this.related, this.providers, this.relatedDetails, this.relatedCredits)
             
+          } else if (res['related'][0] == null) {
+            this.selected = this.selectedMovie
+            this.loading = false
+            this.showTrailer = true
           }
         }
       });

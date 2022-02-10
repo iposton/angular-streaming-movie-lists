@@ -49,9 +49,13 @@ export class DialogComponent implements OnInit {
   public showRank: boolean = true
   public reminderAlert: string = ''
   public noTrailerMsg: string = ''
+  public currentDate: any;
 
   constructor( private dataService: DataService,
-               private util: UtilService) { }
+               public util: UtilService) {
+    let today = new Date()
+    this.currentDate = today.toLocaleDateString("en-US")
+  }
 
   public rmv(item, data) {
     //this.remove.emit(item); 
@@ -62,6 +66,16 @@ export class DialogComponent implements OnInit {
         this.selected = null; 
         this.dialogUrl = null;
         this.showTrailer = false;
+      }
+    })  
+  }
+
+  public rmvFav(item, data) {
+    data.forEach((reminder, index) => {
+      if(data[index].id === item.id) {
+        data.splice(index, 1);
+        //data.length = 5
+        localStorage.setItem('favorites', JSON.stringify(data));
       }
     })  
   }
@@ -160,45 +174,18 @@ export class DialogComponent implements OnInit {
     }
   }
 
-  public getData(data, c: string, title) {
-    if (c === 'newReminder' || title === 'Recommended') {
-      return data;
+  public getData(data, c: string, title: string) {
+    // console.log(data, 'data', c, 'content')
+    if (c === 'newReminder' || title === 'Recommended' || c === 'favorite') {
+      return data
     } else {
       if (data != null) {
       return data[c]
-      }
-        
-    }
-  }
-
-  public getProvider(pro) {
-    try {
-      if (pro === 'unknown') {
-        return ''
-      } else if (pro['flatrate'] != null) {
-        if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
-          return 'prime'
-        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
-          return 'imdb tv'
-        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
-          return 'apple tv'
-        } else {
-          return pro.flatrate[0].provider_name.toLowerCase()
-        } 
-      } else if (pro['buy'] != null) {
-        return ''
-      } else if (pro['rent'] != null) {
-        return ''
-      } else {
-        return ''
-      }
-    } catch(e) {
-      console.log(e, 'error')
+      }    
     }
   }
 
   public typeOf(value) {
     return typeof value;
   }
-
 }

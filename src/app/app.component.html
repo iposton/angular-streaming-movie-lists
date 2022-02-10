@@ -36,10 +36,14 @@
       <div class="right reminder-block">
         <span class="reminders-btn" (click)="open('trending')">Trending</span> 
       </div>
+      <div class="center reminder-block">
+        <span class="reminders-btn" (click)="open('favorites')">Favorites</span>
+      </div>
     </span>
     <span *ngIf="mobile" class="mobile-menu"> 
         <span (click)="menu = !menu" class="title">{{!menu ? 'Menu' : 'X'}}</span>
         <ul *ngIf="menu" [ngClass]="{'mobile-list' : menu}">
+          <li (click)="open('favorites')">Favorites</li>
           <li (click)="open('trending')">Trending</li>
           <li (click)="open('')">Reminders</li>
           <li (click)="openSearch()">Search</li>

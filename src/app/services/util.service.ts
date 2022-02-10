@@ -108,6 +108,38 @@ export class UtilService {
     }
  }
 
+ public getProvider(pro) {
+  try {
+    if (pro === 'unknown') {
+      return ''
+    } else if (pro['flatrate'] != null) {
+      if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
+        return 'prime'
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
+        return 'imdb tv'
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
+        return 'apple tv'
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'STARZ PLAY AMAZON CHANNEL') {
+        return 'starz'  
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'SPECTRUM ON DEMAND') {
+        return 'spectrum'
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'PEACOCK PREMIUM') {
+        return 'peacock'
+      } else {
+        return pro.flatrate[0].provider_name.toLowerCase()
+      } 
+    } else if (pro['buy'] != null) {
+      return ''
+    } else if (pro['rent'] != null) {
+      return ''
+    } else {
+      return ''
+    }
+  } catch(e) {
+    console.log(e, 'error')
+  }
+}
+
  public sanitize(item) {
    let key = null;
    key = item.key

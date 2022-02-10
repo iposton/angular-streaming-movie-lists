@@ -70,7 +70,11 @@
                <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')', 'max-width': movies.length === 3 ? '70%' : movies.length === 2 ? '50%' : movies.length === 1 ? '30%' : '100%', 'margin': movies.length &lt; 4 ? '0 auto' : '0' }">
                 <div class="item-row">
                   <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'; hoverRank = movie?.rank" (mouseout)="hoveredItem = ''; hoverRank = 99">
-                      <span class="movie-index" (click)="addReminder(movie)">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }} <span class="tooltip">Add Reminder</span> </span>
+                      <span class="movie-index" (click)="addItem(movie, 'rem')">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }} <span class="tooltip">Add Reminder</span> </span>
+                  </span>
+                  <span class="fav-star">
+                    <span class="star" (click)="addItem(movie, 'fav')">☆ <span class="tooltip">Favorite</span></span>
+                    
                   </span>
                 </div>
                 <div class="row">
@@ -98,7 +102,11 @@
                <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
                 <div class="item-row">
                     <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'; hoverRank = movie?.rank" (mouseout)="hoveredItem = ''; hoverRank = 99">
-                        <span class="movie-index" (click)="addReminder(movie)" title="Add Reminder">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }}</span>
+                        <span class="movie-index" (click)="addItem(movie, 'rem')" title="Add Reminder">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }}</span>
+                    </span>
+                    <span class="fav-star">
+                      <span class="star" (click)="addItem(movie, 'fav')">☆ <span class="tooltip">Favorite</span></span>
+                      
                     </span>
                   </div>
                  <span class="info">

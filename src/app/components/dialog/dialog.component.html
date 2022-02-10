@@ -30,7 +30,7 @@
           </div>
         </div> 
         <div class="row">
-            <span class="rec-title">{{title}}</span> 
+            <span class="rec-title">{{(title === 'Favorites' ? 'my picks '+ currentDate : title)}}</span> 
             <span *ngIf="title === 'Reminders'" class="reminderbar">
               <span class="tab" [ngClass]="{'active': showTitles === 'netflix'}" (click)="filterTitles('netflix')">Netflix</span> 
               <span class="tab" [ngClass]="{'active': showTitles === 'hbo'}" (click)="filterTitles('hbo')">HBO</span>
@@ -50,9 +50,9 @@
         </div>
         <div class="row" *ngIf="data != null && !loading"> 
           <div class="no-rem" *ngIf="data != null && data.length === 0">There are no reminders.</div>
-          <div class="col related-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && getProvider(rem?.provider) == ''}">
+          <div class="col related-col favorite-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && util.getProvider(rem?.provider) == ''}">
               <span class="item">
-
+           
                   <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
                     <div class="item-row">
                         <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
@@ -68,8 +68,8 @@
                           <span>Added: {{rem.dateAdded}}</span>
                         </p> 
                     </span>
-                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
-                        {{typeOf(rem[content]?.provider) == 'object' ? getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
+                        {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
                     </span>
                     </div>
                   </span>
@@ -87,13 +87,32 @@
                           <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
                         </p> 
                     </span>
-                    <span class="{{getProvider(rem?.provider)}} probar">
-                      {{getProvider(rem?.provider)}}
+                    <span class="{{util.getProvider(rem?.provider)}} probar">
+                      {{util.getProvider(rem?.provider)}}
                     </span>
                     
                     </div>
                   </span>
-                 
+                  <span *ngIf="title === 'Favorites'" class="fav-genre">{{rem[content]?.details?.genres[0]?.name}}</span>
+                  <span *ngIf="title === 'Favorites'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
+                    <div class="item-row">
+                        <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                            <span class="movie-index" (click)="rmvFav(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
+                        </span>
+                    </div>
+                    <div class="item-row">
+                    <span class="info fav-info">
+                        <p><span *ngIf="rem[content]?.credit1">Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}}</span>
+                          
+                          <!-- <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br> -->
+                          
+                        </p> 
+                    </span>
+                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
+                        {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                    </span>
+                    </div>
+                  </span>  
               </span>
           </div>
         </div>          

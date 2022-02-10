@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
       this.loadingTitle = 'Trending Movies';
       //this.reminders = this.dataService.getTrending();
       this.content = 'movies';
-      this.dialogTitle = "Trending";
+      this.dialogTitle = 'Trending';
       this.isRemOpen = true;
       this.dataService.getTrending().subscribe(res => { 
         this.util.relatedInfo(res[0].movies, res[0].mvCredits, 'credits', 'movies', '', 0)
@@ -95,6 +95,23 @@ export class AppComponent implements OnInit {
         
       });
       
+    } else if (type === 'favorites') {
+
+      this.loadingTitle = 'Favorites'
+      this.selected = null
+      this.showTrailer = false
+      this.content = 'favorite'
+      this.dialogTitle = 'Favorites'
+      this.isRemOpen = true
+      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : []
+      //this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null;
+      //this.dataService.type = this.selected.media_type
+      this.reminders = this.currentItem
+     
+        setTimeout(() => {
+          this.loading = false
+        }, 1000) 
+
     } else {
       this.loadingTitle = 'Reminders'
       this.selected = null
@@ -102,8 +119,8 @@ export class AppComponent implements OnInit {
       this.content = 'newReminder'
       this.dialogTitle = 'Reminders'
       this.isRemOpen = true
-      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
-      this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null;
+      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : []
+      this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null
       this.dataService.type = this.selected.media_type
       try {
         console.log(this.selected, 'getting first item in reminders')
@@ -116,7 +133,7 @@ export class AppComponent implements OnInit {
               }
               this.showTrailer = true
             }  
-            this.reminders = this.currentItem;
+            this.reminders = this.currentItem
             this.loading = false
           })
         

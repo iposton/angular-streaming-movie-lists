@@ -30,7 +30,9 @@ export class SearchDialogComponent implements OnInit {
   public reminderAlert: string = ''
   public noTrailerMsg: string = ''
   
-  constructor(public dataService: DataService, private util: UtilService, private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) platformId: string) {
+  constructor(public dataService: DataService, 
+              public util: UtilService, 
+              private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) platformId: string) {
     this.testBrowser = isPlatformBrowser(platformId);
     console.log(this.testBrowser, 'is browser? constructor')
    }
@@ -136,31 +138,4 @@ export class SearchDialogComponent implements OnInit {
         }
       })
   }
-
-  public getProvider(pro) {
-    try {
-      if (pro === 'unknown') {
-        return ''
-      } else if (pro['flatrate'] != null) {
-        if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
-          return 'prime'
-        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
-          return 'imdb tv'
-        } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
-          return 'apple tv'
-        } else {
-          return pro.flatrate[0].provider_name.toLowerCase()
-        } 
-      } else if (pro['buy'] != null) {
-        return ''
-      } else if (pro['rent'] != null) {
-        return ''
-      } else {
-        return ''
-      }
-    } catch(e) {
-      console.log(e, 'error')
-    }
-  }
-
 }
