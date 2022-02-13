@@ -1,7 +1,7 @@
 <!-- back drop /t/p/w533_and_h300_bestv2/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg -->
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
     <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
-      <div id="snackbar" [ngClass]="{'show' : showSnack}">{{reminderAlert}} <span *ngIf="reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
+      <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
       <div class="modal-header">
           <span class="header-title" *ngIf="selected != null && showTrailer">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="closeModal()">X</span>
@@ -49,7 +49,7 @@
             <app-spinner *ngIf="loading" [size]="'lg'" [color]="'white'" [title]="loadingTitle"></app-spinner>
         </div>
         <div class="row" *ngIf="data != null && !loading"> 
-          <div class="no-rem" *ngIf="data != null && data.length === 0">There are no reminders.</div>
+          <div class="no-rem" *ngIf="data != null && data.length === 0">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
           <div class="col related-col favorite-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && util.getProvider(rem?.provider) == ''}">
               <span class="item">
            
@@ -62,7 +62,8 @@
                     <div class="item-row">
                     <span class="info">
                         <p><span *ngIf="rem[content]?.credit1">Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}} <br></span>
-                          Genre: {{rem[content]?.details?.genres[0]?.name}} <br>
+                          Genre: {{util.genres[rem[content]?.genre_ids[0]]}} <br>
+                          <!-- {{rem[content]?.details?.genres[0]?.name}} -->
                           <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br>
                           <span class="trailer-link" (click)="openTrailer(rem[content])">Trailer</span> <br>
                           <span>Added: {{rem.dateAdded}}</span>
@@ -76,24 +77,27 @@
                   <span *ngIf="title === 'Trending' || title === 'Recommended'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
                     <div class="item-row">
                       <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                        <span class="movie-index" (click)="addReminder(rem)">&#43; <span class="tooltip">Add Reminder</span> </span>
+                        <span class="movie-index" (click)="util.addItem(rem, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
+                      </span>
+                      <span class="fav-star">
+                        <span class="star" (click)="util.addItem(rem, 'fav')">☆ <span class="tooltip">Favorite</span></span>   
                       </span>
                     </div>
                     <div class="item-row">
                     <span class="info">
                         <p><span *ngIf="rem?.credit1">Cast: {{rem?.credit1}}, {{rem?.credit2}} <br></span>
-                          Genre: {{rem?.details?.genres[0]?.name}} <br>
+                          Genre: {{util.genres[rem?.genre_ids[0]]}} <br>
+                          <!-- {{rem?.details?.genres[0]?.name}} -->
                           <span class="star-rating" *ngFor="let star of rem?.rating"> <span>☆</span> </span> <br>
                           <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
                         </p> 
                     </span>
                     <span class="{{util.getProvider(rem?.provider)}} probar">
                       {{util.getProvider(rem?.provider)}}
-                    </span>
-                    
+                    </span>  
                     </div>
                   </span>
-                  <span *ngIf="title === 'Favorites'" class="fav-genre">{{rem[content]?.details?.genres[0]?.name}}</span>
+                  <span *ngIf="title === 'Favorites'" class="fav-genre">{{(rem[content]?.details?.genres[0]?.name ? rem[content]?.details?.genres[0]?.name : util.genres[rem[content]?.genre_ids[0]])}}</span>
                   <span *ngIf="title === 'Favorites'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
                     <div class="item-row">
                         <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
@@ -112,7 +116,12 @@
                         {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
                     </span>
                     </div>
-                  </span>  
+                  </span> 
+                  <span *ngIf="title === 'Favorites'" class="fav-genre dir-info">
+                    {{rem[content]?.title}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
+                    <span *ngIf="rem[content]?.director != null">Director: {{rem[content]?.director}}</span>
+
+                  </span>
               </span>
           </div>
         </div>          

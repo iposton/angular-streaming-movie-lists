@@ -63,13 +63,9 @@ export class HomeComponent implements OnInit {
   public providers: Array<any>;
   public gTop: boolean = true;
   public gBottom: boolean = false;
-  public showSnack: boolean = false;
   public showRank: boolean = true;
   public hoveredItem: string = '';
   public hoverRank: number = 99;
-  public currentItem: string;
-  public reminders: any;
-  public reminderAlert: string = "";
   public testBrowser: boolean;
   public showTrailer: boolean;
   public loading: boolean;
@@ -78,7 +74,7 @@ export class HomeComponent implements OnInit {
     private dataService: DataService,
     private sanitizer: DomSanitizer,
     private gaService: GoogleAnalyticsService,
-    private util: UtilService,
+    public util: UtilService,
     @Inject(PLATFORM_ID) platformId: string
   ) {
     this.testBrowser = isPlatformBrowser(platformId);
@@ -139,77 +135,6 @@ export class HomeComponent implements OnInit {
       this.genre = '';
       this.loadTv();
     }
-  }
-
-  public addItem(item, type) {
-    let name = ''
-    if (type === "rem") {
-      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [];
-      this.reminders = this.currentItem
-      name = "reminder"
-    } else {
-      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : [];
-      this.reminders = this.currentItem
-      name = "favorite"
-    }
-    
-  
-
-    if (this.reminders != null) {
-      console.log(this.reminders, 'reminders')
-      if (type === "fav" && this.reminders.length === 5) {
-        this.showSnack = true
-        this.reminderAlert = "Max of 5 Favorites."
-        setTimeout(()=> {
-          this.showSnack = false
-          this.reminderAlert = ""
-        }, 2950)
-        return
-      }
-
-      this.reminders.forEach((reminder, index) => {
-        if (reminder.id === item.id) {
-          this.showSnack = true
-          this.reminderAlert = `This ${name} already exists.`;
-          setTimeout(()=> {
-            this.showSnack = false
-            this.reminderAlert = ""
-          }, 2950)
-          return
-        }
-           
-      });
-    }
-  
-    if (this.reminderAlert === "" && !this.showSnack) {
-
-      if (type === "rem") {
-        this.reminders.push({
-          newReminder: item,
-          dateAdded: new Date().toISOString().slice(0,10),
-          id: item.id
-        })
-
-        localStorage.setItem('currentItem', JSON.stringify(this.reminders))
-      } else {
-        this.reminders.push({
-          favorite: item,
-          dateAdded: new Date().toISOString().slice(0,10),
-          id: item.id
-        })
-        //this.reminders.length = 5
-        localStorage.setItem('favorites', JSON.stringify(this.reminders))
-      }
-        
-
-      this.showSnack = true;
-      this.reminderAlert = type === 'fav' ? "Favorite Added" : "Reminder Added"
-      setTimeout(()=> {
-        this.showSnack = false
-        this.reminderAlert = ""
-      }, 2950);
-
-    } 
   }
 
   public loadMovies() {

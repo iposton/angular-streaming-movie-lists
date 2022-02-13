@@ -1,6 +1,6 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
     <div class="modal trailer-modal search" (click)="$event.stopPropagation()">
-      <div id="snackbar" [ngClass]="{'show' : showSnack}">{{reminderAlert}} <span *ngIf="reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
+      <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
       <div class="modal-header">
           <span class="header-title" *ngIf="selectedMovie != null && showTrailer">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
           <span class="right" (click)="closeModal()">X</span>
@@ -40,14 +40,17 @@
                   <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
                     <div class="item-row">
                       <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                        <span class="movie-index" (click)="addReminder(item)">&#43; <span class="tooltip">Add Reminder</span> </span>
+                        <span class="movie-index" (click)="util.addItem(item, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
+                      </span>
+                      <span class="fav-star">
+                        <span class="star" (click)="util.addItem(item, 'fav')">☆ <span class="tooltip">Favorite</span></span>   
                       </span>
                     </div>
                    <div class="item-row">
                     <span class="info">
                         <p>
                           <span *ngIf="item?.credit1">Cast: {{item?.credit1}}, {{item?.credit2}} <br></span>
-                          <!-- Genre: {{item?.details?.genres[0]?.name}} <br> -->
+                          Genre: {{util.genres[item.genre_ids[0]]}} <br>
                           <span class="star-rating" *ngFor="let star of rating(item)"> <span>☆</span> </span> <br>
                           <span class="trailer-link" (click)="openTrailer(item)">Trailer</span>
                         </p> 

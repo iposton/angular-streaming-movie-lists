@@ -43,11 +43,7 @@ export class DialogComponent implements OnInit {
   public myMovies: any
   public hoveredItem: string = ''
   public submitting: boolean = false
-  public currentItem: string
-  public reminders: any
-  public showSnack: boolean = false
   public showRank: boolean = true
-  public reminderAlert: string = ''
   public noTrailerMsg: string = ''
   public currentDate: any;
 
@@ -78,42 +74,6 @@ export class DialogComponent implements OnInit {
         localStorage.setItem('favorites', JSON.stringify(data));
       }
     })  
-  }
-
-  public addReminder(item) {
-    console.log(item, '')
-    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
-    this.reminders = this.currentItem;
-
-    if (this.reminders != null) {
-      this.reminders.forEach((reminder, index) => {
-        if (reminder.id === item.id) {
-          this.showSnack = true;
-          this.reminderAlert = "This reminder already exists.";
-          setTimeout(()=> {
-            this.showSnack = false;
-            this.reminderAlert = "";
-          }, 2950); 
-        }
-      });
-    }
-  
-    if (this.reminderAlert === '' && !this.showSnack) {
-      this.reminders.push({
-        newReminder: item,
-        dateAdded: new Date().toISOString().slice(0,10),
-        id: item.id
-      });
-
-      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
-
-      this.showSnack = true;
-      this.reminderAlert = "Reminder Added";
-      setTimeout(()=> {
-        this.showSnack = false;
-        this.reminderAlert = "";
-      }, 2950);
-    } 
   }
 
   public closeModal() {

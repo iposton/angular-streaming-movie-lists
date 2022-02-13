@@ -6,7 +6,105 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class UtilService {
 
-  constructor(private sanitizer: DomSanitizer) { }
+  public genres: any
+  public currentItem: string
+  public reminders: any
+  public showSnack: boolean = false
+  public reminderAlert: string = ''
+
+  constructor(private sanitizer: DomSanitizer) {
+    this.genres =  
+    {
+      16: 'Animation',
+      10751: 'Family',
+      35: 'Comedy',
+      14: 'Fantasy',
+      28: 'Action',
+      18: 'Drama',
+      10749: 'Romance',
+      99: 'Documentary',
+      27: 'Horror',
+      80: 'Crime',
+      10402: 'Music',
+      878: 'Sci-Fi',
+      37: 'Western',
+      53: 'Thriller',
+      36: 'History',
+      10752: 'War',
+      12: 'Adventure'
+    }
+   }
+
+   public addItem(item, type) {
+    let name = ''
+    if (type === "rem") {
+      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [];
+      this.reminders = this.currentItem
+      name = "reminder"
+    } else {
+      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : [];
+      this.reminders = this.currentItem
+      name = "favorite"
+    }
+    
+  
+
+    if (this.reminders != null) {
+      console.log(this.reminders, 'reminders')
+      if (type === "fav" && this.reminders.length === 5) {
+        this.showSnack = true
+        this.reminderAlert = "Max of 5 Favorites."
+        setTimeout(()=> {
+          this.showSnack = false
+          this.reminderAlert = ""
+        }, 2950)
+        return
+      }
+
+      this.reminders.forEach((reminder, index) => {
+        if (reminder.id === item.id) {
+          this.showSnack = true
+          this.reminderAlert = `This ${name} already exists.`;
+          setTimeout(()=> {
+            this.showSnack = false
+            this.reminderAlert = ""
+          }, 2950)
+          return
+        }
+           
+      });
+    }
+  
+    if (this.reminderAlert === "" && !this.showSnack) {
+
+      if (type === "rem") {
+        this.reminders.push({
+          newReminder: item,
+          dateAdded: new Date().toISOString().slice(0,10),
+          id: item.id
+        })
+
+        localStorage.setItem('currentItem', JSON.stringify(this.reminders))
+      } else {
+        this.reminders.push({
+          favorite: item,
+          dateAdded: new Date().toISOString().slice(0,10),
+          id: item.id
+        })
+        //this.reminders.length = 5
+        localStorage.setItem('favorites', JSON.stringify(this.reminders))
+      }
+        
+
+      this.showSnack = true;
+      this.reminderAlert = type === 'fav' ? "Favorite Added" : "Reminder Added"
+      setTimeout(()=> {
+        this.showSnack = false
+        this.reminderAlert = ""
+      }, 2950);
+
+    } 
+  }
 
   public relatedInfo(items, extras, type: string, itemType: string, provider: string, order: number) {
     for (let item of items) {
@@ -27,6 +125,15 @@ export class UtilService {
               item.credit2Pic = e.cast[1]['profile_path'];
               item.credit2Char = e.cast[1]['character'];
             }
+
+            if(e.crew != null) {
+              e.crew.forEach((c, index) => {
+                if(c.job != null && c.job == "Director") {
+                  item.director = c.name
+                }
+              })
+            }
+            
           }
 
           if (type === 'details') {

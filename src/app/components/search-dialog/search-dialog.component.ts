@@ -14,20 +14,16 @@ export class SearchDialogComponent implements OnInit {
   public isOpen             :any;
   @Output() close = new EventEmitter();
 
-  public showTrailer: boolean = false;
-  public selectedMovie: any;
-  public trailerUrl: any;
-  public myMovies: any;
-  public submitting: boolean = false;
-  public loading: boolean = false;
-  public results: Array<any> = [];
+  public showTrailer: boolean = false
+  public selectedMovie: any
+  public trailerUrl: any
+  public myMovies: any
+  public submitting: boolean = false
+  public loading: boolean = false
+  public results: Array<any> = []
   public testBrowser: boolean
   public hoveredItem: string = ''
-  public currentItem: string
-  public reminders: any
-  public showSnack: boolean = false
   public showRank: boolean = true
-  public reminderAlert: string = ''
   public noTrailerMsg: string = ''
   
   constructor(public dataService: DataService, 
@@ -67,42 +63,6 @@ export class SearchDialogComponent implements OnInit {
     this.util.relatedInfo(data[0].results, data[0].credits, 'credits', this.dataService.type, '', 0)
     this.loading = false
     this.results = data[0].results
-  }
-
-  public addReminder(item) {
-    console.log(item, '')
-    this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [  ];
-    this.reminders = this.currentItem;
-
-    if (this.reminders != null) {
-      this.reminders.forEach((reminder, index) => {
-        if (reminder.id === item.id) {
-          this.showSnack = true;
-          this.reminderAlert = "This reminder already exists.";
-          setTimeout(()=> {
-            this.showSnack = false;
-            this.reminderAlert = "";
-          }, 2950); 
-        }
-      });
-    }
-  
-    if (this.reminderAlert === '' && !this.showSnack) {
-      this.reminders.push({
-        newReminder: item,
-        dateAdded: new Date().toISOString().slice(0,10),
-        id: item.id
-      });
-
-      localStorage.setItem('currentItem', JSON.stringify(this.reminders));
-
-      this.showSnack = true;
-      this.reminderAlert = "Reminder Added";
-      setTimeout(()=> {
-        this.showSnack = false;
-        this.reminderAlert = "";
-      }, 2950);
-    } 
   }
 
   public goTo() {
