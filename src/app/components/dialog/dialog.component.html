@@ -118,8 +118,9 @@
                     </div>
                   </span> 
                   <span *ngIf="title === 'Favorites'" class="fav-genre dir-info">
-                    {{rem[content]?.title}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
-                    <span *ngIf="rem[content]?.director != null">Director: {{rem[content]?.director}}</span>
+                    {{(rem[content]?.title ? rem[content]?.title : rem[content]?.name)}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
+                    <span *ngIf="rem[content]?.director != null">Director: {{rem[content]?.director}}</span> <br>
+                    <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <span> {{rem[content]?.rating?.length}}/10 </span>
 
                   </span>
               </span>

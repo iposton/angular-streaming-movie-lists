@@ -35,28 +35,15 @@ export function app() {
   // Example Express Rest API endpoints
   server.post('/data', async (req, res) => {
     try {
-      let searchquery = req.body.query;
-      let encsearchquery = encodeURIComponent(searchquery);
-      let genrequery = req.body.genre;
-      let encgenrequery = encodeURIComponent(genrequery);
-      let proquery = req.body.pro;
-      let encproquery = encodeURIComponent(proquery);
-      const data =  await api.data.getAllMovies(encsearchquery, encgenrequery, encproquery, apiKey);
+      let search = req.body.query;
+      let genre = req.body.genre;
+      let pro = req.body.pro;
+      let cat = req.body.cat;
+      const data =  await api.data.getAllMovies(search, genre, pro, cat, apiKey);
       res.status(200).json(data);
     } catch(e) {
       // console.log(e, 'error');
     }
-  })
-
-  server.post('/tv', async (req, res) => {
-    let searchquery = req.body.query;
-    let encsearchquery = encodeURIComponent(searchquery);
-    let genrequery = req.body.genre;
-    let encgenrequery = encodeURIComponent(genrequery);
-    let proquery = req.body.pro;
-    let encproquery = encodeURIComponent(proquery);
-    const data =  await api.data.getAllTv(encsearchquery, encgenrequery, encproquery, apiKey);
-    res.status(200).json(data);
   })
 
   server.post('/search', async (req, res) => {

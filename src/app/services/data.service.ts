@@ -17,7 +17,7 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getData(item, genre, pro) {
-    let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
+    let searchterm = `query=${item}&genre=${genre}&pro=${pro}&cat=${this.type}`;
     try {
       this.movies = this.http.post('/data', searchterm, {headers});
       return this.movies;
@@ -26,15 +26,15 @@ export class DataService {
     }
   }
 
-  getTv(item, genre, pro) {
-    let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
-    try {
-      this.tv = this.http.post('/tv', searchterm, {headers});
-      return this.tv;
-    } catch (e) {
-      console.log(e, 'error')
-    }
-  }
+  // getTv(item, genre, pro) {
+  //   let searchterm = `query=${item}&genre=${genre}&pro=${pro}`;
+  //   try {
+  //     this.tv = this.http.post('/tv', searchterm, {headers});
+  //     return this.tv;
+  //   } catch (e) {
+  //     console.log(e, 'error')
+  //   }
+  // }
 
   search(item) {
     let searchterm = `query=${item}&cat=${this.type}`;

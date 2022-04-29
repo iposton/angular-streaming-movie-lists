@@ -1,17 +1,19 @@
 <div class="center">
     <span *ngIf="error" class="error">{{error}}</span>
 </div>
-<div class="tabs">
+<!-- <div class="tabs">
   <button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npy' ? 'Netflix' : provider === 'hha' ? 'HBO' : 'Netflix'}}</button>
   <button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npy' ? 'Prime Video' : provider === 'hha' ?  'Hulu' : 'Disney+'}}</button>
   <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npy' ? 'YouTube TV' : provider === 'hha' ? 'Apple TV' : 'PBS Kids'}}</button>
-</div>
-<div class="tabs">
+</div> -->
+<div class="center">
+
+  <div class="tabs">
     <select name="cat" id="cat" (change)="onChange($event.target.value)">
         <option value="movies"> Movies </option>
         <option value="tv"> TV </option>
     </select>
-    <select name="year" id="year" (change)="onYearChange($event.target.value)">
+    <select name="year" id="year" (change)="onYearChange($event.target.value)" [value]="defaultYear">
         <option value="22"> 2022 </option>
         <option value="21"> 2021 </option>
         <option value="20"> 2020 </option>
@@ -21,34 +23,38 @@
         <option value="16"> 2016 </option>
         <option value="15"> 2015 </option>
     </select>
-    <select name="provider" id="provider" (change)="onProviderChange($event.target.value)">
+    <!-- <select name="provider" id="provider" (change)="onProviderChange($event.target.value)">
         <option value="npy"> Netflix </option>
         <option value="hha"> HBO </option>
         <option value="nkpkd"> Kids </option>
-    </select>
-</div>
-<div class="genres center" *ngIf="gTop && provider != 'nkpkd'">
-  <span class="btn" [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
-  <span class="btn" [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
-  <span class="btn" [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
-  <span class="btn" [ngClass]="{'active': genre === '10749'}" (click)="setGenre('10749')">Romance</span> 
-  <span class="btn" [ngClass]="{'active': genre === '27'}" (click)="setGenre('27')">Horror</span> 
-  <span class="btn" [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
-  <span (click)="gBottom = true; gTop = false;">&#9660;</span>
-</div>
-<div class="genres center" *ngIf="gBottom && provider != 'nkpkd'">
+    </select> -->
+  </div>
+  <div class="genres center" *ngIf="gTop && provider != 'nkpkd'">
+    <span class="btn" [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
+    <span class="btn" [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
+    <span class="btn" [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
+    <span class="btn" [ngClass]="{'active': genre === '10749'}" (click)="setGenre('10749')">Romance</span> 
+    <span class="btn" [ngClass]="{'active': genre === '27'}" (click)="setGenre('27')">Horror</span> 
+    <span class="btn" [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
+    <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span>
+    <span (click)="gBottom = true; gTop = false;">&#9660;</span>
+  </div>
+  <div class="genres center" *ngIf="gBottom && provider != 'nkpkd'">
     <span class="btn" [ngClass]="{'active': genre === '80'}" (click)="setGenre('80')">Crime</span> 
     <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
     <span class="btn" [ngClass]="{'active': genre === '10402'}" (click)="setGenre('10402')">Music</span> 
     <span class="btn" [ngClass]="{'active': genre === '878'}" (click)="setGenre('878')">Sci-Fi</span> 
     <span class="btn" [ngClass]="{'active': genre === '53'}" (click)="setGenre('53')">Thriller</span> 
     <span class="btn" [ngClass]="{'active': genre === '37'}" (click)="setGenre('37')">Western</span>
+    <span class="btn" [ngClass]="{'active': genre === '36'}" (click)="setGenre('36')">History</span>
     <span (click)="gTop = true; gBottom = false;">&#9650;</span>
-</div>
-<div class="genres center kids" *ngIf="provider === 'nkpkd'">
+  </div>
+  <div class="genres center kids" *ngIf="provider === 'nkpkd'">
   <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span> 
   <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
+  </div> 
 </div>
+
 <div class="center load-msg" *ngIf="submitting">
     <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>
 </div>
@@ -60,70 +66,116 @@
       <div></div>
     </div>
 </div>
+
 <div class="content-inside" *ngIf="!submitting">
-<div class="slide-container" *ngIf="!isMobile">
-    <app-slider [showBullets]="true" [title]="title"> 
-        <ng-container *ngFor="let movies of getSelectedMovies(); let i = index">
-           <div class="my-container slider__contents">
-           <a [routerLink]="" class="item" *ngFor="let movie of movies; let i = index">
-                
-               <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')', 'max-width': movies.length === 3 ? '70%' : movies.length === 2 ? '50%' : movies.length === 1 ? '30%' : '100%', 'margin': movies.length &lt; 4 ? '0 auto' : '0' }">
-                <div class="item-row">
-                  <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'; hoverRank = movie?.rank" (mouseout)="hoveredItem = ''; hoverRank = 99">
-                      <span class="movie-index" (click)="util.addItem(movie, 'rem')">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }} <span class="tooltip">Add Reminder</span> </span>
-                  </span>
-                  <span class="fav-star">
-                    <span class="star" (click)="util.addItem(movie, 'fav')">☆ <span class="tooltip">Favorite</span></span>
-                    
-                  </span>
-                </div>
-                <div class="row">
-                    <span class="info">
-                        <p><span *ngIf="movie?.credit1">Cast: {{movie?.credit1}}, {{movie?.credit2}} <br></span>
-                          Genre: {{util.genres[movie.genre_ids[0]]}}  <br>
-                          <!-- {{movie?.details?.genres[0]?.name}} -->
-                          <span class="star-rating" *ngFor="let star of movie.rating"> <span>☆</span> </span> <br>
-                          <span class="trailer-link" (click)="openTrailer(movie, type)">Trailer</span>
-                         </p> 
-                    </span>
-                </div>
-               </span>
-         
-           </a>
-           </div>
-        </ng-container> 
-     </app-slider>
+
+<div *ngIf="type === 'movies'">
+  <app-slider 
+  [title]="'netflix'" 
+  [items]="netFlix" 
+  [type]="type"
+  [sliderType]="'slide1'"
+  (open)="openTrailer($event.item)"></app-slider>
+  <app-slider 
+  [title]="'prime video'" 
+  [items]="amazon" 
+  [type]="type" 
+  [sliderType]="'slide2'"
+  (open)="openTrailer($event.item)"></app-slider>
+  <app-slider 
+  [title]="'disney+'" 
+  [items]="disney" 
+  [type]="type"
+  [sliderType]="'slide3'"
+  (open)="openTrailer($event.item)"></app-slider>
+  
+  <div *ngIf="hbo.length != 0">
+    <app-slider 
+    [title]="'hbo max'" 
+    [items]="hbo" 
+    [type]="type"
+    [sliderType]="'slide4'"
+    (open)="openTrailer($event.item)"></app-slider>
+    <app-slider 
+    [title]="'hulu'" 
+    [items]="hulu" 
+    [type]="type" 
+    [sliderType]="'slide5'"
+    (open)="openTrailer($event.item)"></app-slider>
+    <span *ngIf="apple.length != 0">
+      <app-slider 
+      [title]="'apple+'" 
+      [items]="apple" 
+      [type]="type"
+      [sliderType]="'slide6'"
+      (open)="openTrailer($event.item)"></app-slider>
+    </span> 
+  </div>
 </div>
-<div class="slide-container" *ngIf="isMobile">
-    <app-slider [showBullets]="false" [title]="title"> 
-        <ng-container *ngFor="let movie of getSelectedMovies()">
-           <div class="my-container slider__contents">
-           <a [routerLink]="" class="item">
-                
-               <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')' }">
-                <div class="item-row">
-                    <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'; hoverRank = movie?.rank" (mouseout)="hoveredItem = ''; hoverRank = 99">
-                        <span class="movie-index" (click)="util.addItem(movie, 'rem')" title="Add Reminder">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }}</span>
-                    </span>
-                    <span class="fav-star">
-                      <span class="star" (click)="util.addItem(movie, 'fav')">☆ <span class="tooltip">Favorite</span></span>          
-                    </span>
-                  </div>
-                 <span class="info">
-                     <p><span *ngIf="movie?.credit1">Cast: {{movie?.credit1}}, {{movie?.credit2}} <br></span>
-                       Genre: {{util.genres[movie.genre_ids[0]]}} <br>
-                       <!-- {{movie?.details?.genres[0]?.name}} -->
-                       <span class="star-rating" *ngFor="let star of movie.rating"> <span>☆</span> </span> <br>
-                       <span class="trailer-link" (click)="openTrailer(movie, type)">Trailer</span>
-                      </p> 
-                 </span>
-               </span>
-        
-           </a>
-           </div>
-        </ng-container> 
-     </app-slider>
+
+<div *ngIf="type === 'tv'">
+  <app-slider 
+  [title]="'netflix'" 
+  [items]="netFlixTv" 
+  [type]="type"
+  [sliderType]="'slide1'"
+  (open)="openTrailer($event.item)"></app-slider>
+  <app-slider 
+  [title]="'prime video'" 
+  [items]="amazonTv" 
+  [type]="type" 
+  [sliderType]="'slide2'"
+  (open)="openTrailer($event.item)"></app-slider>
+  <app-slider 
+  [title]="'disney+'" 
+  [items]="disneyTv" 
+  [type]="type"
+  [sliderType]="'slide3'"
+  (open)="openTrailer($event.item)"></app-slider>
+  
+  <div *ngIf="hboTv.length != 0">
+    <app-slider 
+    [title]="'hbo max'" 
+    [items]="hboTv" 
+    [type]="type"
+    [sliderType]="'slide4'"
+    (open)="openTrailer($event.item)"></app-slider>
+    <app-slider 
+    [title]="'hulu'" 
+    [items]="huluTv" 
+    [type]="type" 
+    [sliderType]="'slide5'"
+    (open)="openTrailer($event.item)"></app-slider>
+    <span *ngIf="appleTv.length != 0">
+      <app-slider 
+      [title]="'apple+'" 
+      [items]="appleTv" 
+      [type]="type"
+      [sliderType]="'slide6'"
+      (open)="openTrailer($event.item)"></app-slider>
+    </span> 
+  </div>
 </div>
+
+<div *ngIf="util.loadingMore" class="fix-center">
+  <div class="center load-msg">
+    <span>{{ type === 'movies' ? 'Fetching More Movies...' : 'Fetching More TV...' }}</span>
+  </div>
+  <div class="center load-spin">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="center" *ngIf="provider === 'npy'">
+  <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{util.genres[genre]}}</span>
+</div>
+
 </div>
 <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
 

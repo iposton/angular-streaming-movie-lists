@@ -11,8 +11,10 @@ export class UtilService {
   public reminders: any
   public showSnack: boolean = false
   public reminderAlert: string = ''
+  public loadingMore: boolean
 
   constructor(private sanitizer: DomSanitizer) {
+    this.loadingMore = false
     this.genres =  
     {
       16: 'Animation',
@@ -129,6 +131,8 @@ export class UtilService {
             if(e.crew != null) {
               e.crew.forEach((c, index) => {
                 if(c.job != null && c.job == "Director") {
+                  item.director = c.name
+                } else if (itemType === 'tv' && c.job != null && c.job == "Executive Producer" && c.known_for_department == "Directing") {
                   item.director = c.name
                 }
               })

@@ -12,6 +12,7 @@ let trending = [
     tvProviders: [],
   }
 ]
+
 let mainMovies = [
   {
     nfMovies: [],
@@ -22,11 +23,19 @@ let mainMovies = [
     amzCredits: [],
     disneyMovies: [],
     disneyDetails: [],
-    disneyCredits: []
-  }
-]
-let mainTv = [
-  {
+    disneyCredits: [],
+    hboMovies: [],
+    hboDetails: [],
+    hboCredits: [],
+    huluMovies: [],
+    huluDetails: [],
+    huluCredits: [],
+    appleMovies: [],
+    appleDetails: [],
+    appleCredits: [],
+    ytMovies: [],
+    ytDetails: [],
+    ytCredits: [],
     nfTv: [],
     nfTvDetails: [],
     nfTvCredits: [],
@@ -35,9 +44,19 @@ let mainTv = [
     amzTvCredits: [],
     disneyTv: [],
     disneyTvDetails: [],
-    disneyTvCredits: []
+    disneyTvCredits: [],
+    hboTv: [],
+    hboTvDetails: [],
+    hboTvCredits: [],
+    huluTv: [],
+    huluTvDetails: [],
+    huluTvCredits: [],
+    appleTv: [],
+    appleTvDetails: [],
+    appleTvCredits: []
   }
 ]
+
 let searchInfo = [
   {
     results: [],
@@ -47,6 +66,7 @@ let searchInfo = [
     providers: []
   }
 ]
+
 let searchQueryInfo = [
   {
     results: [],
@@ -56,9 +76,18 @@ let searchQueryInfo = [
 ];
 
 let startDate = '2021-01-01';
-let pro1 = "8";
-let pro2 = "9";
-let pro3 = "235%7C211%7C361%7C363%7C506%7C123";
+let pro1 = "8"
+let pro2 = "9"
+let pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123";
+let name1 = "nfMovies"
+let name2 = "amzMovies"
+let name3 = "disneyMovies"
+let dets1 = "nfDetails"
+let dets2 = "amzDetails"
+let dets3 = "disneyDetails"
+let creds1 = "nfCredits"
+let creds2 = "amzCredits"
+let creds3 = "disneyCredits"
 import { forkJoin } from 'rxjs';
 
 methods.getDate = async () => {
@@ -68,26 +97,101 @@ methods.getDate = async () => {
   return myDate.toISOString().slice(0, 10);
 }
 
-methods.getAllMovies = async (year: string, genre: string, provider: string, apiKey: string) => {
-  let dailyDate = methods.getDate();
+methods.getAllMovies = async (year: string, genre: string, provider: string, cat: string, apiKey: string) => {
+  let type = cat === 'tv' ? 'tv' : 'movie'
+  let dailyDate = methods.getDate()
   startDate = year === '22' ?  '2022-01-01' : year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
   dailyDate = year === '22' ? await methods.getDate() : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
  
-  if (provider === 'hha') {
-    pro1 = "384";
-    pro2 = "15";
-    pro3 = "350";
-  } else if (provider === 'nkpkd') {
-    pro1 = "175";
-    pro2 = "337";
-    pro3 = "293";
-  } else if (provider === 'npy') {
-    pro1 = "8";
-    pro2 = "9";
-    pro3 = "235%7C211%7C361%7C363%7C506%7C123"; //YT,FF,TMC,TNT,TBS,FX
+  if (type === 'movie') {
+    if (provider === 'hha') {
+      pro1 = "384"
+      name1 = "hboMovies"
+      dets1 = "hboDetails"
+      creds1 = "hboCredits"
+      pro2 = "15"
+      name2 = "huluMovies"
+      dets2 = "huluDetails"
+      creds2 = "huluCredits"
+      pro3 = "350"
+      name3 = "appleMovies"
+      dets3 = "appleDetails"
+      creds3 = "appleCredits"
+    } else if (provider === 'nkpkd') {
+      pro1 = "175";
+      pro2 = "337";
+      pro3 = "293";
+    } else if (provider === 'npy') {
+      pro1 = "8"
+      name1 = "nfMovies"
+      dets1 = "nfDetails"
+      creds1 = "nfCredits"
+      pro2 = "9"
+      name2 = "amzMovies"
+      dets2 = "amzDetails"
+      creds2 = "amzCredits"
+      pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123" //YT,FF,TMC,TNT,TBS,FX
+      name3 = "disneyMovies"
+      dets3 = "disneyDetails"
+      creds3 = "disneyCredits"
+      mainMovies[0].hboMovies = []
+      mainMovies[0].hboDetails = []
+      mainMovies[0].hboCredits = []
+      mainMovies[0].huluMovies = []
+      mainMovies[0].huluDetails = []
+      mainMovies[0].huluCredits = []
+      mainMovies[0].appleMovies = []
+      mainMovies[0].appleDetails = []
+      mainMovies[0].appleCredits = []
+    }
+  }
+
+  if (type === 'tv') {
+    if (provider === 'hha') {
+      pro1 = "384"
+      name1 = "hboTv"
+      dets1 = "hboTvDetails"
+      creds1 = "hboTvCredits"
+      pro2 = "15"
+      name2 = "huluTv"
+      dets2 = "huluTvDetails"
+      creds2 = "huluTvCredits"
+      pro3 = "350"
+      name3 = "appleTv"
+      dets3 = "appleTvDetails"
+      creds3 = "appleTvCredits"
+    } else if (provider === 'nkpkd') {
+      pro1 = "175";
+      pro2 = "337";
+      pro3 = "293";
+    } else if (provider === 'npy') {
+      pro1 = "8"
+      name1 = "nfTv"
+      dets1 = "nfTvDetails"
+      creds1 = "nfTvCredits"
+      pro2 = "9"
+      name2 = "amzTv"
+      dets2 = "amzTvDetails"
+      creds2 = "amzTvCredits"
+      pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123" //YT,FF,TMC,TNT,TBS,FX
+      name3 = "disneyTv"
+      dets3 = "disneyTvDetails"
+      creds3 = "disneyTvCredits"
+      mainMovies[0].hboTv = []
+      mainMovies[0].hboTvDetails = []
+      mainMovies[0].hboTvCredits = []
+      mainMovies[0].huluTv = []
+      mainMovies[0].huluTvDetails = []
+      mainMovies[0].huluTvCredits = []
+      mainMovies[0].appleTv = []
+      mainMovies[0].appleTvDetails = []
+      mainMovies[0].appleTvCredits = []
+    }
   }
   
-  let apiRoot = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`;
+  
+  let apiRoot = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}`
+  
   let nfUrl = `${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=en&with_ott_monetization_types=&with_ott_providers=${pro1}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
   let amzUrl = `${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro2}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
   let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro3}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
@@ -101,19 +205,19 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
       if (typeof body !== 'undefined') {
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         let data = JSON.parse(body);
-        mainMovies[0]['nfMovies'] = data['results'];
+        mainMovies[0][`${name1}`] = data['results'];
   
         const details = async() => {
           forkJoin(
             data['results'].map( m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   netflixDetails.push(data);
                   if (netflixDetails.length > 1) {
-                    return mainMovies[0]['nfDetails'] = netflixDetails;
+                    return mainMovies[0][`${dets1}`] = netflixDetails;
                   }
                 }
               )
@@ -126,13 +230,13 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
           forkJoin(
             data['results'].map( m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   netflixCredits.push(data);
                   if (netflixCredits.length > 1) {
-                    mainMovies[0]['nfCredits'] = netflixCredits;
+                    mainMovies[0][`${creds1}`] = netflixCredits;
                     //let result = await Promise.resolve(netflixCredits);
                   }
                 }
@@ -154,46 +258,42 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
 
       if (typeof body !== 'undefined') {
         let data = JSON.parse(body);
-        mainMovies[0]['amzMovies'] = data['results'];
+        mainMovies[0][`${name2}`] = data['results'];
 
         async function details() {
           forkJoin(
             data['results'].map(async m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   amazonDetails.push(data);
-                  return mainMovies[0]['amzDetails'] = amazonDetails;
+                  return mainMovies[0][`${dets2}`] = amazonDetails;
                 }
               )
             )
           );
         }
-
-        
 
         async function credits() {
           await details();
           forkJoin(
             data['results'].map(async m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   amazonCredits.push(data);
-                  mainMovies[0]['amzCredits'] = amazonCredits;
+                  mainMovies[0][`${creds2}`] = amazonCredits;
                 }
               )
             )
           );
           resolve('done');
         }
-
-        credits();
-        
+        credits();  
       }
     });
   });
@@ -205,18 +305,18 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
 
       if (typeof body !== 'undefined') {
         let data = JSON.parse(body);
-        mainMovies[0]['disneyMovies'] = data['results'];
+        mainMovies[0][`${name3}`] = data['results'];
 
         async function details() {
           forkJoin(
             data['results'].map(async m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   disneyDetails.push(data);
-                  return (mainMovies[0]['disneyDetails'] = disneyDetails);
+                  return (mainMovies[0][`${dets3}`] = disneyDetails);
                 }
               )
             )
@@ -229,12 +329,12 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
           forkJoin(
             data['results'].map(async m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
                   disneyCredits.push(data);
-                  return (mainMovies[0]['disneyCredits'] = disneyCredits);
+                  return (mainMovies[0][`${creds3}`] = disneyCredits);
                 }
               )
             )
@@ -252,192 +352,6 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, api
   let result3 = await dPromise;
   return mainMovies;
 };
-
-methods.getAllTv = async (year: string, genre: string, provider: string, apiKey: string) => {
-  let dailyDate = methods.getDate();
-  startDate = year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
-  dailyDate = year === '21' ? await methods.getDate() : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
-  
-  if (provider === 'hha') {
-    pro1 = "384";
-    pro2 = "15";
-    pro3 = "350";
-  } else if (provider === 'nkpkd') {
-    pro1 = "175";
-    pro2 = "337";
-    pro3 = "293"
-  } else if (provider === 'npy') {
-    pro1 = "8";
-    pro2 = "9";
-    pro3 = "79%7C211%7C363%7C506%7C148%7C209%7C397%7C403"; //NBC,FF,TNT,TBS,ABC,PBS,BBC,DISC
-  }
-
-  let apiRoot = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}`;
-  let nfUrl = `${apiRoot}&air_date.gte=${startDate}&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro1}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let amzUrl = `${apiRoot}&air_date.gte=${startDate}&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro2}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let dPlusUrl = `${apiRoot}&air_date.gte=${startDate}&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro3}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-   //`${apiRoot}&air_date.gte=&air_date.lte=2021-06-02&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&ott_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres${genre}=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_ott_monetization_types=&with_ott_providers=${pro3}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-
-  let nfPromise = new Promise((resolve, reject) => {
-    request(nfUrl, {}, async function(err, res, body) {
-      let netflixDetails = [];
-      let netflixCredits = [];
-      //console.log(body, 'got body');
-      if (typeof body !== 'undefined') {
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        let data = JSON.parse(body);
-        mainTv[0]['nfTv'] = data['results'];
-        const details = async () => {
-          forkJoin(
-            data['results'].map( m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  netflixDetails.push(data);
-                  if (netflixDetails.length > 1) {
-                    return mainTv[0]['nfTvDetails'] = netflixDetails;
-                  }
-                }
-              )
-            )
-          );
-        }
-
-        const credits = async () => {
-          
-          await details();
-          forkJoin(
-            data['results'].map( m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  netflixCredits.push(data);
-                  if (netflixCredits.length > 1) {
-                    mainTv[0]['nfTvCredits'] = netflixCredits;
-                    //let result = await Promise.resolve(netflixCredits);
-                  }
-                }
-              )
-            )
-          );
-          await sleep(1500);
-          resolve('done');
-        }
-        credits();
-        //resolve('done');
-      }
-    });
-  });
-
-  let amzPromise = new Promise((resolve, reject) => {
-    request(amzUrl, {}, async function(err, res, body) {
-      let amazonDetails = [];
-      let amazonCredits = [];
-
-      if (typeof body !== 'undefined') {
-        let data = JSON.parse(body);
-        mainTv[0]['amzTv'] = data['results'];
-
-        async function details() {
-          forkJoin(
-            data['results'].map(async m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  amazonDetails.push(data);
-                  return (mainTv[0]['amzTvDetails'] = amazonDetails);
-                }
-              )
-            )
-          );
-        }
-
-        await details();
-
-        async function credits() {
-          forkJoin(
-            data['results'].map(async m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  amazonCredits.push(data);
-                  return (mainTv[0]['amzTvCredits'] = amazonCredits);
-                }
-              )
-            )
-          );
-        }
-
-        await credits();
-        resolve('done');
-      }
-    });
-  });
-
-  let dPromise = new Promise((resolve, reject) => {
-    request(dPlusUrl, {}, async function(err, res, body) {
-      let disneyDetails = [];
-      let disneyCredits = [];
-
-      if (typeof body !== 'undefined') {
-        let data = JSON.parse(body);
-        mainTv[0]['disneyTv'] = data['results'];
-
-        async function details() {
-          forkJoin(
-            data['results'].map(async m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  disneyDetails.push(data);
-                  return (mainTv[0]['disneyTvDetails'] = disneyDetails);
-                }
-              )
-            )
-          );
-        }
-
-        await details();
-
-        async function credits() {
-          forkJoin(
-            data['results'].map(async m =>
-              request(
-                `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  disneyCredits.push(data);
-                  return (mainTv[0]['disneyTvCredits'] = disneyCredits);
-                }
-              )
-            )
-          );
-        }
-
-        await credits();
-        resolve('done');
-      }
-    });
-  });
-
-  let result = await nfPromise;
-  let result2 = await amzPromise;
-  let result3 = await dPromise;
-  return mainTv;
-};
-
-
 
 methods.search = async (id: string, apiKey: string, cat: string) => {
   let type = cat === 'tv' ? 'tv' : 'movie'

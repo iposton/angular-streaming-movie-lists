@@ -1,35 +1,38 @@
-<div class="page-container page-slider">
-    <div class="arrow-left" (click)="navigate('backward', true)"></div>
-    <div class="center">
-        <span class="card-header {{title}}">{{title}} </span>
+<span class="pro-title">{{title}}</span>
+<div class="my-container">
+  <button type="button" id="moveLeft" class="btn-nav" (click)="btnLeft($event, sliderType)">
+    ᐊ
+  </button>
+  <div class="my-slider" id="{{sliderType}}">
+    <div class="my-movie" id="movie0">
+      <a [routerLink]="" class="item" *ngFor="let movie of items; let i = index">
+                
+        <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')'}">
+         <div class="item-row">
+           <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'; hoverRank = movie?.rank" (mouseout)="hoveredItem = ''; hoverRank = 99">
+               <span class="movie-index" (click)="util.addItem(movie, 'rem')">{{ hoverRank != movie?.rank ? movie?.rank : '&#43;' }} <span class="tooltip">Add Reminder</span> </span>
+           </span>
+           <span class="fav-star">
+             <span class="star" (click)="util.addItem(movie, 'fav')">☆ <span class="tooltip">Favorite</span></span>
+             
+           </span>
+         </div>
+         <div class="row">
+             <span class="info">
+                 <p><span *ngIf="movie?.credit1">Cast: {{movie?.credit1}}, {{movie?.credit2}} <br></span>
+                   Genre: {{util.genres[movie.genre_ids[0]]}}  <br>
+                   <span class="star-rating" *ngFor="let star of movie.rating"> <span>☆</span> </span> <br>
+                   <span class="trailer-link" (click)="openTrailer(movie)">Trailer</span>
+                  </p> 
+             </span>
+         </div>
+        </span>
+  
+    </a>
+    <div class="spacer50"></div>
     </div>
-    <div class="arrow-right" (click)="navigate('forward', true)"></div>
-</div>
-<div class="slider">
-  <input  *ngFor="let bullet of slides; let i = index;"
-          [ngClass]="{'hidden': !showBullets}"
-          type="radio"
-          [name]="'slider' + sliderId"
-          [title]="'slide' + sliderId + i"
-          [checked]="i === 0 ? 'checked' : null"
-          (click)="setIndex(i)"
-          class="slider__nav index{{i}}"
-          #nav /> 
-
-  <div class="slider__index" *ngIf="showIndex && slides">
-    {{index + 1}} of {{slides.length}}
   </div>
-
-  <div class="slider__inner" #slider>
-    <ng-container *ngIf="!isContent">
-      <div *ngFor="let slide of slides"
-            [innerHtml]="slide.content"
-            class="slider__contents"
-            #slides>
-      </div>
-    </ng-container>
-    <ng-container #slidesContent *ngIf="isContent">
-      <ng-content></ng-content>
-    </ng-container>
-  </div>
+  <button type="button" id="moveRight" class="btn-nav" (click)="btnRight($event, sliderType)">
+    ᐅ
+  </button>
 </div>

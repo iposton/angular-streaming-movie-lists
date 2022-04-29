@@ -1,5 +1,5 @@
 <div class="container">
-
+<!-- [ngClass]="{'blur-bg': util.loadingMore === true}" -->
   <app-dialog
   [isOpen]="isRemOpen"
   [data]="reminders"
@@ -17,6 +17,7 @@
   [trailerUrlTV]="trailerUrlTV"
   [showTrailer]="showTrailer"
   (close)="isRemOpen = false; showTrailer = false"></app-dialog>
+
   <ng-container *ngIf="isSearchOpen">
     <app-search-dialog
     [isOpen]="isSearchOpen"
@@ -50,6 +51,8 @@
         </ul>
     </span>
   </header>
+
+  
   <div class="wrapper">
       <router-outlet></router-outlet>
   </div>
@@ -66,7 +69,7 @@
   </div>
 </footer>
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false">
-    <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal small" (click)="$event.stopPropagation()">
       <div class="modal-header">
           <span class="header-title">About Streaming Lists</span>
           <span class="right" (click)="isOpen = false">X</span>

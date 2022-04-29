@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
     private metaTagService: Meta,
     private titleService: Title,
     public dataService: DataService,
-    private util: UtilService
+    public util: UtilService
   ) { }
 
   public navigate(link) {
