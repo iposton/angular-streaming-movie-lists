@@ -1,6 +1,6 @@
 <span class="pro-title">{{title}}</span>
 <div class="my-container">
-  <button type="button" id="moveLeft" class="btn-nav" (click)="btnLeft($event, sliderType)">
+  <button type="button" id="moveLeft" class="btn-nav" (click)="btnLeft(sliderType)">
     ᐊ
   </button>
   <div class="my-slider" id="{{sliderType}}">
@@ -32,7 +32,7 @@
     <div class="spacer50"></div>
     </div>
   </div>
-  <button type="button" id="moveRight" class="btn-nav" (click)="btnRight($event, sliderType)">
+  <button type="button" id="moveRight" class="btn-nav" (click)="btnRight(sliderType)">
     ᐅ
   </button>
 </div>
