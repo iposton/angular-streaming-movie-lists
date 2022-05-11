@@ -157,21 +157,6 @@
   </div>
 </div>
 
-<div *ngIf="util.loadingMore" class="fix-center">
-  <div class="center load-msg">
-    <span>{{ type === 'movies' ? 'Fetching More Movies...' : 'Fetching More TV...' }}</span>
-  </div>
-  <div class="center load-spin">
-    <div class="lds-ring">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </div>
-</div>
-
-
 <div class="center" *ngIf="provider === 'npy'">
   <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{util.genres[genre]}}</span>
 </div>

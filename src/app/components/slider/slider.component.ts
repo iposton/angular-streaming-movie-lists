@@ -50,7 +50,7 @@ export class SliderComponent implements OnInit {
     //console.log(name, 'name')
     let slider = document.querySelector(`div[id=${name}]`) 
     let movieWidth = document.querySelector("a[class=item]").getBoundingClientRect().width
-    let scrollDistance = movieWidth * 6
+    let scrollDistance = movieWidth * 7
     //TODO: make work for mobile because (4 movies/page instead of 6)
     slider.scrollBy({
       top: 0,
@@ -62,7 +62,7 @@ export class SliderComponent implements OnInit {
   public btnRight(name) {
     let slider = document.querySelector(`div[id=${name}]`)
     let movieWidth = document.querySelector("a[class=item]").getBoundingClientRect().width
-    let scrollDistance = movieWidth * 6
+    let scrollDistance = movieWidth * 7
 
     slider.scrollBy({
       top: 0,

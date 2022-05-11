@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngClass]="{'blur-bg': util.loadingMore === true}">
 <!-- [ngClass]="{'blur-bg': util.loadingMore === true}" -->
   <app-dialog
   [isOpen]="isRemOpen"
@@ -58,6 +58,21 @@
   </div>
   <div class="push"></div>
 </div>
+
+<div *ngIf="util.loadingMore" class="fix-center">
+  <div class="center load-msg">
+    <span>Fetching More...</span>
+  </div>
+  <div class="center load-spin">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="row">
     <div class="col logo-col"> <span class="logo-link" (click)="navigate('https://twitter.com/StreamingLists')">SL</span> </div>
