@@ -5,7 +5,7 @@
   </button>
   <div class="my-slider" id="{{sliderType}}">
     <div class="my-movie" id="movie0">
-      <a [routerLink]="" class="item" *ngFor="let movie of items; let i = index">
+      <a [routerLink]="[][]" class="item" *ngFor="let movie of items; let i = index">
                 
         <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ movie?.poster_path +')'}">
          <div class="item-row">
