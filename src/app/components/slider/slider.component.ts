@@ -43,30 +43,17 @@ export class SliderComponent implements OnInit {
   constructor(public util: UtilService) {
     this.index          = 0
     this.activeIndex    = 0
-    this.isMobile       = false;
+    this.isMobile       = false
   }
 
-  public btnLeft(name) {
-    //console.log(name, 'name')
+  public slide(name, direction) {
     let slider = document.querySelector(`div[id=${name}]`) 
     let movieWidth = document.querySelector("a[class=item]").getBoundingClientRect().width
-    let scrollDistance = movieWidth * 7
-    //TODO: make work for mobile because (4 movies/page instead of 6)
-    slider.scrollBy({
-      top: 0,
-      left: -scrollDistance,
-      behavior: "smooth",
-    })
-  }
-
-  public btnRight(name) {
-    let slider = document.querySelector(`div[id=${name}]`)
-    let movieWidth = document.querySelector("a[class=item]").getBoundingClientRect().width
-    let scrollDistance = movieWidth * 7
+    let scrollDistance = movieWidth * (this.util.isMobile ? 2 : 7)
 
     slider.scrollBy({
       top: 0,
-      left: +scrollDistance,
+      left: direction === 'left' ? -scrollDistance : +scrollDistance,
       behavior: "smooth",
     })
   }

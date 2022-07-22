@@ -12,8 +12,10 @@ export class UtilService {
   public showSnack: boolean = false
   public reminderAlert: string = ''
   public loadingMore: boolean
+  public isMobile: boolean
 
   constructor(private sanitizer: DomSanitizer) {
+    this.isMobile = false
     this.loadingMore = false
     this.genres =  
     {
@@ -144,7 +146,7 @@ export class UtilService {
            
             if (provider != '' && order > 0) {
               if (provider === 'npy') {
-                item.provider = order === 1 ? 'netflix' : order === 2 ? 'prime' : 'youtube';
+                item.provider = order === 1 ? 'netflix' : order === 2 ? 'prime' : 'disney';
               } else if (provider === 'hha') {
                 item.provider = order === 1 ? 'hbo' : order === 2 ? 'hulu' : 'apple';
               } else if (provider === 'nkpkd') {

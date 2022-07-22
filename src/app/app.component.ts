@@ -146,7 +146,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (window.innerWidth < 500) { // 768px portrait
-      this.mobile = true;
+      this.mobile = true
+      this.util.isMobile = this.mobile
     }
     this.titleService.setTitle(this.title);
     this.metaTagService.addTags([
