@@ -253,7 +253,7 @@ input[type="search"] {
   margin-left: auto; 
   margin-right: auto; 
   z-index: 9999;
-  top: 165%;
+  top: 100%;
   color: #fff;
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -939,7 +939,7 @@ input[type="search"] {
         color: #ccc;
         .movie-index {
           border: 2px solid #ccc;
-
+          cursor: pointer;
           .tooltip {
             display: block;
           }
@@ -956,6 +956,7 @@ input[type="search"] {
         }
         .trailer-link:hover {
           color: #ccc;
+          cursor: pointer;
         }
       }
     }

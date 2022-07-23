@@ -204,7 +204,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
       //console.log(body, 'got body');
       if (typeof body !== 'undefined') {
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        let data = JSON.parse(body);
+        let data = await JSON.parse(body);
         mainMovies[0][`${name1}`] = data['results'];
   
         const details = async() => {
@@ -257,7 +257,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
       let amazonCredits = [];
 
       if (typeof body !== 'undefined') {
-        let data = JSON.parse(body);
+        let data = await JSON.parse(body);
         mainMovies[0][`${name2}`] = data['results'];
 
         async function details() {
@@ -304,7 +304,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
       let disneyCredits = [];
 
       if (typeof body !== 'undefined') {
-        let data = JSON.parse(body);
+        let data = await JSON.parse(body);
         mainMovies[0][`${name3}`] = data['results'];
 
         async function details() {
@@ -358,8 +358,8 @@ methods.search = async (id: string, apiKey: string, cat: string) => {
   let apiUrl = `https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${apiKey}&language=en-US`;
   let recUrl = `https://api.themoviedb.org/3/${type}/${id}/recommendations?api_key=${apiKey}&language=en-US`;
   let searchPromise = new Promise((resolve, reject) => {
-    request(apiUrl, {}, function(err, res, body) {
-      let data = JSON.parse(body);
+    request(apiUrl, {}, async function(err, res, body) {
+      let data = await JSON.parse(body);
       searchInfo[0].results = data['results'];
       resolve('done');
     });
@@ -369,9 +369,9 @@ methods.search = async (id: string, apiKey: string, cat: string) => {
     let relatedDetails = []
     let relatedCredits = []
     let mvProviders = []
-    request(recUrl, {}, function(err, res, body) {
+    request(recUrl, {}, async function(err, res, body) {
       const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-      let data = JSON.parse(body);
+      let data = await JSON.parse(body);
       let results = data['results'];
       if (results.length > 5)
         results.length = 5;
@@ -449,8 +449,8 @@ methods.searchtv = async (id: string, apiKey: string) => {
   let apiUrl = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=${apiKey}&language=en-US`;
   let recUrl = `https://api.themoviedb.org/3/tv/${id}/recommendations?api_key=${apiKey}&language=en-US`;
   let searchPromise = new Promise((resolve, reject) => {
-    request(apiUrl, {}, function(err, res, body) {
-      let data = JSON.parse(body);
+    request(apiUrl, {}, async function(err, res, body) {
+      let data = await JSON.parse(body);
       searchInfo[0].results = data['results'];
       resolve('done');
     });
@@ -459,9 +459,9 @@ methods.searchtv = async (id: string, apiKey: string) => {
   let relatedPromise = new Promise((resolve, reject) => {
     let relatedDetails = [];
     let relatedCredits = [];
-    request(recUrl, {}, function(err, res, body) {
+    request(recUrl, {}, async function(err, res, body) {
       const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-      let data = JSON.parse(body);
+      let data = await JSON.parse(body);
       searchInfo[0].related = data['results'];
       let results = data['results'];
       if (results.length > 5)
@@ -522,12 +522,12 @@ methods.searchTrending = async (term: string, apiKey: string, cat: string) => {
   let type = cat === 'tv' ? 'tv' : 'movie'
   let searchQuery = `https://api.themoviedb.org/3/search/${type}?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
   let searchPromise = new Promise((resolve, reject) => {
-    request(searchQuery, {}, function(err, res, body) {
+    request(searchQuery, {}, async function(err, res, body) {
       let mvProviders = []
       let mvCredits = []
       if (typeof body !== 'undefined') {
           const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-          let data = JSON.parse(body)
+          let data = await JSON.parse(body)
           searchQueryInfo[0]['results'] = data['results']
 
           const providers = async() => {
@@ -589,7 +589,7 @@ methods.getTrending = async (apiKey: string) => {
       //console.log(body, 'got body');
       if (typeof body !== 'undefined') {
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        let data = JSON.parse(body);
+        let data = await JSON.parse(body);
         trending[0]['movies'] = data['results'];
 
         const providers = async() => {
@@ -662,7 +662,7 @@ methods.getTrending = async (apiKey: string) => {
       //console.log(body, 'got body');
       if (typeof body !== 'undefined') {
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        let data = JSON.parse(body);
+        let data = await JSON.parse(body);
         trending[0]['tv'] = data['results'];
 
         const providers = async() => {

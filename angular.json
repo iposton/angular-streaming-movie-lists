@@ -169,6 +169,6 @@
           }
         }
       }
-    }},
-  "defaultProject": "streaming-lists"
+    }
+  }
 }
