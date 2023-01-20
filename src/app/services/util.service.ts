@@ -39,14 +39,39 @@ export class UtilService {
     }
    }
 
+   public buildTextArea(ms:string) {
+      const myTextArea = document.createElement('textarea')
+      myTextArea.style.position = 'fixed'
+      myTextArea.style.left = '0'
+      myTextArea.style.top = '0'
+      myTextArea.style.opacity = '0'
+      myTextArea.value = `REMINDER TO WATCH: ${ms}`
+      document.body.appendChild(myTextArea)
+      myTextArea.focus()
+      myTextArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(myTextArea)
+      this.snack('Copied To Clipboard.')
+   }
+
+   public snack(message:string) {
+     this.showSnack = true
+     this.reminderAlert = message
+     setTimeout(()=> {
+       this.showSnack = false
+       this.reminderAlert = ""
+     }, 2950)
+     return
+   }
+
    public addItem(item, type) {
     let name = ''
     if (type === "rem") {
-      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : [];
+      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : []
       this.reminders = this.currentItem
       name = "reminder"
     } else {
-      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : [];
+      this.currentItem = (localStorage.getItem('movFavorites')!= undefined) ? JSON.parse(localStorage.getItem('movFavorites')) : []
       this.reminders = this.currentItem
       name = "favorite"
     }
@@ -96,7 +121,7 @@ export class UtilService {
           id: item.id
         })
         //this.reminders.length = 5
-        localStorage.setItem('favorites', JSON.stringify(this.reminders))
+        localStorage.setItem('movFavorites', JSON.stringify(this.reminders))
       }
         
 

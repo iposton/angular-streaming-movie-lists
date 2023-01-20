@@ -30,7 +30,8 @@
           </div>
         </div> 
         <div class="row">
-            <span class="rec-title">{{(title === 'Favorites' ? 'my picks '+ currentDate : title)}}</span> 
+            <span class="rec-title">{{(title === 'Favorites' ? 'my picks '+ currentDate : title)}}  <span class="copy-rem" *ngIf="title === 'Reminders'" (click)="copy(data, 'all', '')" title="Copy to clipboard">&#9745; </span> </span>
+            
             <span *ngIf="title === 'Reminders'" class="reminderbar">
               <span class="tab" [ngClass]="{'active': showTitles === 'netflix'}" (click)="filterTitles('netflix')">Netflix</span> 
               <span class="tab" [ngClass]="{'active': showTitles === 'hbo'}" (click)="filterTitles('hbo')">HBO</span>
@@ -57,6 +58,9 @@
                     <div class="item-row">
                         <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                             <span class="movie-index" (click)="rmv(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
+                        </span>
+                        <span class="copy-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                          <span class="clip" (click)="copy(rem[content], 'one', rem.dateAdded)">&#9745; <span class="tooltip">Copy</span></span>   
                         </span>
                     </div>
                     <div class="item-row">

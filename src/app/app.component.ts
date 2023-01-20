@@ -83,10 +83,10 @@ export class AppComponent implements OnInit {
           }     
         })
 
-          this.selected = this.selectedMovie;
+          this.selected = this.selectedMovie
           console.log(this.selected, 'selected movie')
-          this.reminders = res[0];
-          this.loading = false;
+          this.reminders = res[0]
+          this.loading = false
         })
 
         
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
       this.content = 'favorite'
       this.dialogTitle = 'Favorites'
       this.isRemOpen = true
-      this.currentItem = (localStorage.getItem('favorites')!= undefined) ? JSON.parse(localStorage.getItem('favorites')) : []
+      this.currentItem = (localStorage.getItem('movFavorites')!= undefined) ? JSON.parse(localStorage.getItem('movFavorites')) : []
       //this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null;
       //this.dataService.type = this.selected.media_type
       this.reminders = this.currentItem
@@ -120,9 +120,15 @@ export class AppComponent implements OnInit {
       this.dialogTitle = 'Reminders'
       this.isRemOpen = true
       this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : []
-      this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null
-      this.dataService.type = this.selected.media_type
+      this.selected = this.currentItem.length > 0 ? this.currentItem[0]['newReminder'] : null
+      this.dataService.type = this.selected != null ? this.selected.media_type : ''
       try {
+        if (this.selected == null) {
+          this.reminders = this.currentItem
+          this.loading = false
+          return
+        }
+          
         console.log(this.selected, 'getting first item in reminders')
        // if (this.selected.type === 'movies') {
           this.dataService.search(this.selected.id).subscribe(r => {

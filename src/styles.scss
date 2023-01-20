@@ -287,6 +287,16 @@ input[type="search"] {
     width: 100%;
     border-bottom: 1px solid #fff;
     font-size: 18px;
+
+    .copy-rem {
+      color: #fff;
+      margin: 0 4px;
+      font-size: 20px;
+    }
+
+    .copy-rem:hover {
+      cursor: pointer;
+    }
   }
 
   .reminderbar {
@@ -377,7 +387,7 @@ input[type="search"] {
         .item-row {
           width: 100%;
 
-          .fav-star {
+          .fav-star, .copy-col {
             top: 5px;
             right: 25px;
             position: absolute;
@@ -413,6 +423,12 @@ input[type="search"] {
             }
           }
 
+          .copy-col { 
+            .clip {
+              visibility: hidden;
+            }
+          }
+
           .fav-star:hover {
             color: transparent;
             .star:before {
@@ -423,6 +439,19 @@ input[type="search"] {
     
             .tooltip {
               display: block;
+            }
+          }
+          
+          .copy-col.hovered:hover {
+
+            .tooltip {
+              display: block;
+            } 
+            .clip {
+              color: #fff;
+              cursor: pointer;
+              font-size: 20px;
+              visibility: visible;
             }
           }
     

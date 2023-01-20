@@ -71,7 +71,7 @@ export class DialogComponent implements OnInit {
       if(data[index].id === item.id) {
         data.splice(index, 1);
         //data.length = 5
-        localStorage.setItem('favorites', JSON.stringify(data));
+        localStorage.setItem('movFavorites', JSON.stringify(data));
       }
     })  
   }
@@ -123,6 +123,22 @@ export class DialogComponent implements OnInit {
     })
   }
 
+  public copy(data, type, da) {
+    let myString = null
+    console.log(data, 'data')
+    if (type === 'all') {
+      myString = data.map(d => d.newReminder.original_title+' Rating: '+d.newReminder.rating.length+'/10 '+(this.typeOf(d.newReminder.provider) == 'object' ? this.util.getProvider(d.newReminder.provider).toUpperCase() : d.newReminder.provider.toUpperCase())+' '+(d.newReminder.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+d.dateAdded).join(', ')
+      console.log(myString, 'copy this')
+      
+    } else {
+      myString = data.original_title+' Rating: '+data.rating.length+'/10 '+(this.typeOf(data.provider) == 'object' ? this.util.getProvider(data.provider).toUpperCase() : data.provider.toUpperCase())+' '+(data.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+da
+      console.log(myString, 'copy this')
+    }
+
+    this.util.buildTextArea(myString)
+
+  }
+
   ngOnInit(): void {
   }
 
@@ -135,13 +151,16 @@ export class DialogComponent implements OnInit {
   }
 
   public getData(data, c: string, title: string) {
-    // console.log(data, 'data', c, 'content')
+    //console.log(data, 'data', c, 'content')
     if (c === 'newReminder' || title === 'Recommended' || c === 'favorite') {
       return data
     } else {
-      if (data != null) {
-      return data[c]
-      }    
+      if (Object.keys(data).length > 0) {
+        return data[c]
+      } else {
+        console.log('whats wrong with the data', data)
+        //return data
+      }   
     }
   }
 
