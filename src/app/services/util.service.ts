@@ -248,7 +248,7 @@ export class UtilService {
 
  public getProvider(pro) {
   try {
-    if (pro === 'unknown') {
+    if (pro === 'unknown' || pro == undefined) {
       return ''
     } else if (pro['flatrate'] != null) {
       if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {

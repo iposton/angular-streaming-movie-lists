@@ -100,8 +100,8 @@ methods.getDate = async () => {
 methods.getAllMovies = async (year: string, genre: string, provider: string, cat: string, apiKey: string) => {
   let type = cat === 'tv' ? 'tv' : 'movie'
   let dailyDate = methods.getDate()
-  startDate = year === '22' ?  '2022-01-01' : year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
-  dailyDate = year === '22' ? await methods.getDate() : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
+  startDate = year === '23' ?  '2023-01-01' : year === '22' ?  '2022-01-01' : year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
+  dailyDate = year === '23' ?  '2023-12-31' : year === '22' ? await methods.getDate() : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
  
   if (type === 'movie') {
     if (provider === 'hha') {
@@ -687,7 +687,7 @@ methods.getTrending = async (apiKey: string) => {
           forkJoin(
             data['results'].map( m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
@@ -707,7 +707,7 @@ methods.getTrending = async (apiKey: string) => {
           forkJoin(
             data['results'].map( m =>
               request(
-                `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+                `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
                 async function(err, res, body) {
                   let data = await JSON.parse(body);
@@ -718,19 +718,19 @@ methods.getTrending = async (apiKey: string) => {
                 }
               )
             )
-          );
-          await sleep(500);
-          resolve('done');
+          )
+          await sleep(2500)
+          resolve('done')
         }
-        credits();
+        credits()
       }
     });
   });
 
-  let result = await mvPromise;
-  let result2 = await tvPromise;
+  let result = await mvPromise
+  let result2 = await tvPromise
 
-  return trending;
+  return trending
 };
 
-export const api = {data: methods};
+export const api = {data: methods}

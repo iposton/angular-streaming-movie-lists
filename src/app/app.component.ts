@@ -48,21 +48,26 @@ export class AppComponent implements OnInit {
     
     this.reminders = [];
     if (type === 'trending') {
-      this.loadingTitle = 'Trending Movies';
+      this.dataService.isDoubleSearch = true
+      this.loadingTitle = 'Trending Movies'
       //this.reminders = this.dataService.getTrending();
-      this.content = 'movies';
-      this.dialogTitle = 'Trending';
-      this.isRemOpen = true;
+      this.content = 'movies'
+      this.dialogTitle = 'Trending'
+      this.isRemOpen = true
+
       this.dataService.getTrending().subscribe(res => { 
+        console.log('trending data success, get related info')
         this.util.relatedInfo(res[0].movies, res[0].mvCredits, 'credits', 'movies', '', 0)
         this.util.relatedInfo(res[0].movies, res[0].mvDetails, 'details', 'movies', '', 0)
         this.util.relatedInfo(res[0].movies, res[0].mvProviders, 'providers', 'movies', '', 0)
         this.util.relatedInfo(res[0].tv, res[0].tvCredits, 'credits', 'tv', '', 0)
         this.util.relatedInfo(res[0].tv, res[0].tvDetails, 'details', 'tv', '', 0)
         this.util.relatedInfo(res[0].tv, res[0].tvProviders, 'providers', 'tv', '', 0)
-        this.selectedMovie = this.util.getFlatRate(res[0].movies);
-        
+        this.selectedMovie = this.util.getFlatRate(res[0].movies)
+        console.log(this.selectedMovie, 'selected movie')
+
         this.dataService.search(this.selectedMovie.id).subscribe(r => {
+          console.log(r, 'search result for selected item')
           if (r['results'][0] != null) {
             if (r['results'][0].site === 'YouTube') {
               this.trailerUrl = this.util.sanitize(r['results'][0])
@@ -84,7 +89,6 @@ export class AppComponent implements OnInit {
         })
 
           this.selected = this.selectedMovie
-          console.log(this.selected, 'selected movie')
           this.reminders = res[0]
           this.loading = false
         })

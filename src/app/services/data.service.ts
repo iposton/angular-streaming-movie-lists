@@ -7,12 +7,13 @@ const headers = new HttpHeaders().set('Content-Type', 'application/X-www-form-ur
   providedIn: 'root'
 })
 export class DataService {
-  public movies: any;
-  public tv: any;
-  public result: any;
-  public searchRes: any;
-  public trending: any;
-  public type: string = '';
+  public movies: any
+  public tv: any
+  public result: any
+  public searchRes: any
+  public trending: any
+  public type: string = ''
+  public isDoubleSearch: boolean = false
 
   constructor(private http: HttpClient) { }
 
@@ -37,7 +38,8 @@ export class DataService {
   // }
 
   search(item) {
-    let searchterm = `query=${item}&cat=${this.type}`;
+    let ds = this.isDoubleSearch
+    let searchterm = `query=${item}&cat=${ds ? 'movies' : this.type}`;
     try {
       this.result = this.http.post('/search', searchterm, {headers});
       return this.result;
