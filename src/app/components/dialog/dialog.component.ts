@@ -128,11 +128,11 @@ export class DialogComponent implements OnInit {
     let myString = null
     console.log(data, 'data')
     if (type === 'all') {
-      myString = data.map(d => d.newReminder.original_title+' Rating: '+d.newReminder.rating.length+'/10 '+(d.newReminder.provider != null && this.typeOf(d.newReminder.provider) == 'object' ? this.util.getProvider(d.newReminder.provider).toUpperCase() : d.newReminder.provider != null ? d.newReminder.provider.toUpperCase() : 'unknown')+' '+(d.newReminder.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+d.dateAdded).join(', ')
+      myString = data.map(d => (d.newReminder.original_title != null ? d.newReminder.original_title : d.newReminder.name)+' Rating: '+(d.newReminder.rating != null && d.newReminder.rating.constructor === Array ? d.newReminder.rating.length+'/10 ' : ' ')+(d.newReminder.provider != null && this.typeOf(d.newReminder.provider) == 'object' ? this.util.getProvider(d.newReminder.provider).toUpperCase() : d.newReminder.provider != null ? d.newReminder.provider.toUpperCase() : 'unknown')+' '+(d.newReminder.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+d.dateAdded).join(', ')
       console.log(myString, 'copy this')
       
     } else {
-      myString = data.original_title+' Rating: '+data.rating.length+'/10 '+(data.provider != null && this.typeOf(data.provider) == 'object' ? this.util.getProvider(data.provider).toUpperCase() : data.provider != null ? data.provider.toUpperCase() : 'unknown')+' '+(data.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+da
+      myString = (data.original_title != null ? data.original_title : data.name)+' Rating: '+(data.rating != null && data.rating.constructor === Array ? data.rating.length+'/10 ' : ' ')+(data.provider != null && this.typeOf(data.provider) == 'object' ? this.util.getProvider(data.provider).toUpperCase() : data.provider != null ? data.provider.toUpperCase() : 'unknown')+' '+(data.type === 'movies' ? 'Movie' : 'TV Series')+' Added: '+da
       console.log(myString, 'copy this')
     }
 
