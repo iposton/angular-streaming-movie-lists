@@ -260,7 +260,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
         let data = await JSON.parse(body);
         mainMovies[0][`${name2}`] = data['results'];
 
-        async function details() {
+        const details = async function() {
           forkJoin(
             data['results'].map(async m =>
               request(
@@ -276,7 +276,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
           );
         }
 
-        async function credits() {
+        const credits = async function() {
           await details();
           forkJoin(
             data['results'].map(async m =>
@@ -307,7 +307,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
         let data = await JSON.parse(body);
         mainMovies[0][`${name3}`] = data['results'];
 
-        async function details() {
+        const details = async function() {
           forkJoin(
             data['results'].map(async m =>
               request(
@@ -325,7 +325,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
 
         await details();
 
-        async function credits() {
+        const credits = async function() {
           forkJoin(
             data['results'].map(async m =>
               request(
