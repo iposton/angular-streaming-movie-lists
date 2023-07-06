@@ -101,7 +101,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
   let type = cat === 'tv' ? 'tv' : 'movie'
   let dailyDate = methods.getDate()
   startDate = year === '23' ?  '2023-01-01' : year === '22' ?  '2022-01-01' : year === '21' ?  '2021-01-01' : year === '20' ?  '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
-  dailyDate = year === '23' ?  '2023-12-31' : year === '22' ? await methods.getDate() : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
+  dailyDate = year === '23' ?  await methods.getDate() : year === '22' ?  '2022-12-31' : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
  
   if (type === 'movie') {
     if (provider === 'hha') {
@@ -209,7 +209,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
   
         const details = async() => {
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
@@ -228,7 +228,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
         const credits = async() => {
           await details();
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
@@ -262,7 +262,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
 
         const details = async function() {
           forkJoin(
-            data['results'].map(async m =>
+            data['results']?.map(async m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
@@ -279,7 +279,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
         const credits = async function() {
           await details();
           forkJoin(
-            data['results'].map(async m =>
+            data['results']?.map(async m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
@@ -309,7 +309,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
 
         const details = async function() {
           forkJoin(
-            data['results'].map(async m =>
+            data['results']?.map(async m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
@@ -327,7 +327,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
 
         const credits = async function() {
           forkJoin(
-            data['results'].map(async m =>
+            data['results']?.map(async m =>
               request(
                 `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
@@ -379,7 +379,7 @@ methods.search = async (id: string, apiKey: string, cat: string) => {
 
       const providers = async() => {
         forkJoin(
-          data['results'].map( m =>
+          data['results']?.map( m =>
             request(
               `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
               {},
@@ -398,7 +398,7 @@ methods.search = async (id: string, apiKey: string, cat: string) => {
       const details = async () => {
         await providers();
         forkJoin(
-          results.map( m =>
+          results?.map( m =>
             request(
               `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
               {},
@@ -418,7 +418,7 @@ methods.search = async (id: string, apiKey: string, cat: string) => {
         
         await details();
         forkJoin(
-          results.map( m =>
+          results?.map( m =>
             request(
               `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
               {},
@@ -469,7 +469,7 @@ methods.searchtv = async (id: string, apiKey: string) => {
       searchInfo[0].related = results;
       const details = async () => {
         forkJoin(
-          results.map( m =>
+          results?.map( m =>
             request(
               `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
               {},
@@ -489,7 +489,7 @@ methods.searchtv = async (id: string, apiKey: string) => {
         
         await details();
         forkJoin(
-          results.map( m =>
+          results?.map( m =>
             request(
               `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
               {},
@@ -532,7 +532,7 @@ methods.searchTrending = async (term: string, apiKey: string, cat: string) => {
 
           const providers = async() => {
             forkJoin(
-              data['results'].map( m =>
+              data['results']?.map( m =>
                 request(
                   `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
                   {},
@@ -552,7 +552,7 @@ methods.searchTrending = async (term: string, apiKey: string, cat: string) => {
             await providers();
             
             forkJoin(
-              data['results'].map( m =>
+              data['results']?.map( m =>
                 request(
                   `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                   {},
@@ -594,7 +594,7 @@ methods.getTrending = async (apiKey: string) => {
 
         const providers = async() => {
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/movie/${m.id}/watch/providers?api_key=${apiKey}`,
                 {},
@@ -612,7 +612,7 @@ methods.getTrending = async (apiKey: string) => {
   
         const details = async() => {
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
@@ -632,7 +632,7 @@ methods.getTrending = async (apiKey: string) => {
           await providers();
           await details();
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},
@@ -667,7 +667,7 @@ methods.getTrending = async (apiKey: string) => {
 
         const providers = async() => {
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/tv/${m.id}/watch/providers?api_key=${apiKey}`,
                 {},
@@ -685,7 +685,7 @@ methods.getTrending = async (apiKey: string) => {
   
         const details = async() => {
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/tv/${m.id}?api_key=${apiKey}&language=en-US`,
                 {},
@@ -705,7 +705,7 @@ methods.getTrending = async (apiKey: string) => {
           await providers();
           await details();
           forkJoin(
-            data['results'].map( m =>
+            data['results']?.map( m =>
               request(
                 `https://api.themoviedb.org/3/tv/${m.id}/credits?api_key=${apiKey}&language=en-US`,
                 {},

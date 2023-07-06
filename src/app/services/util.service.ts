@@ -173,7 +173,7 @@ export class UtilService {
               if (provider === 'npy') {
                 item.provider = order === 1 ? 'netflix' : order === 2 ? 'prime' : 'disney';
               } else if (provider === 'hha') {
-                item.provider = order === 1 ? 'hbo' : order === 2 ? 'hulu' : 'apple';
+                item.provider = order === 1 ? 'max' : order === 2 ? 'hulu' : 'apple';
               } else if (provider === 'nkpkd') {
                 item.provider = order === 1 ? 'netflix' : order === 2 ? 'disney' : 'pbs';
               }
@@ -255,6 +255,8 @@ export class UtilService {
         return 'prime'
       } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
         return 'imdb tv'
+      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'HBO') {
+        return 'max'
       } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
         return 'apple tv'
       } else if (pro.flatrate[0].provider_name.toUpperCase() === 'STARZ PLAY AMAZON CHANNEL') {
