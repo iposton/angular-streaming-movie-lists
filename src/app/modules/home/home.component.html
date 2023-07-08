@@ -90,7 +90,7 @@
   [sliderType]="'slide3'"
   (open)="openTrailer($event.item)"></app-slider>
   
-  <div *ngIf="hbo.length != 0">
+  <div *ngIf="hbo.length != 0 || hulu.length != 0">
     <app-slider 
     [title]="'max'" 
     [items]="hbo" 

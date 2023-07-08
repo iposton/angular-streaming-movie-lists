@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { DataService } from './services/data.service';
 import { UtilService } from './services/util.service';
+import { DOCUMENT } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
+let myWindow = null
 
 @Component({
   selector: 'app-root',
@@ -18,6 +21,7 @@ export class AppComponent implements OnInit {
   public currentItem: string;
   public content: string;
   public loading: boolean;
+  public testBrowser: boolean
   public loadingTitle: string;
   public selectedMovie: any;
   public selected: any;
@@ -32,11 +36,14 @@ export class AppComponent implements OnInit {
     private metaTagService: Meta,
     private titleService: Title,
     public dataService: DataService,
-    public util: UtilService
-  ) { }
+    public util: UtilService,
+    @Inject(PLATFORM_ID) platformId: string,
+    @Inject(DOCUMENT) private document: Document
+  ) { this.testBrowser = isPlatformBrowser(platformId) }
 
   public navigate(link) {
-    window.location.href = link;
+    myWindow = document.defaultView
+    myWindow.location.href = link
   }
 
   public openSearch() {
@@ -155,10 +162,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (window.innerWidth < 500) { // 768px portrait
-      this.mobile = true
-      this.util.isMobile = this.mobile
+    if (this.testBrowser) {
+      myWindow = document.defaultView
+      if (myWindow.innerWidth < 500) { // 768px portrait
+        this.mobile = true
+        this.util.isMobile = this.mobile
+      }
     }
+    
     this.titleService.setTitle(this.title);
     this.metaTagService.addTags([
       { name: 'description', content: 'Popular movies streaming on netflix, prime video and disney +.' },

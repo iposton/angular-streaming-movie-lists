@@ -105,7 +105,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
  
   if (type === 'movie') {
     if (provider === 'hha') {
-      pro1 = "384"
+      pro1 = "1899"
       name1 = "hboMovies"
       dets1 = "hboDetails"
       creds1 = "hboCredits"
@@ -148,7 +148,7 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
 
   if (type === 'tv') {
     if (provider === 'hha') {
-      pro1 = "384"
+      pro1 = "1899" //384"
       name1 = "hboTv"
       dets1 = "hboTvDetails"
       creds1 = "hboTvCredits"
