@@ -4,6 +4,8 @@ import { UtilService } from '../../services/util.service';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+let myWindow = null
 
 @Component({
   selector: 'app-home',
@@ -91,7 +93,9 @@ export class HomeComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private gaService: GoogleAnalyticsService,
     public util: UtilService,
-    @Inject(PLATFORM_ID) platformId: string
+    @Inject(PLATFORM_ID) platformId: string,
+    @Inject(DOCUMENT) private document: Document
+    
   ) {
     this.testBrowser = isPlatformBrowser(platformId)
     this.showTrailer = false
@@ -246,11 +250,13 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
     if (this.testBrowser) {
+      myWindow = document.defaultView
       this.loadItems();
       this.dataService.type = this.type
       try {
-        if (window.innerWidth <= 500) {
+        if (myWindow.innerWidth <= 500) {
           this.isMobile = true;
         } else {
           //console.log('isMobile?', this.isMobile);
