@@ -1,10 +1,9 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { UtilService } from '../../services/util.service';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
-import { DOCUMENT } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core'
+import { DataService } from '../../services/data.service'
+import { UtilService } from '../../services/util.service'
+import { GoogleAnalyticsService } from '../../services/google-analytics.service'
+import { DomSanitizer } from '@angular/platform-browser'
+import { isPlatformBrowser, DOCUMENT } from '@angular/common'
 let myWindow = null
 
 @Component({
@@ -73,7 +72,7 @@ export class HomeComponent implements OnInit {
   public dialogUrl: any;
   public selectedMovie: any;
   public selected: any;
-  public year: string = '23';
+  public year: string = '24';
   public provider: string = 'npy';
   public genre: string = '';
   public related: Array<any>;
@@ -99,7 +98,7 @@ export class HomeComponent implements OnInit {
   ) {
     this.testBrowser = isPlatformBrowser(platformId)
     this.showTrailer = false
-    this.defaultYear = '23'
+    this.defaultYear = '24'
   }
 
   public onChange(cat: string) {
@@ -107,9 +106,9 @@ export class HomeComponent implements OnInit {
     this.type = cat
     if (this.netFlix.length === 0 || this.netFlixTv.length === 0 || this.year != '22' || this.genre != '') {
       this.genre = ''
-      this.defaultYear = '23'
+      this.defaultYear = '24'
       this.provider = 'npy'
-      this.year = '23'
+      this.year = '24'
       this.loadItems()
     }
   }
