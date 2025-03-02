@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
   public dialogUrl: any;
   public selectedMovie: any;
   public selected: any;
-  public year: string = '24';
+  public year: string = '25';
   public provider: string = 'npy';
   public genre: string = '';
   public related: Array<any>;
@@ -98,7 +98,7 @@ export class HomeComponent implements OnInit {
   ) {
     this.testBrowser = isPlatformBrowser(platformId)
     this.showTrailer = false
-    this.defaultYear = '24'
+    this.defaultYear = '25'
   }
 
   public onChange(cat: string) {
@@ -106,9 +106,9 @@ export class HomeComponent implements OnInit {
     this.type = cat
     if (this.netFlix.length === 0 || this.netFlixTv.length === 0 || this.year != '22' || this.genre != '') {
       this.genre = ''
-      this.defaultYear = '24'
+      this.defaultYear = '25'
       this.provider = 'npy'
-      this.year = '24'
+      this.year = '25'
       this.loadItems()
     }
   }
