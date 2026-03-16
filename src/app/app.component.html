@@ -42,15 +42,18 @@
       </div>
     </span>
     <span *ngIf="mobile" class="mobile-menu"> 
-        <span (click)="menu = !menu" class="title">{{!menu ? 'Menu' : 'X'}}</span>
-        <ul *ngIf="menu" [ngClass]="{'mobile-list' : menu}">
-          <li (click)="open('favorites')">Favorites</li>
-          <li (click)="open('trending')">Trending</li>
-          <li (click)="open('')">Reminders</li>
-          <li (click)="openSearch()">Search</li>
-        </ul>
+        <span (click)="toggleMenu()" class="title">{{!menu ? 'Menu' : 'X'}}</span>
     </span>
   </header>
+
+  <div *ngIf="mobile && menu" class="mobile-menu-backdrop" (click)="closeMenu()">
+    <div class="mobile-list" (click)="$event.stopPropagation()">
+      <button type="button" class="mobile-list-item" (click)="openMenuItem('favorites')">Favorites</button>
+      <button type="button" class="mobile-list-item" (click)="openMenuItem('trending')">Trending</button>
+      <button type="button" class="mobile-list-item" (click)="openMenuItem('')">Reminders</button>
+      <button type="button" class="mobile-list-item" (click)="openSearch()">Search</button>
+    </div>
+  </div>
 
   
   <div class="wrapper">
@@ -112,7 +115,7 @@
           
       </div>  
       <div class="modal-footer">
-         Built by Ian Poston 2022 
+         Built by Ian Poston 2026
             <a class="twitter-icon" href="https://twitter.com/intent/follow?screen_name=ianposton&commit=Log%20in%20and%20follow%20%40ianposton&session%5Busername_or_email%5D=ianposton&tw_p=followbutton&region=follow_link" target="_blank"> 
               <img src="./assets/images/twitter.png" alt="twitter profile" /></a>
       </div>

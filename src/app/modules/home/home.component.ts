@@ -12,6 +12,23 @@ let myWindow = null
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  public readonly genreOptions = [
+    { value: '35', label: 'Comedy' },
+    { value: '28', label: 'Action' },
+    { value: '18', label: 'Drama' },
+    { value: '10749', label: 'Romance' },
+    { value: '27', label: 'Horror' },
+    { value: '99', label: 'Doc' },
+    { value: '16', label: 'Animation' },
+    { value: '80', label: 'Crime' },
+    { value: '10751', label: 'Family' },
+    { value: '10402', label: 'Music' },
+    { value: '878', label: 'Sci-Fi' },
+    { value: '53', label: 'Thriller' },
+    { value: '37', label: 'Western' },
+    { value: '36', label: 'History' }
+  ]
+  public readonly primaryGenreValues = ['35', '28', '18', '10749', '27', '99', '16']
   public netFlix: Array<any>
   public amazon: Array<any>
   public disney: Array<any>
@@ -72,7 +89,7 @@ export class HomeComponent implements OnInit {
   public dialogUrl: any;
   public selectedMovie: any;
   public selected: any;
-  public year: string = '25';
+  public year: string = '26';
   public provider: string = 'npy';
   public genre: string = '';
   public related: Array<any>;
@@ -86,6 +103,8 @@ export class HomeComponent implements OnInit {
   public showTrailer: boolean
   public loading: boolean 
   public defaultYear: string
+  public genreMenuOpen: boolean
+  public desktopGenresExpanded: boolean
 
   constructor(
     private dataService: DataService,
@@ -98,17 +117,44 @@ export class HomeComponent implements OnInit {
   ) {
     this.testBrowser = isPlatformBrowser(platformId)
     this.showTrailer = false
-    this.defaultYear = '25'
+    this.defaultYear = '26'
+    this.genreMenuOpen = false
+    this.desktopGenresExpanded = false
+  }
+
+  public get visibleGenres() {
+    if (this.isMobile || this.desktopGenresExpanded) {
+      return this.genreOptions
+    }
+
+    const primaryGenres = this.genreOptions.filter(option => this.primaryGenreValues.includes(option.value))
+    const activeGenre = this.genreOptions.find(option => option.value === this.genre)
+
+    if (activeGenre && !this.primaryGenreValues.includes(activeGenre.value)) {
+      return [...primaryGenres, activeGenre]
+    }
+
+    return primaryGenres
+  }
+
+  public get activeGenreLabel() {
+    const activeGenre = this.genreOptions.find(option => option.value === this.genre)
+    return activeGenre ? activeGenre.label : 'Genres'
+  }
+
+  public get hasHiddenGenres() {
+    return this.visibleGenres.length < this.genreOptions.length
   }
 
   public onChange(cat: string) {
     this.dataService.type = cat
     this.type = cat
+    this.closeGenreMenu()
     if (this.netFlix.length === 0 || this.netFlixTv.length === 0 || this.year != '22' || this.genre != '') {
       this.genre = ''
-      this.defaultYear = '25'
+      this.defaultYear = '26'
       this.provider = 'npy'
-      this.year = '25'
+      this.year = '26'
       this.loadItems()
     }
   }
@@ -117,6 +163,7 @@ export class HomeComponent implements OnInit {
     if (this.year != year) {
       this.year = year
       this.provider = 'npy'
+      this.closeGenreMenu()
       this.loadItems()
     }
     
@@ -140,7 +187,52 @@ export class HomeComponent implements OnInit {
     } else if (this.genre == genre) {
       this.genre = ''
       this.loadItems()
-    } 
+    }
+
+    this.closeGenreMenu()
+  }
+
+  public toggleDesktopGenres() {
+    this.desktopGenresExpanded = !this.desktopGenresExpanded
+  }
+
+  public openGenreMenu() {
+    this.genreMenuOpen = true
+    this.toggleBodyScroll(true)
+  }
+
+  public closeGenreMenu() {
+    this.genreMenuOpen = false
+    this.toggleBodyScroll(false)
+  }
+
+  public clearGenre() {
+    if (this.genre === '') {
+      this.closeGenreMenu()
+      return
+    }
+
+    this.genre = ''
+    this.provider = 'npy'
+    this.loadItems()
+    this.closeGenreMenu()
+  }
+
+  public toggleGenreMenu() {
+    if (this.genreMenuOpen) {
+      this.closeGenreMenu()
+      return
+    }
+
+    this.openGenreMenu()
+  }
+
+  private toggleBodyScroll(isLocked: boolean) {
+    if (!this.testBrowser) {
+      return
+    }
+
+    this.document.body.style.overflow = isLocked ? 'hidden' : ''
   }
 
   public loadItems() {
@@ -256,9 +348,7 @@ export class HomeComponent implements OnInit {
       this.dataService.type = this.type
       try {
         if (myWindow.innerWidth <= 500) {
-          this.isMobile = true;
-        } else {
-          //console.log('isMobile?', this.isMobile);
+          this.isMobile = true
         }
       } catch (e) {
         console.log(e, 'window error');

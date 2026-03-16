@@ -46,8 +46,22 @@ export class AppComponent implements OnInit {
     myWindow.location.href = link
   }
 
+  public toggleMenu() {
+    this.menu = !this.menu
+  }
+
+  public closeMenu() {
+    this.menu = false
+  }
+
   public openSearch() {
+    this.closeMenu()
     this.isSearchOpen = true;
+  }
+
+  public openMenuItem(type: string) {
+    this.closeMenu()
+    this.open(type)
   }
 
   public open(type: string) {

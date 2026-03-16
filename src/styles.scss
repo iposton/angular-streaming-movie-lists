@@ -1395,7 +1395,17 @@ footer {
   }
 //}
 
-@media (max-width: 900px) { 
+@media (min-width: 700px) and (max-width: 1180px) { 
+  .my-container .item {
+    flex: 0 0 22% !important;
+    max-width: 22%;
+    margin: 0 8px;
+  }
+
+  .my-container .item .bg {
+    height: 285px;
+  }
+
   .my-container .item .bg .info {
     padding: 0 8px;
   }
@@ -1472,29 +1482,77 @@ footer {
       margin: 27px 10px 0 0;
       font-size: 14px;
       font-weight: 100;
+      position: relative;
+      z-index: 31;
     }
 
+    .title:hover {
+      cursor: pointer;
+    }
+  }
+
+  .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(0, 0, 0, 0.24);
+  }
+
+  .mobile-list {
+    position: fixed;
+    top: 72px;
+    right: 14px;
+    left: 14px;
+    background: linear-gradient(180deg, rgba(7, 38, 39, 0.98) 0%, rgba(22, 24, 24, 0.98) 100%);
+    color: #fff;
+    z-index: 31;
+    border: 1px solid rgba(229, 180, 213, 0.45);
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-list-item {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    text-align: left;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.1;
+    text-transform: uppercase;
+    padding: 18px 20px;
+  }
+
+  .mobile-list-item:hover,
+  .mobile-list-item:active {
+    cursor: pointer;
+    border-color: rgba(229, 180, 213, 0.75);
+    color: #E5B4D5;
+  }
+
+  .mobile-list-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .mobile-list-item {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .mobile-list-item:focus {
+    outline: 2px solid rgba(229, 180, 213, 0.7);
+    outline-offset: 2px;
+  }
+
+  .mobile-menu {
     .mobile-list {
-      position: absolute;
-      top: 44px;
-      right: 0;
-      background: #fff;
-      color: #222;
-      z-index: 3;
       list-style: none;
-      text-align: center;
-      width: 100px;
-      padding: 5px 10px;
-    }
-
-    .mobile-list li {
-      margin-bottom: 5px;
-    }
-
-    .mobile-list li:hover,
-    .mobile-list li.active {
-      color: #444;
-      border: 1px solid #444;
     }
   }
   // #overlay.active {

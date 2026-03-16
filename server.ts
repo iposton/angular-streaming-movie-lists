@@ -5,18 +5,56 @@ import * as express from 'express';
 import { join } from 'path';
 import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { api } from './api/api';
 const bodyParser = require('body-parser');
 
 enableProdMode();
+
+function loadEnvFile() {
+  const envPath = join(process.cwd(), '.env');
+
+  if (!existsSync(envPath)) {
+    return;
+  }
+
+  const contents = readFileSync(envPath, 'utf8');
+
+  for (const line of contents.split(/\r?\n/)) {
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue;
+    }
+
+    const separatorIndex = trimmed.indexOf('=');
+
+    if (separatorIndex === -1) {
+      continue;
+    }
+
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim().replace(/^['"]|['"]$/g, '');
+
+    if (key && process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvFile();
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
-  const apiKey = process.env.TOKEN 
+  const apiKey = process.env.TOKEN;
+
+  if (!apiKey) {
+    throw new Error('Missing TOKEN. Add it to the .env file or environment.');
+  }
+
   server.use(bodyParser.urlencoded({extended: true}));
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({

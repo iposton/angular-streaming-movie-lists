@@ -14,6 +14,7 @@
         <option value="tv"> TV </option>
     </select>
     <select name="year" id="year" (change)="onYearChange($event.target.value)" [value]="defaultYear">
+        <option value="26"> 2026 </option>
         <option value="25"> 2025 </option>
         <option value="24"> 2024 </option>
         <option value="23"> 2023 </option>
@@ -32,30 +33,66 @@
         <option value="nkpkd"> Kids </option>
     </select> -->
   </div>
-  <div class="genres center" *ngIf="gTop && provider != 'nkpkd'">
-    <span class="btn" [ngClass]="{'active': genre === '35'}" (click)="setGenre('35')">Comedy</span> 
-    <span class="btn" [ngClass]="{'active': genre === '28'}" (click)="setGenre('28')">Action</span> 
-    <span class="btn" [ngClass]="{'active': genre === '18'}" (click)="setGenre('18')">Drama</span> 
-    <span class="btn" [ngClass]="{'active': genre === '10749'}" (click)="setGenre('10749')">Romance</span> 
-    <span class="btn" [ngClass]="{'active': genre === '27'}" (click)="setGenre('27')">Horror</span> 
-    <span class="btn" [ngClass]="{'active': genre === '99'}" (click)="setGenre('99')">Doc</span>
-    <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span>
-    <span (click)="gBottom = true; gTop = false;">&#9660;</span>
+  <div class="genre-panel center" *ngIf="provider != 'nkpkd' && !isMobile">
+    <div class="genres">
+      <span
+        *ngFor="let option of visibleGenres"
+        class="btn"
+        [ngClass]="{'active': genre === option.value}"
+        (click)="setGenre(option.value)">
+        {{option.label}}
+      </span>
+      <button
+        *ngIf="hasHiddenGenres || desktopGenresExpanded"
+        type="button"
+        class="genre-toggle"
+        (click)="toggleDesktopGenres()">
+        {{desktopGenresExpanded ? 'Fewer genres' : 'More genres'}}
+      </button>
+    </div>
   </div>
-  <div class="genres center" *ngIf="gBottom && provider != 'nkpkd'">
-    <span class="btn" [ngClass]="{'active': genre === '80'}" (click)="setGenre('80')">Crime</span> 
-    <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
-    <span class="btn" [ngClass]="{'active': genre === '10402'}" (click)="setGenre('10402')">Music</span> 
-    <span class="btn" [ngClass]="{'active': genre === '878'}" (click)="setGenre('878')">Sci-Fi</span> 
-    <span class="btn" [ngClass]="{'active': genre === '53'}" (click)="setGenre('53')">Thriller</span> 
-    <span class="btn" [ngClass]="{'active': genre === '37'}" (click)="setGenre('37')">Western</span>
-    <span class="btn" [ngClass]="{'active': genre === '36'}" (click)="setGenre('36')">History</span>
-    <span (click)="gTop = true; gBottom = false;">&#9650;</span>
+  <div class="mobile-genre-bar center" *ngIf="provider != 'nkpkd' && isMobile">
+    <button
+      type="button"
+      class="mobile-genre-trigger"
+      [ngClass]="{'active': genre !== ''}"
+      [attr.aria-expanded]="genreMenuOpen"
+      (click)="toggleGenreMenu()">
+      {{activeGenreLabel}}
+    </button>
   </div>
   <div class="genres center kids" *ngIf="provider === 'nkpkd'">
   <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span> 
   <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
   </div> 
+</div>
+
+<div class="genre-sheet-backdrop" *ngIf="genreMenuOpen" (click)="closeGenreMenu()">
+  <div class="genre-sheet" (click)="$event.stopPropagation()">
+    <div class="genre-sheet-header">
+      <span>Choose Genre</span>
+      <button type="button" class="genre-sheet-close" (click)="closeGenreMenu()">Close</button>
+    </div>
+    <div class="genre-sheet-actions">
+      <button
+        type="button"
+        class="genre-sheet-clear"
+        [ngClass]="{'active': genre === ''}"
+        (click)="clearGenre()">
+        All genres
+      </button>
+    </div>
+    <div class="genre-sheet-list">
+      <button
+        *ngFor="let option of genreOptions"
+        type="button"
+        class="genre-sheet-option"
+        [ngClass]="{'active': genre === option.value}"
+        (click)="setGenre(option.value)">
+        {{option.label}}
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="center load-msg" *ngIf="submitting">
@@ -184,4 +221,3 @@
 [trailerUrlTV]="''"
 [showTrailer]="showTrailer"
 (close)="isOpen = false; showTrailer = false"></app-dialog>
-
