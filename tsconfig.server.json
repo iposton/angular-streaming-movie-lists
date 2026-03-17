@@ -10,8 +10,5 @@
     "api/api.ts",
     "src/main.server.ts",
     "server.ts"
-  ],
-  "angularCompilerOptions": {
-    "entryModule": "./src/app/app.server.module#AppServerModule"
-  }
+  ]
 }

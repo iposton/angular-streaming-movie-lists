@@ -1,17 +1,14 @@
-import 'zone.js/dist/zone-node';
-import {enableProdMode} from '@angular/core';
-import { ngExpressEngine } from '@nguniversal/express-engine';
-import * as express from 'express';
-import { join } from 'path';
-import { AppServerModule } from './src/main.server';
+import 'zone.js/node';
+
 import { APP_BASE_HREF } from '@angular/common';
+import { CommonEngine } from '@angular/ssr';
+import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+import bootstrap from './src/main.server';
 import { api } from './api/api';
-const bodyParser = require('body-parser');
 
-enableProdMode();
-
-function loadEnvFile() {
+function loadEnvFile(): void {
   const envPath = join(process.cwd(), '.env');
 
   if (!existsSync(envPath)) {
@@ -45,84 +42,96 @@ function loadEnvFile() {
 loadEnvFile();
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function app() {
+export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
-  const apiKey = process.env.TOKEN;
+  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    ? join(distFolder, 'index.original.html')
+    : join(distFolder, 'index.html');
+
+  const commonEngine = new CommonEngine();
+  const apiKey = process.env['TOKEN'];
 
   if (!apiKey) {
     throw new Error('Missing TOKEN. Add it to the .env file or environment.');
   }
 
-  server.use(bodyParser.urlencoded({extended: true}));
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine('html', ngExpressEngine({
-    bootstrap: AppServerModule,
-  }));
-
   server.set('view engine', 'html');
   server.set('views', distFolder);
+  server.use(express.urlencoded({ extended: true }));
+  server.use(express.json());
 
-  // Example Express Rest API endpoints
   server.post('/data', async (req, res) => {
     try {
-      let search = req.body.query;
-      let genre = req.body.genre;
-      let pro = req.body.pro;
-      let cat = req.body.cat;
-      const data =  await api.data.getAllMovies(search, genre, pro, cat, apiKey);
+      const search = req.body.query;
+      const genre = req.body.genre;
+      const pro = req.body.pro;
+      const cat = req.body.cat;
+      const data = await api.data.getAllMovies(search, genre, pro, cat, apiKey);
+
       res.status(200).json(data);
-    } catch(e) {
-      // console.log(e, 'error');
+    } catch {
+      res.status(500).json({ error: 'Failed to load movies.' });
     }
-  })
+  });
 
   server.post('/search', async (req, res) => {
-    let searchquery = req.body.query;
-    let encsearchquery = encodeURIComponent(searchquery);
-    let catquery = req.body.cat;
-    let enccatquery = encodeURIComponent(catquery);
-    const data =  await api.data.search(encsearchquery, apiKey, enccatquery);
+    const searchQuery = encodeURIComponent(req.body.query);
+    const catQuery = encodeURIComponent(req.body.cat);
+    const data = await api.data.search(searchQuery, apiKey, catQuery);
+
     res.status(200).json(data);
-  })
+  });
 
   server.post('/searchtv', async (req, res) => {
-    let searchquery = req.body.query;
-    let encsearchquery = encodeURIComponent(searchquery);
-    const data =  await api.data.searchtv(encsearchquery, apiKey);
+    const searchQuery = encodeURIComponent(req.body.query);
+    const data = await api.data.searchtv(searchQuery, apiKey);
+
     res.status(200).json(data);
-  })
+  });
 
   server.post('/searchtrending', async (req, res) => {
-    let searchquery = req.body.query;
-    let encsearchquery = encodeURIComponent(searchquery);
-    let catquery = req.body.cat;
-    let enccatquery = encodeURIComponent(catquery);
-    const data =  await api.data.searchTrending(encsearchquery, apiKey, enccatquery);
-    res.status(200).json(data);
-  })
+    const searchQuery = encodeURIComponent(req.body.query);
+    const catQuery = encodeURIComponent(req.body.cat);
+    const data = await api.data.searchTrending(searchQuery, apiKey, catQuery);
 
-  server.post('/trending', async (req, res) => {
-    const data =  await api.data.getTrending(apiKey);
     res.status(200).json(data);
-  })
+  });
+
+  server.post('/trending', async (_req, res) => {
+    const data = await api.data.getTrending(apiKey);
+
+    res.status(200).json(data);
+  });
 
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'
   }));
 
-  // All regular routes use the Universal engine
-  server.get('*', (req, res) => {
-    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+  // All regular routes use the Angular engine
+  server.get('*', (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
+
+    commonEngine
+      .render({
+        bootstrap,
+        documentFilePath: indexHtml,
+        url: `${protocol}://${headers.host}${originalUrl}`,
+        publicPath: distFolder,
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+        ],
+      })
+      .then((html) => res.send(html))
+      .catch((err) => next(err));
   });
 
   return server;
 }
 
-function run() {
-  const port = process.env.PORT || 4000;
+function run(): void {
+  const port = process.env['PORT'] || 4000;
 
   // Start up the Node server
   const server = app();
@@ -141,4 +150,4 @@ if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
   run();
 }
 
-export * from './src/main.server';
+export default bootstrap;

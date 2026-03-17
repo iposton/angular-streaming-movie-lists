@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, makeStateKey, StateKey, TransferState } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { StateKey, TransferState, makeStateKey } from '@angular/platform-browser';
+
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { tap } from 'rxjs/operators';
 
