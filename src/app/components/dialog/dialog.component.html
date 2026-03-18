@@ -51,7 +51,7 @@
         </div>
         <div class="row" *ngIf="data != null && !loading"> 
           <div class="no-rem" *ngIf="data != null && data.length === 0">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
-          <div class="col related-col favorite-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': content === ('movies' || 'tv') && util.getProvider(rem?.provider) == ''}">
+          <div class="col related-col favorite-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider(rem?.provider) == ''}">
               <span class="item">
            
                   <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">

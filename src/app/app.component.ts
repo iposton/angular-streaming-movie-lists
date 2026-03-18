@@ -1,15 +1,16 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, DOCUMENT } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { DataService } from './services/data.service';
 import { UtilService } from './services/util.service';
-import { DOCUMENT } from '@angular/common';
+
 import { isPlatformBrowser } from '@angular/common';
 let myWindow = null
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   public isOpen: boolean = false;

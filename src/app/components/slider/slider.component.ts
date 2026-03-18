@@ -11,10 +11,11 @@ import {
 import { UtilService } from '../../services/util.service';
 
 @Component({
-  selector: 'app-slider',
-  templateUrl: './slider.component.html',
-  styleUrls: ['./slider.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-slider',
+    templateUrl: './slider.component.html',
+    styleUrls: ['./slider.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SliderComponent implements OnInit {
 

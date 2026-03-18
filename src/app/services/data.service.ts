@@ -58,8 +58,8 @@ export class DataService {
     }
   }
 
-  searchTrending(item) {
-    let searchterm = `query=${item}&cat=${this.type}`;
+  searchTrending(item, mode = 'title') {
+    let searchterm = `query=${item}&cat=${this.type}&mode=${mode}`;
     try {
       this.searchRes = this.http.post('/searchtrending', searchterm, {headers});
       return this.searchRes;

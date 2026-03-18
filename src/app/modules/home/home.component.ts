@@ -1,18 +1,19 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core'
+import { Component, OnInit, Inject, PLATFORM_ID, DOCUMENT } from '@angular/core'
 import { DataService } from '../../services/data.service'
 import { UtilService } from '../../services/util.service'
 import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { DomSanitizer } from '@angular/platform-browser'
-import { isPlatformBrowser, DOCUMENT } from '@angular/common'
+import { isPlatformBrowser } from '@angular/common'
 let myWindow = null
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent implements OnInit {
-  public readonly genreOptions = [
+  public readonly movieGenreOptions = [
     { value: '35', label: 'Comedy' },
     { value: '28', label: 'Action' },
     { value: '18', label: 'Drama' },
@@ -28,7 +29,19 @@ export class HomeComponent implements OnInit {
     { value: '37', label: 'Western' },
     { value: '36', label: 'History' }
   ]
-  public readonly primaryGenreValues = ['35', '28', '18', '10749', '27', '99', '16']
+  public readonly tvGenreOptions = [
+    { value: '35', label: 'Comedy' },
+    { value: '18', label: 'Drama' },
+    { value: '99', label: 'Doc' },
+    { value: '16', label: 'Animation' },
+    { value: '80', label: 'Crime' },
+    { value: '10751', label: 'Family' },
+    { value: '10759', label: 'Action & Adventure' },
+    { value: '9648', label: 'Mystery' },
+    { value: '10765', label: 'Sci-Fi & Fantasy' },
+    { value: '10768', label: 'War & Politics' },
+    { value: '37', label: 'Western' }
+  ]
   public netFlix: Array<any>
   public amazon: Array<any>
   public disney: Array<any>
@@ -104,7 +117,6 @@ export class HomeComponent implements OnInit {
   public loading: boolean 
   public defaultYear: string
   public genreMenuOpen: boolean
-  public desktopGenresExpanded: boolean
 
   constructor(
     private dataService: DataService,
@@ -119,31 +131,15 @@ export class HomeComponent implements OnInit {
     this.showTrailer = false
     this.defaultYear = '26'
     this.genreMenuOpen = false
-    this.desktopGenresExpanded = false
-  }
+	  }
 
-  public get visibleGenres() {
-    if (this.isMobile || this.desktopGenresExpanded) {
-      return this.genreOptions
-    }
-
-    const primaryGenres = this.genreOptions.filter(option => this.primaryGenreValues.includes(option.value))
-    const activeGenre = this.genreOptions.find(option => option.value === this.genre)
-
-    if (activeGenre && !this.primaryGenreValues.includes(activeGenre.value)) {
-      return [...primaryGenres, activeGenre]
-    }
-
-    return primaryGenres
+  public get genreOptions() {
+    return this.type === 'tv' ? this.tvGenreOptions : this.movieGenreOptions
   }
 
   public get activeGenreLabel() {
     const activeGenre = this.genreOptions.find(option => option.value === this.genre)
     return activeGenre ? activeGenre.label : 'Genres'
-  }
-
-  public get hasHiddenGenres() {
-    return this.visibleGenres.length < this.genreOptions.length
   }
 
   public onChange(cat: string) {
@@ -190,10 +186,6 @@ export class HomeComponent implements OnInit {
     }
 
     this.closeGenreMenu()
-  }
-
-  public toggleDesktopGenres() {
-    this.desktopGenresExpanded = !this.desktopGenresExpanded
   }
 
   public openGenreMenu() {

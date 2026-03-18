@@ -1,7 +1,7 @@
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
+import { CommonEngine } from '@angular/ssr/node';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
@@ -91,11 +91,16 @@ export function app(): express.Express {
   });
 
   server.post('/searchtrending', async (req, res) => {
-    const searchQuery = encodeURIComponent(req.body.query);
-    const catQuery = encodeURIComponent(req.body.cat);
-    const data = await api.data.searchTrending(searchQuery, apiKey, catQuery);
+    try {
+      const searchQuery = encodeURIComponent(req.body.query);
+      const catQuery = encodeURIComponent(req.body.cat);
+      const modeQuery = encodeURIComponent(req.body.mode || 'title');
+      const data = await api.data.searchTrending(searchQuery, apiKey, catQuery, modeQuery);
 
-    res.status(200).json(data);
+      res.status(200).json(data);
+    } catch {
+      res.status(500).json({ error: 'Failed to run search.' });
+    }
   });
 
   server.post('/trending', async (_req, res) => {

@@ -1,5 +1,51 @@
 # Angular Streaming Movies Lists
 
-This is a project to show the top streaming options (movies and tv) on streaming platoforms such as NetFlix, Amazon Prime, and Disney+.
+This project shows streaming movie and TV recommendations across platforms such as Netflix, Prime Video, Disney+, HBO Max, Hulu, and Apple TV+.
 
-I am using Angular 16 and (The Movie DB)[https://www.themoviedb.org/?language=en-US] api to source the data. Enjoy :)
+It is built with Angular 20, uses server-side rendering with `@angular/ssr`, and includes Angular service worker support for PWA behavior.
+
+Data comes from [The Movie Database (TMDB)](https://www.themoviedb.org/?language=en-US) API.
+
+## Requirements
+
+- Node.js 24.x works with the current Angular 20 setup
+- npm
+- A TMDB API token stored in `.env`
+
+## Environment
+
+Create a `.env` file in the project root with:
+
+```env
+TOKEN=your_tmdb_api_token
+```
+
+The SSR server reads this token at startup and will fail to boot if it is missing.
+
+## Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the SSR dev server:
+
+```bash
+npm run dev:ssr
+```
+
+## Production Build
+
+Build the browser app, service worker, and server bundle:
+
+```bash
+npm run build:ssr
+```
+
+Run the built SSR server:
+
+```bash
+npm run serve:ssr
+```

@@ -3,9 +3,10 @@ import { Component, ElementRef, Inject, PLATFORM_ID, Renderer2 } from '@angular/
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-google-analytics-gtag',
-  templateUrl: './google-analytics-gtag.component.html',
-  styleUrls: ['./google-analytics-gtag.component.scss']
+    selector: 'app-google-analytics-gtag',
+    templateUrl: './google-analytics-gtag.component.html',
+    styleUrls: ['./google-analytics-gtag.component.scss'],
+    standalone: false
 })
 export class GoogleAnalyticsGtagComponent {
   trackingCode = environment.googleAnalyticsTrackingCode;

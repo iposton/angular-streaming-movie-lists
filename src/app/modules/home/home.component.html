@@ -33,25 +33,7 @@
         <option value="nkpkd"> Kids </option>
     </select> -->
   </div>
-  <div class="genre-panel center" *ngIf="provider != 'nkpkd' && !isMobile">
-    <div class="genres">
-      <span
-        *ngFor="let option of visibleGenres"
-        class="btn"
-        [ngClass]="{'active': genre === option.value}"
-        (click)="setGenre(option.value)">
-        {{option.label}}
-      </span>
-      <button
-        *ngIf="hasHiddenGenres || desktopGenresExpanded"
-        type="button"
-        class="genre-toggle"
-        (click)="toggleDesktopGenres()">
-        {{desktopGenresExpanded ? 'Fewer genres' : 'More genres'}}
-      </button>
-    </div>
-  </div>
-  <div class="mobile-genre-bar center" *ngIf="provider != 'nkpkd' && isMobile">
+  <div class="mobile-genre-bar center" *ngIf="provider != 'nkpkd'">
     <button
       type="button"
       class="mobile-genre-trigger"
@@ -198,7 +180,7 @@
 </div>
 
 <div class="center" *ngIf="provider === 'npy'">
-  <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{util.genres[genre]}}</span>
+  <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{activeGenreLabel}}</span>
 </div>
 
 </div>

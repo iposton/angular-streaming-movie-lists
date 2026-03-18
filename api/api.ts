@@ -71,7 +71,8 @@ let searchQueryInfo = [
   {
     results: [],
     providers: [],
-    credits: []
+    credits: [],
+    person: null
   }
 ];
 
@@ -191,10 +192,14 @@ methods.getAllMovies = async (year: string, genre: string, provider: string, cat
   
   
   let apiRoot = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}`
-  //air_date.gte=&air_date.lte=&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=2024-01-01&release_date.lte=2024-07-15&show_me=everything&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&watch_region=US&with_genres=&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_watch_monetization_types=&with_watch_providers=9&with_release_type=&with_runtime.gte=0&with_runtime.lte=400&language=en-US
-  let nfUrl = `${apiRoot}&air_date.gte=&air_date.lte=&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&watch_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=en&with_watch_monetization_types=&with_watch_providers=${pro1}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let amzUrl = `${apiRoot}&air_date.gte=&air_date.lte=&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&watch_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_watch_monetization_types=&with_watch_providers=${pro2}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
-  let dPlusUrl = `${apiRoot}&air_date.gte=&air_date.lte=&certification=&certification_country=US&debug=&first_air_date.gte=&first_air_date.lte=&language=en-US&watch_region=US&page=1&primary_release_date.gte=&primary_release_date.lte=&region=&release_date.gte=${startDate}&release_date.lte=${dailyDate}&show_me=0&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_original_language=&with_watch_monetization_types=&with_watch_providers=${pro3}&with_release_type=&with_runtime.gte=0&with_runtime.lte=400`;
+  const dateFilter = type === 'tv'
+    ? `first_air_date.gte=${startDate}&first_air_date.lte=${dailyDate}`
+    : `release_date.gte=${startDate}&release_date.lte=${dailyDate}`
+  const providerFilter = `watch_region=US&with_watch_monetization_types=flatrate&with_watch_providers=`
+  const baseDiscoverParams = `${dateFilter}&language=en-US&page=1&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_runtime.gte=0&with_runtime.lte=400`
+  let nfUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=en&${providerFilter}${pro1}`;
+  let amzUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=&${providerFilter}${pro2}`;
+  let dPlusUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=&${providerFilter}${pro3}`;
 
   let nfPromise = new Promise((resolve, reject) => {
     request(nfUrl, {}, async function(err, res, body) {
@@ -516,59 +521,157 @@ methods.searchtv = async (id: string, apiKey: string) => {
   return searchInfo[0];
 };
 
-methods.searchTrending = async (term: string, apiKey: string, cat: string) => {
+methods.searchTrending = async (term: string, apiKey: string, cat: string, mode: string = 'title') => {
   //let searchQuery = `https://www.themoviedb.org/search/trending?language=en-US&query=${term}`;
   let type = cat === 'tv' ? 'tv' : 'movie'
+  let searchMode = mode === 'actor' || mode === 'director' ? mode : 'title'
+  searchQueryInfo[0] = {
+    results: [],
+    providers: [],
+    credits: [],
+    person: null
+  };
+
+  const uniqueResults = (items) => {
+    let seen = new Set();
+    return items.filter((item) => {
+      if (item == null || item.id == null || seen.has(item.id)) {
+        return false;
+      }
+
+      seen.add(item.id);
+      return true;
+    });
+  };
+
+  const enrichResults = async (items) => {
+    let mvProviders = [];
+    let mvCredits = [];
+
+    if (!items.length) {
+      return searchQueryInfo;
+    }
+
+    let enrichPromise = new Promise((resolve, reject) => {
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+      const providers = async() => {
+        forkJoin(
+          items.map( m =>
+            request(
+              `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                mvProviders.push(data);
+                if (mvProviders.length > 1 || items.length === 1) {
+                  return searchQueryInfo[0]['providers'] = mvProviders;
+                }
+              }
+            )
+          )
+        )  
+      }
+
+      const credits = async() => {
+        await providers();
+
+        forkJoin(
+          items.map( m =>
+            request(
+              `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
+              {},
+              async function(err, res, body) {
+                let data = await JSON.parse(body);
+                mvCredits.push(data);
+                if (mvCredits.length > 1 || items.length === 1) {
+                  searchQueryInfo[0]['credits'] = mvCredits;         
+                }
+              }
+            )
+          )
+        );
+        await sleep(1500);
+        resolve('done');
+      }
+
+      credits();
+    });
+
+    await enrichPromise;
+    return searchQueryInfo;
+  };
+
+  if (searchMode === 'actor' || searchMode === 'director') {
+    let personSearchUrl = `https://api.themoviedb.org/3/search/person?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
+    let personCreditsPath = type === 'tv' ? 'tv_credits' : 'movie_credits';
+
+    let actorPromise = new Promise((resolve, reject) => {
+      request(personSearchUrl, {}, async function(err, res, body) {
+        if (typeof body === 'undefined') {
+          return resolve('done');
+        }
+
+        let data = await JSON.parse(body);
+        let people = data['results'] || [];
+        let decodedTerm = decodeURIComponent(term).trim().toLowerCase();
+        let bestMatch = people.find((person) => person.name != null && person.name.trim().toLowerCase() === decodedTerm) || people[0];
+
+        if (bestMatch == null) {
+          searchQueryInfo[0]['results'] = [];
+          return resolve('done');
+        }
+
+        searchQueryInfo[0]['person'] = bestMatch;
+
+        request(
+          `https://api.themoviedb.org/3/person/${bestMatch.id}/${personCreditsPath}?api_key=${apiKey}&language=en-US`,
+          {},
+          async function(err, res, creditsBody) {
+            if (typeof creditsBody === 'undefined') {
+              searchQueryInfo[0]['results'] = [];
+              return resolve('done');
+            }
+
+            let creditsData = await JSON.parse(creditsBody);
+            let matchedCredits = searchMode === 'director'
+              ? (creditsData['crew'] || []).filter((item) => {
+                  if (type === 'tv') {
+                    return item.poster_path != null && (item.department === 'Directing' || item.job === 'Director');
+                  }
+
+                  return item.poster_path != null && item.job === 'Director';
+                })
+              : (creditsData['cast'] || []).filter((item) => item.poster_path != null);
+
+            let credits = uniqueResults(matchedCredits
+              .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+            );
+
+            if (credits.length > 20) {
+              credits.length = 20;
+            }
+
+            searchQueryInfo[0]['results'] = credits;
+            await enrichResults(credits);
+            resolve('done');
+          }
+        );
+      })
+    });
+
+    await actorPromise;
+    return searchQueryInfo;
+  }
+
   let searchQuery = `https://api.themoviedb.org/3/search/${type}?api_key=${apiKey}&language=en-US&page=1&include_adult=false&query=${term}`;
   let searchPromise = new Promise((resolve, reject) => {
     request(searchQuery, {}, async function(err, res, body) {
-      let mvProviders = []
-      let mvCredits = []
       if (typeof body !== 'undefined') {
-          const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
           let data = await JSON.parse(body)
           searchQueryInfo[0]['results'] = data['results']
-
-          const providers = async() => {
-            forkJoin(
-              data['results']?.map( m =>
-                request(
-                  `https://api.themoviedb.org/3/${type}/${m.id}/watch/providers?api_key=${apiKey}`,
-                  {},
-                  async function(err, res, body) {
-                    let data = await JSON.parse(body);
-                    mvProviders.push(data);
-                    if (mvProviders.length > 1) {
-                      return searchQueryInfo[0]['providers'] = mvProviders;
-                    }
-                  }
-                )
-              )
-            )  
-          }
-
-          const credits = async() => {
-            await providers();
-            
-            forkJoin(
-              data['results']?.map( m =>
-                request(
-                  `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                  {},
-                  async function(err, res, body) {
-                    let data = await JSON.parse(body);
-                    mvCredits.push(data);
-                    if (mvCredits.length > 1) {
-                      searchQueryInfo[0]['credits'] = mvCredits;         
-                    }
-                  }
-                )
-              )
-            );
-            await sleep(1500);
-            resolve('done');
-          }
-        credits() 
+          await enrichResults(data['results'] || []);
+          resolve('done');
       }
     })
   })

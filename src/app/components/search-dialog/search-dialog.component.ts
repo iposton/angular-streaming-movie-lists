@@ -5,9 +5,10 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { isPlatformBrowser } from '@angular/common'
 
 @Component({
-  selector: 'app-search-dialog',
-  templateUrl: './search-dialog.component.html',
-  styleUrls: ['./search-dialog.component.scss']
+    selector: 'app-search-dialog',
+    templateUrl: './search-dialog.component.html',
+    styleUrls: ['./search-dialog.component.scss'],
+    standalone: false
 })
 export class SearchDialogComponent implements OnInit {
   @Input('isOpen')
@@ -25,6 +26,8 @@ export class SearchDialogComponent implements OnInit {
   public hoveredItem: string = ''
   public showRank: boolean = true
   public noTrailerMsg: string = ''
+  public searchMode: 'title' | 'actor' | 'director' = 'title'
+  public searchTerm: string = ''
   
   constructor(public dataService: DataService, 
               public util: UtilService, 
@@ -45,16 +48,45 @@ export class SearchDialogComponent implements OnInit {
   }
 
   public doSearch(e) {
-    if (e.target.value.length > 2) {
-      this.dataService.searchTrending(e.target.value).subscribe(res => {
-        this.format(res)
-      })
+    this.searchTerm = e.target.value;
+    this.runSearch(this.searchTerm);
+  }
+
+  public setSearchMode(mode: 'title' | 'actor' | 'director') {
+    if (this.searchMode === mode) {
+      return;
     }
-    if (e.target.value.length == 0) {
+
+    this.searchMode = mode;
+    this.runSearch(this.searchTerm);
+  }
+
+  private resetSearchState() {
+    this.loading = false;
+    this.results = [];
+    this.selectedMovie = null;
+    this.trailerUrl = null;
+    this.showTrailer = false;
+  }
+
+  private runSearch(term: string) {
+    if (term.length > 2) {
+      this.loading = true;
+      this.dataService.searchTrending(term, this.searchMode).subscribe(res => {
+        this.format(res);
+      }, () => {
+        this.loading = false;
+        this.results = [];
+      });
+    }
+
+    if (term.length === 0) {
+      this.resetSearchState();
+    }
+
+    if (term.length > 0 && term.length < 3) {
       this.results = []
-      this.selectedMovie = null 
-      this.trailerUrl = null
-      this.showTrailer = false
+      this.loading = false
     }
   }
 
