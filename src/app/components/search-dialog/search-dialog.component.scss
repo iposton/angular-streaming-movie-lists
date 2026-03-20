@@ -1,1 +1,44 @@
+.search-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
 
+.search-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0;
+}
+
+.search-tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+}
+
+.search-input {
+  position: static;
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+@media (max-width: 500px) {
+  .search-row {
+    gap: 10px;
+  }
+
+  .search-tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .search-input {
+    max-width: none;
+    font-size: 16px;
+  }
+}

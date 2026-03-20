@@ -1582,7 +1582,7 @@ footer {
       font-size: 14px;
       font-weight: 100;
       position: relative;
-      z-index: 31;
+      z-index: 61;
     }
 
     .title:hover {
@@ -1593,7 +1593,7 @@ footer {
   .mobile-menu-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 30;
+    z-index: 60;
     background: rgba(0, 0, 0, 0.24);
   }
 
@@ -1604,7 +1604,7 @@ footer {
     left: 14px;
     background: linear-gradient(180deg, rgba(7, 38, 39, 0.98) 0%, rgba(22, 24, 24, 0.98) 100%);
     color: #fff;
-    z-index: 31;
+    z-index: 61;
     border: 1px solid rgba(229, 180, 213, 0.45);
     border-radius: 24px;
     padding: 18px;

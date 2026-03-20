@@ -29,7 +29,7 @@
           </div>
         </div> 
         <div class="row search-row">
-          <span class="reminderbar">
+          <span class="reminderbar search-tabs">
             <span class="tab" [ngClass]="{'active': searchMode === 'title'}" (click)="setSearchMode('title')">Title</span>
             <span class="tab" [ngClass]="{'active': searchMode === 'actor'}" (click)="setSearchMode('actor')">Actor</span>
             <span class="tab" [ngClass]="{'active': searchMode === 'director'}" (click)="setSearchMode('director')">Director</span>
@@ -38,7 +38,7 @@
             (input)="doSearch($event)"
             id="term"
             type="search"
-            class="form-control"
+            class="form-control search-input"
             [placeholder]="searchMode === 'actor' ? 'search by actor name' : searchMode === 'director' ? 'search by director name' : 'search by title'">
           <span class="rec-title" *ngIf="results != null">{{ results?.length ? 'Results' : (searchMode === 'actor' ? 'Search by actor' : searchMode === 'director' ? 'Search by director' : 'Search '+ dataService.type) }}</span>
         </div>
