@@ -4,6 +4,8 @@
 
 .mobile-genre-bar {
   margin-top: 16px;
+  position: relative;
+  z-index: 35;
 }
 
 .mobile-genre-trigger {
@@ -16,6 +18,9 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 14px;
+  position: relative;
+  z-index: 36;
+  pointer-events: auto;
 }
 
 .mobile-genre-trigger.active {
@@ -77,7 +82,7 @@
 .genre-sheet-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 50;
   background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: flex-end;
