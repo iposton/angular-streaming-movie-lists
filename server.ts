@@ -70,8 +70,9 @@ export function app(): express.Express {
       const data = await api.data.getAllMovies(search, genre, pro, cat, apiKey);
 
       res.status(200).json(data);
-    } catch {
-      res.status(500).json({ error: 'Failed to load movies.' });
+    } catch (error) {
+      console.error('Failed to load /data from TMDB:', error);
+      res.status(502).json({ error: 'The movie service is temporarily unavailable.' });
     }
   });
 

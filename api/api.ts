@@ -1,5 +1,27 @@
 let request = require('request');
 let methods: any = {};
+let nextTmdbRequestAt = 0;
+let tmdbRequestQueue = Promise.resolve();
+
+const scheduleTmdbRequest = async <T>(operation: () => Promise<T>): Promise<T> => {
+  let releaseQueue: () => void;
+  const previousRequest = tmdbRequestQueue;
+  tmdbRequestQueue = new Promise<void>((resolve) => {
+    releaseQueue = resolve;
+  });
+
+  await previousRequest;
+
+  const delay = Math.max(0, nextTmdbRequestAt - Date.now());
+  if (delay > 0) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  nextTmdbRequestAt = Date.now() + 50;
+  releaseQueue!();
+  return operation();
+};
+
 let trending = [
   {
     movies: [],
@@ -13,8 +35,7 @@ let trending = [
   }
 ]
 
-let mainMovies = [
-  {
+const createMovieLists = () => ({
     nfMovies: [],
     nfDetails: [],
     nfCredits: [],
@@ -54,8 +75,7 @@ let mainMovies = [
     appleTv: [],
     appleTvDetails: [],
     appleTvCredits: []
-  }
-]
+});
 
 let searchInfo = [
   {
@@ -76,285 +96,95 @@ let searchQueryInfo = [
   }
 ];
 
-let startDate = '2021-01-01';
-let pro1 = "8"
-let pro2 = "9"
-let pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123";
-let name1 = "nfMovies"
-let name2 = "amzMovies"
-let name3 = "disneyMovies"
-let dets1 = "nfDetails"
-let dets2 = "amzDetails"
-let dets3 = "disneyDetails"
-let creds1 = "nfCredits"
-let creds2 = "amzCredits"
-let creds3 = "disneyCredits"
 import { forkJoin } from 'rxjs';
 
 methods.getDate = async () => {
-  let utcDate = new Date();
-  utcDate.setHours(utcDate.getHours() - 8);
-  let myDate = new Date(utcDate);
-  return myDate.toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
 }
 
 methods.getAllMovies = async (year: string, genre: string, provider: string, cat: string, apiKey: string) => {
-  let type = cat === 'tv' ? 'tv' : 'movie'
-  let dailyDate = methods.getDate()
-  startDate = year === '26' ? '2026-01-01' : year === '25' ? '2025-01-01' : year === '24' ? '2024-01-01' : year === '23' ? '2023-01-01' : year === '22' ? '2022-01-01' : year === '21' ? '2021-01-01' : year === '20' ? '2020-01-01' : year === '19' ? '2019-01-01' : year === '18' ? '2018-01-01' : year === '17' ? '2017-01-01' : year === '16' ? '2016-01-01' : '2015-01-01';
-  dailyDate = year === '26' ? await methods.getDate() : year === '25' ? '2025-12-31' : year === '24' ? '2024-12-31' : year === '23' ? '2023-12-31' : year === '22' ? '2022-12-31' : year === '21' ? '2021-12-31' : year === '20' ? '2020-12-31' : year === '19' ? '2019-12-31' : year === '18' ? '2018-12-31' : year === '17' ? '2017-12-31' : year === '16' ? '2016-12-31' : '2015-12-31';
- 
-  if (type === 'movie') {
-    if (provider === 'hha') {
-      pro1 = "1899"
-      name1 = "hboMovies"
-      dets1 = "hboDetails"
-      creds1 = "hboCredits"
-      pro2 = "15"
-      name2 = "huluMovies"
-      dets2 = "huluDetails"
-      creds2 = "huluCredits"
-      pro3 = "350"
-      name3 = "appleMovies"
-      dets3 = "appleDetails"
-      creds3 = "appleCredits"
-    } else if (provider === 'nkpkd') {
-      pro1 = "175";
-      pro2 = "337";
-      pro3 = "293";
-    } else if (provider === 'npy') {
-      pro1 = "8"
-      name1 = "nfMovies"
-      dets1 = "nfDetails"
-      creds1 = "nfCredits"
-      pro2 = "9"
-      name2 = "amzMovies"
-      dets2 = "amzDetails"
-      creds2 = "amzCredits"
-      pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123" //YT,FF,TMC,TNT,TBS,FX
-      name3 = "disneyMovies"
-      dets3 = "disneyDetails"
-      creds3 = "disneyCredits"
-      mainMovies[0].hboMovies = []
-      mainMovies[0].hboDetails = []
-      mainMovies[0].hboCredits = []
-      mainMovies[0].huluMovies = []
-      mainMovies[0].huluDetails = []
-      mainMovies[0].huluCredits = []
-      mainMovies[0].appleMovies = []
-      mainMovies[0].appleDetails = []
-      mainMovies[0].appleCredits = []
-    }
-  }
-
-  if (type === 'tv') {
-    if (provider === 'hha') {
-      pro1 = "1899" //384"
-      name1 = "hboTv"
-      dets1 = "hboTvDetails"
-      creds1 = "hboTvCredits"
-      pro2 = "15"
-      name2 = "huluTv"
-      dets2 = "huluTvDetails"
-      creds2 = "huluTvCredits"
-      pro3 = "350"
-      name3 = "appleTv"
-      dets3 = "appleTvDetails"
-      creds3 = "appleTvCredits"
-    } else if (provider === 'nkpkd') {
-      pro1 = "175";
-      pro2 = "337";
-      pro3 = "293";
-    } else if (provider === 'npy') {
-      pro1 = "8"
-      name1 = "nfTv"
-      dets1 = "nfTvDetails"
-      creds1 = "nfTvCredits"
-      pro2 = "9"
-      name2 = "amzTv"
-      dets2 = "amzTvDetails"
-      creds2 = "amzTvCredits"
-      pro3 = "337" //"235%7C211%7C361%7C363%7C506%7C123" //YT,FF,TMC,TNT,TBS,FX
-      name3 = "disneyTv"
-      dets3 = "disneyTvDetails"
-      creds3 = "disneyTvCredits"
-      mainMovies[0].hboTv = []
-      mainMovies[0].hboTvDetails = []
-      mainMovies[0].hboTvCredits = []
-      mainMovies[0].huluTv = []
-      mainMovies[0].huluTvDetails = []
-      mainMovies[0].huluTvCredits = []
-      mainMovies[0].appleTv = []
-      mainMovies[0].appleTvDetails = []
-      mainMovies[0].appleTvCredits = []
-    }
-  }
-  
-  
-  let apiRoot = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}`
+  const type = cat === 'tv' ? 'tv' : 'movie';
+  const selectedYear = /^2[0-6]$/.test(year) ? `20${year}` : '2015';
+  const startDate = `${selectedYear}-01-01`;
+  const dailyDate = selectedYear === '2026' ? await methods.getDate() : `${selectedYear}-12-31`;
+  const providerIds = provider === 'hha'
+    ? ['1899', '15', '350']
+    : provider === 'nkpkd'
+      ? ['175', '337', '293']
+      : ['8', '9', '337'];
+  const prefixes = provider === 'hha'
+    ? ['hbo', 'hulu', 'apple']
+    : ['nf', 'amz', 'disney'];
+  const mediaSuffix = type === 'tv' ? 'Tv' : 'Movies';
+  const output = createMovieLists();
+  const apiRoot = 'https://api.themoviedb.org/3';
   const dateFilter = type === 'tv'
     ? `first_air_date.gte=${startDate}&first_air_date.lte=${dailyDate}`
     : `release_date.gte=${startDate}&release_date.lte=${dailyDate}`
-  const providerFilter = `watch_region=US&with_watch_monetization_types=flatrate&with_watch_providers=`
-  const baseDiscoverParams = `${dateFilter}&language=en-US&page=1&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${genre}&with_keywords=&with_networks=&with_origin_country=&with_runtime.gte=0&with_runtime.lte=400`
-  let nfUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=en&${providerFilter}${pro1}`;
-  let amzUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=&${providerFilter}${pro2}`;
-  let dPlusUrl = `${apiRoot}&${baseDiscoverParams}&with_original_language=&${providerFilter}${pro3}`;
+  const baseDiscoverParams = `${dateFilter}&language=en-US&page=1&sort_by=popularity.desc&vote_average.gte=0&vote_average.lte=10&vote_count.gte=0&with_genres=${encodeURIComponent(genre || '')}&with_runtime.gte=0&with_runtime.lte=400`;
 
-  let nfPromise = new Promise((resolve, reject) => {
-    request(nfUrl, {}, async function(err, res, body) {
-      let netflixDetails = [];
-      let netflixCredits = [];
-      //console.log(body, 'got body');
-      if (typeof body !== 'undefined') {
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        let data = await JSON.parse(body);
-        mainMovies[0][`${name1}`] = data['results'];
-  
-        const details = async() => {
-          forkJoin(
-            data['results']?.map( m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  netflixDetails.push(data);
-                  if (netflixDetails.length > 1) {
-                    return mainMovies[0][`${dets1}`] = netflixDetails;
-                  }
-                }
-              )
-            )
-          );
+  const requestJson = async (url: string, attempt = 0): Promise<any> =>
+    scheduleTmdbRequest(() => new Promise((resolve, reject) => {
+      request(url, { json: true, timeout: 8000 }, (err, response, body) => {
+        if (err) {
+          reject(err);
+          return;
         }
 
-        const credits = async() => {
-          await details();
-          forkJoin(
-            data['results']?.map( m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  netflixCredits.push(data);
-                  if (netflixCredits.length > 1) {
-                    mainMovies[0][`${creds1}`] = netflixCredits;
-                    //let result = await Promise.resolve(netflixCredits);
-                  }
-                }
-              )
-            )
-          );
-          await sleep(1500);
-          resolve('done');
-        }
-        credits();
-      }
-    });
-  });
+        if (response?.statusCode === 429 && attempt < 3) {
+          const retryAfter = Number(response.headers?.['retry-after']);
+          const retryDelay = Number.isFinite(retryAfter)
+            ? retryAfter * 1000
+            : 500 * Math.pow(2, attempt);
 
-  let amzPromise = new Promise((resolve, reject) => {
-    request(amzUrl, {}, async function(err, res, body) {
-      let amazonDetails = [];
-      let amazonCredits = [];
-
-      if (typeof body !== 'undefined') {
-        let data = await JSON.parse(body);
-        mainMovies[0][`${name2}`] = data['results'];
-
-        const details = async function() {
-          forkJoin(
-            data['results']?.map(async m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  amazonDetails.push(data);
-                  return mainMovies[0][`${dets2}`] = amazonDetails;
-                }
-              )
-            )
-          );
+          setTimeout(() => {
+            requestJson(url, attempt + 1).then(resolve, reject);
+          }, retryDelay);
+          return;
         }
 
-        const credits = async function() {
-          await details();
-          forkJoin(
-            data['results']?.map(async m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  amazonCredits.push(data);
-                  mainMovies[0][`${creds2}`] = amazonCredits;
-                }
-              )
-            )
-          );
-          resolve('done');
-        }
-        credits();  
-      }
-    });
-  });
-
-  let dPromise = new Promise((resolve, reject) => {
-    request(dPlusUrl, {}, async function(err, res, body) {
-      let disneyDetails = [];
-      let disneyCredits = [];
-
-      if (typeof body !== 'undefined') {
-        let data = await JSON.parse(body);
-        mainMovies[0][`${name3}`] = data['results'];
-
-        const details = async function() {
-          forkJoin(
-            data['results']?.map(async m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  disneyDetails.push(data);
-                  return (mainMovies[0][`${dets3}`] = disneyDetails);
-                }
-              )
-            )
-          );
+        if (!response || response.statusCode < 200 || response.statusCode >= 300) {
+          reject(new Error(`TMDB returned HTTP ${response?.statusCode || 'unknown'}`));
+          return;
         }
 
-        await details();
+        resolve(body);
+      });
+    }));
 
-        const credits = async function() {
-          forkJoin(
-            data['results']?.map(async m =>
-              request(
-                `https://api.themoviedb.org/3/${type}/${m.id}/credits?api_key=${apiKey}&language=en-US`,
-                {},
-                async function(err, res, body) {
-                  let data = await JSON.parse(body);
-                  disneyCredits.push(data);
-                  return (mainMovies[0][`${creds3}`] = disneyCredits);
-                }
-              )
-            )
-          );
-        }
+  await Promise.all(providerIds.map(async (providerId, index) => {
+    const originalLanguage = index === 0 ? 'en' : '';
+    const discoverUrl = `${apiRoot}/discover/${type}?api_key=${apiKey}&${baseDiscoverParams}&with_original_language=${originalLanguage}&watch_region=US&with_watch_monetization_types=flatrate&with_watch_providers=${providerId}`;
+    const discoverData = await requestJson(discoverUrl);
+    const results = Array.isArray(discoverData?.results) ? discoverData.results : [];
+    const prefix = prefixes[index];
+    const listKey = `${prefix}${mediaSuffix}`;
+    const detailsKey = `${prefix}${type === 'tv' ? 'TvDetails' : 'Details'}`;
+    const creditsKey = `${prefix}${type === 'tv' ? 'TvCredits' : 'Credits'}`;
 
-        await credits();
-        resolve('done');
-      }
-    });
-  });
+    output[listKey] = results;
+    const enrichedResults = await Promise.all(results.map(async (item) => {
+      const fullDetails = await requestJson(
+        `${apiRoot}/${type}/${item.id}?api_key=${apiKey}&language=en-US&append_to_response=credits`
+      );
+      const { credits = {}, ...details } = fullDetails;
 
-  let result = await nfPromise;
-  let result2 = await amzPromise;
-  let result3 = await dPromise;
-  return mainMovies;
+      return {
+        details,
+        credits: { id: item.id, ...credits }
+      };
+    }));
+
+    output[detailsKey] = enrichedResults.map((item) => item.details);
+    output[creditsKey] = enrichedResults.map((item) => item.credits);
+  }));
+
+  return [output];
 };
 
 methods.search = async (id: string, apiKey: string, cat: string) => {
