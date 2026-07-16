@@ -33,7 +33,7 @@
         <option value="nkpkd"> Kids </option>
     </select> -->
   </div>
-  <div class="mobile-genre-bar center" *ngIf="provider != 'nkpkd'">
+  <div class="mobile-genre-bar center" *ngIf="providerGroup != 'nkpkd'">
     <button
       type="button"
       class="mobile-genre-trigger"
@@ -43,7 +43,7 @@
       {{activeGenreLabel}}
     </button>
   </div>
-  <div class="genres center kids" *ngIf="provider === 'nkpkd'">
+  <div class="genres center kids" *ngIf="providerGroup === 'nkpkd'">
   <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span> 
   <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
   </div> 
@@ -94,40 +94,40 @@
 <div *ngIf="type === 'movies'">
   <app-slider 
   [title]="'netflix'" 
-  [items]="netFlix" 
+  [items]="netflixMovies" 
   [type]="type"
   [sliderType]="'slide1'"
   (open)="openTrailer($event.item)"></app-slider>
   <app-slider 
   [title]="'prime video'" 
-  [items]="amazon" 
+  [items]="primeMovies" 
   [type]="type" 
   [sliderType]="'slide2'"
   (open)="openTrailer($event.item)"></app-slider>
   <app-slider 
   [title]="'disney+'" 
-  [items]="disney" 
+  [items]="disneyMovies" 
   [type]="type"
   [sliderType]="'slide3'"
   (open)="openTrailer($event.item)"></app-slider>
   
-  <div *ngIf="hbo.length != 0 || hulu.length != 0">
+  <div *ngIf="maxMovies.length != 0 || huluMovies.length != 0">
     <app-slider 
     [title]="'max'" 
-    [items]="hbo" 
+    [items]="maxMovies" 
     [type]="type"
     [sliderType]="'slide4'"
     (open)="openTrailer($event.item)"></app-slider>
     <app-slider 
     [title]="'hulu'" 
-    [items]="hulu" 
+    [items]="huluMovies" 
     [type]="type" 
     [sliderType]="'slide5'"
     (open)="openTrailer($event.item)"></app-slider>
-    <span *ngIf="apple.length != 0">
+    <span *ngIf="appleMovies.length != 0">
       <app-slider 
       [title]="'apple+'" 
-      [items]="apple" 
+      [items]="appleMovies" 
       [type]="type"
       [sliderType]="'slide6'"
       (open)="openTrailer($event.item)"></app-slider>
@@ -138,40 +138,40 @@
 <div *ngIf="type === 'tv'">
   <app-slider 
   [title]="'netflix'" 
-  [items]="netFlixTv" 
+  [items]="netflixTvShows" 
   [type]="type"
   [sliderType]="'slide1'"
   (open)="openTrailer($event.item)"></app-slider>
   <app-slider 
   [title]="'prime video'" 
-  [items]="amazonTv" 
+  [items]="primeTvShows" 
   [type]="type" 
   [sliderType]="'slide2'"
   (open)="openTrailer($event.item)"></app-slider>
   <app-slider 
   [title]="'disney+'" 
-  [items]="disneyTv" 
+  [items]="disneyTvShows" 
   [type]="type"
   [sliderType]="'slide3'"
   (open)="openTrailer($event.item)"></app-slider>
   
-  <div *ngIf="hboTv.length != 0">
+  <div *ngIf="maxTvShows.length != 0">
     <app-slider 
     [title]="'hbo max'" 
-    [items]="hboTv" 
+    [items]="maxTvShows" 
     [type]="type"
     [sliderType]="'slide4'"
     (open)="openTrailer($event.item)"></app-slider>
     <app-slider 
     [title]="'hulu'" 
-    [items]="huluTv" 
+    [items]="huluTvShows" 
     [type]="type" 
     [sliderType]="'slide5'"
     (open)="openTrailer($event.item)"></app-slider>
-    <span *ngIf="appleTv.length != 0">
+    <span *ngIf="appleTvShows.length != 0">
       <app-slider 
       [title]="'apple+'" 
-      [items]="appleTv" 
+      [items]="appleTvShows" 
       [type]="type"
       [sliderType]="'slide6'"
       (open)="openTrailer($event.item)"></app-slider>
@@ -179,7 +179,7 @@
   </div>
 </div>
 
-<div class="center" *ngIf="provider === 'npy'">
+<div class="center" *ngIf="providerGroup === 'npy'">
   <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{activeGenreLabel}}</span>
 </div>
 
