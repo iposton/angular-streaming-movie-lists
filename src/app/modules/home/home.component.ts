@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID, DOCUMENT } from '@angular/core'
+import { Component, OnInit, Inject, PLATFORM_ID, DOCUMENT, ChangeDetectionStrategy } from '@angular/core'
 import { DataService } from '../../services/data.service'
 import { UtilService } from '../../services/util.service'
 import { GoogleAnalyticsService } from '../../services/google-analytics.service'
@@ -10,6 +10,7 @@ let myWindow = null
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HomeComponent implements OnInit {

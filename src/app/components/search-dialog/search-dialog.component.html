@@ -1,11 +1,11 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
   <div class="modal trailer-modal search" (click)="$event.stopPropagation()">
-    <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
+    <div class="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
       <span> &#10003;</span>
     } </div>
     <div class="modal-header">
       @if (selectedMovie != null && showTrailer) {
-        <span class="header-title">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
+        <span class="header-title">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? ($safeNavigationMigration(selectedMovie?.release_date) | date: 'y') : $safeNavigationMigration(selectedMovie?.first_air_date) | date: 'y'}})</span>
       }
       <span class="right" (click)="closeModal()">X</span>
     </div>
@@ -19,7 +19,7 @@
         }
       </div>
       @if (showTrailer) {
-        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selectedMovie?.backdrop_path +')' }">
+        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ $safeNavigationMigration(selectedMovie?.backdrop_path) +')' }">
           @if (trailerUrl != null) {
             <div class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           }
@@ -71,7 +71,7 @@
                 @for (item of results; track item) {
                   <div [ngClass]="{'dn': item?.poster_path == null}" class="col related-col">
                     <span class="item">
-                      <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
+                      <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ $safeNavigationMigration(item?.poster_path) +')' }">
                         <div class="item-row">
                           <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                             <span class="movie-index" (click)="util.addItem(item, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
@@ -94,8 +94,8 @@
                               </p>
                             </span>
                             @if (item?.provider != null) {
-                              <span class="{{util.getProvider(item?.provider)}} probar">
-                                {{util.getProvider(item?.provider)}}
+                              <span class="{{util.getProvider($safeNavigationMigration(item?.provider))}} probar">
+                                {{util.getProvider($safeNavigationMigration(item?.provider))}}
                               </span>
                             }
                           </div>

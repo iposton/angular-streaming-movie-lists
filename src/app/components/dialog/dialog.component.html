@@ -1,12 +1,12 @@
 <!-- back drop /t/p/w533_and_h300_bestv2/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg -->
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
   <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
-    <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
+    <div class="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
       <span> &#10003;</span>
     } </div>
     <div class="modal-header">
       @if (selected != null && showTrailer) {
-        <span class="header-title">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
+        <span class="header-title">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? ($safeNavigationMigration(selected?.release_date) | date: 'y') : $safeNavigationMigration(selected?.first_air_date) | date: 'y'}})</span>
       }
       <span class="right" (click)="closeModal()">X</span>
     </div>
@@ -20,7 +20,7 @@
         }
       </div>
       @if (showTrailer) {
-        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selected?.backdrop_path +')' }">
+        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ $safeNavigationMigration(selected?.backdrop_path) +')' }">
           @if (dialogUrl != null) {
             <div class="col-trailer"><iframe [src]="dialogUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
           }
@@ -86,10 +86,10 @@
                     <div class="no-rem">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
                   }
                   @for (rem of getData(data, content, title); track rem; let i = $index) {
-                    <div class="col related-col favorite-col" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider(rem?.provider) == ''}">
+                    <div class="col related-col favorite-col" [ngClass]="{'dn': showTitles != '' && (typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider($safeNavigationMigration(rem?.provider)) == ''}">
                       <span class="item">
                         @if (title === 'Reminders') {
-                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ $safeNavigationMigration(rem[content]?.poster_path) +')' }">
                             <div class="item-row">
                               <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                                 <span class="movie-index" (click)="rmv(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
@@ -113,15 +113,15 @@
                                 </p>
                               </span>
                               @if (rem[content]?.provider != null) {
-                                <span class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
-                                  {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                                <span class="{{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}} probar">
+                                  {{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}}
                                 </span>
                               }
                             </div>
                           </span>
                         }
                         @if (title === 'Trending' || title === 'Recommended') {
-                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ $safeNavigationMigration(rem?.poster_path) +')' }">
                             <div class="item-row">
                               <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                                 <span class="movie-index" (click)="util.addItem(rem, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
@@ -143,8 +143,8 @@
                                   <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
                                 </p>
                               </span>
-                              <span class="{{util.getProvider(rem?.provider)}} probar">
-                                {{util.getProvider(rem?.provider)}}
+                              <span class="{{util.getProvider($safeNavigationMigration(rem?.provider))}} probar">
+                                {{util.getProvider($safeNavigationMigration(rem?.provider))}}
                               </span>
                             </div>
                           </span>
@@ -153,7 +153,7 @@
                           <span class="fav-genre">{{(rem[content]?.details?.genres[0]?.name ? rem[content]?.details?.genres[0]?.name : util.genres[rem[content]?.genre_ids[0]])}}</span>
                         }
                         @if (title === 'Favorites') {
-                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ $safeNavigationMigration(rem[content]?.poster_path) +')' }">
                             <div class="item-row">
                               <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
                                 <span class="movie-index" (click)="rmvFav(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
@@ -168,8 +168,8 @@
                               </p>
                             </span>
                             @if (rem[content]?.provider != null) {
-                              <span class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
-                                {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                              <span class="{{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}} probar">
+                                {{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}}
                               </span>
                             }
                           </div>
@@ -177,7 +177,7 @@
                       }
                       @if (title === 'Favorites') {
                         <span class="fav-genre dir-info">
-                          {{(rem[content]?.title ? rem[content]?.title : rem[content]?.name)}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
+                          {{(rem[content]?.title ? rem[content]?.title : rem[content]?.name)}} ({{rem[content]?.release_date ? ($safeNavigationMigration(rem[content]?.release_date) | date: 'y') : $safeNavigationMigration(rem[content]?.first_air_date) | date: 'y'}}) <br>
                           @if (rem[content]?.director != null) {
                             <span>Director: {{rem[content]?.director}}</span>
                             } <br>

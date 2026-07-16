@@ -1132,22 +1132,25 @@ footer {
 }
 
 //snackbar
-#snackbar {
+.snackbar {
   visibility: hidden;
-  min-width: 250px;
-  margin-left: -125px;
+  width: max-content;
+  min-width: min(250px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   background-color: #000;
   color: #fff;
   text-align: center;
   border-radius: 2px;
   padding: 16px;
+  box-sizing: border-box;
   position: fixed;
-  z-index: 1;
-  left: 87%;
+  z-index: 1001;
+  left: 50%;
   top: 30px;
+  transform: translateX(-50%);
 }
 
-#snackbar.show {
+.snackbar.show {
   visibility: visible;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -1513,9 +1516,6 @@ footer {
   //     min-width: 600px;
   //   }
   // }
-  #snackbar {
-    left: 50%;
-  }
   #overlay.active .modal.small {
     width: calc(100vw - 32px);
     max-width: calc(100vw - 32px);

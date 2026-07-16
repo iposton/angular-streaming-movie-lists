@@ -2,7 +2,7 @@ import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
-import * as express from 'express';
+import express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import bootstrap from './src/main.server';
@@ -49,7 +49,16 @@ export function app(): express.Express {
     ? join(distFolder, 'index.original.html')
     : join(distFolder, 'index.html');
 
-  const commonEngine = new CommonEngine();
+  const configuredHosts = (process.env['NG_ALLOWED_HOSTS'] || '')
+    .split(',')
+    .map((host) => host.trim())
+    .filter(Boolean);
+  const allowedHosts = Array.from(new Set([
+    'localhost',
+    '127.0.0.1',
+    ...configuredHosts,
+  ]));
+  const commonEngine = new CommonEngine({ allowedHosts });
   const apiKey = process.env['TOKEN'];
 
   if (!apiKey) {

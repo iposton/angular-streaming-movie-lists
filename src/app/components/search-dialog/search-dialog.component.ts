@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, Inject, PLATFORM_ID } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, Input, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core'
 import { DataService } from '../../services/data.service'
 import { UtilService } from '../../services/util.service'
 import { DomSanitizer } from '@angular/platform-browser'
@@ -8,6 +8,7 @@ import { isPlatformBrowser } from '@angular/common'
     selector: 'app-search-dialog',
     templateUrl: './search-dialog.component.html',
     styleUrls: ['./search-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchDialogComponent implements OnInit {

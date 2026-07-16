@@ -1,11 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, ElementRef, Inject, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Inject, PLATFORM_ID, Renderer2, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-google-analytics-gtag',
     templateUrl: './google-analytics-gtag.component.html',
     styleUrls: ['./google-analytics-gtag.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GoogleAnalyticsGtagComponent {

@@ -5,7 +5,8 @@ import {
   Input,
   ElementRef,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { UtilService } from '../../services/util.service';
@@ -15,6 +16,7 @@ import { UtilService } from '../../services/util.service';
     templateUrl: './slider.component.html',
     styleUrls: ['./slider.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SliderComponent implements OnInit {
