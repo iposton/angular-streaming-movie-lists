@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev:ssr": "ng run streaming-lists:serve-ssr",
+    "dev:ssr": "node --no-deprecation ./node_modules/@angular/cli/bin/ng.js run streaming-lists:serve-ssr",
     "serve:ssr": "node dist/server/main.js",
     "build:ssr": "ng build --configuration production && ng run streaming-lists:server:production",
     "prerender": "ng run streaming-lists:prerender"
@@ -28,7 +28,6 @@
     "@angular/service-worker": "^20.3.18",
     "@angular/ssr": "^20.3.20",
     "express": "^4.17.1",
-    "request": "^2.88.2",
     "rxjs": "~6.5.4",
     "tslib": "^2.0.0",
     "xmlhttprequest": "^1.8.0",
