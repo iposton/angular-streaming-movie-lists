@@ -1,135 +1,196 @@
 <!-- back drop /t/p/w533_and_h300_bestv2/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg -->
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
-    <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
-      <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
-      <div class="modal-header">
-          <span class="header-title" *ngIf="selected != null && showTrailer">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
-          <span class="right" (click)="closeModal()">X</span>
-      </div>
-      <div class="content"> 
-        <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
-        <div id="topanchor">
-          <div *ngIf="!showTrailer && noTrailerMsg"><h2>{{noTrailerMsg}}</h2></div>
-        </div>
-        <div id="top" class="row" *ngIf="showTrailer" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selected?.backdrop_path +')' }">
-          <div *ngIf="dialogUrl != null" class="col-trailer"><iframe [src]="dialogUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
-          <div class="col-overview">
-            <span class="star-rating" *ngFor="let star of selected?.rating"> <span>☆</span> </span> <span> {{selected?.rating?.length}}/10 </span> 
-            <span *ngIf="selected?.details != null && selected?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selected?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
-            <hr>
-            <span>{{selected?.overview}} </span> <br>
-            
-            <span class="row cast" *ngIf="selected?.credits">
-              <span class="col-cast" *ngFor="let actor of selected?.credits?.cast; let i = index"> 
-                <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
-                    <img *ngIf="actor?.profile_path" src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
-                    {{actor?.name}} <br> ({{actor?.character}})
-                </span>
-              </span>
-            </span>
-          </div>
-        </div> 
-        <div class="row">
-            <span class="rec-title">{{(title === 'Favorites' ? 'my picks '+ currentDate : title)}}  <span class="copy-rem" *ngIf="title === 'Reminders'" (click)="copy(data, 'all', '')" title="Copy to clipboard">&#9745; </span> </span>
-            
-            <span *ngIf="title === 'Reminders'" class="reminderbar">
-              <span class="tab" [ngClass]="{'active': showTitles === 'netflix'}" (click)="filterTitles('netflix')">Netflix</span> 
-              <span class="tab" [ngClass]="{'active': showTitles === 'hbo'}" (click)="filterTitles('hbo')">HBO</span>
-              <span class="tab" [ngClass]="{'active': showTitles === 'prime'}" (click)="filterTitles('prime')">Prime</span>
-              <span class="tab" [ngClass]="{'active': showTitles === 'disney'}" (click)="filterTitles('disney')">Disney</span>
-              <span class="tab" [ngClass]="{'active': showTitles === 'hulu'}" (click)="filterTitles('hulu')">Hulu</span>
-              <span class="tab" [ngClass]="{'active': showTitles === 'apple'}" (click)="filterTitles('apple')">Apple</span>
-              <span class="tab" [ngClass]="{'active': showTitles === 'youtube'}" (click)="filterTitles('youtube')">YouTube</span>
-            </span>
-            <span *ngIf="title === 'Trending'" class="reminderbar">
-                <span class="tab" [ngClass]="{'active': content === 'movies'}" (click)="content = 'movies'; selected = selectedMovie; dialogUrl = trailerUrl; goTo()">Movies</span> 
-                <span class="tab" [ngClass]="{'active': content === 'tv'}" (click)="content = 'tv'; selected = selectedTV; dialogUrl = trailerUrlTV; goTo()">TV</span>
-            </span>
-        </div>
-        <div class="row" *ngIf="loading">
-            <app-spinner *ngIf="loading" [size]="'lg'" [color]="'white'" [title]="loadingTitle"></app-spinner>
-        </div>
-        <div class="row" *ngIf="data != null && !loading"> 
-          <div class="no-rem" *ngIf="data != null && data.length === 0">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
-          <div class="col related-col favorite-col" *ngFor="let rem of getData(data, content, title); let i = index" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider(rem?.provider) == ''}">
-              <span class="item">
-           
-                  <span *ngIf="title === 'Reminders'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
-                    <div class="item-row">
-                        <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                            <span class="movie-index" (click)="rmv(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
-                        </span>
-                        <span class="copy-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                          <span class="clip" (click)="copy(rem[content], 'one', rem.dateAdded)">&#9745; <span class="tooltip">Copy</span></span>   
-                        </span>
-                    </div>
-                    <div class="item-row">
-                    <span class="info">
-                        <p><span *ngIf="rem[content]?.credit1">Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}} <br></span>
-                          Genre: {{util.genres[rem[content]?.genre_ids[0]]}} <br>
-                          <!-- {{rem[content]?.details?.genres[0]?.name}} -->
-                          <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br>
-                          <span class="trailer-link" (click)="openTrailer(rem[content])">Trailer</span> <br>
-                          <span>Added: {{rem.dateAdded}}</span>
-                        </p> 
-                    </span>
-                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
-                        {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
-                    </span>
-                    </div>
-                  </span>
-                  <span *ngIf="title === 'Trending' || title === 'Recommended'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
-                    <div class="item-row">
-                      <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                        <span class="movie-index" (click)="util.addItem(rem, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
-                      </span>
-                      <span class="fav-star">
-                        <span class="star" (click)="util.addItem(rem, 'fav')">☆ <span class="tooltip">Favorite</span></span>   
-                      </span>
-                    </div>
-                    <div class="item-row">
-                    <span class="info">
-                        <p><span *ngIf="rem?.credit1">Cast: {{rem?.credit1}}, {{rem?.credit2}} <br></span>
-                          Genre: {{util.genres[rem?.genre_ids[0]]}} <br>
-                          <!-- {{rem?.details?.genres[0]?.name}} -->
-                          <span class="star-rating" *ngFor="let star of rem?.rating"> <span>☆</span> </span> <br>
-                          <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
-                        </p> 
-                    </span>
-                    <span class="{{util.getProvider(rem?.provider)}} probar">
-                      {{util.getProvider(rem?.provider)}}
-                    </span>  
-                    </div>
-                  </span>
-                  <span *ngIf="title === 'Favorites'" class="fav-genre">{{(rem[content]?.details?.genres[0]?.name ? rem[content]?.details?.genres[0]?.name : util.genres[rem[content]?.genre_ids[0]])}}</span>
-                  <span *ngIf="title === 'Favorites'" class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
-                    <div class="item-row">
-                        <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                            <span class="movie-index" (click)="rmvFav(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
-                        </span>
-                    </div>
-                    <div class="item-row">
-                    <span class="info fav-info">
-                        <p><span *ngIf="rem[content]?.credit1">Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}}</span>
-                          
-                          <!-- <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br> -->
-                          
-                        </p> 
-                    </span>
-                    <span *ngIf="rem[content]?.provider != null" class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
-                        {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
-                    </span>
-                    </div>
-                  </span> 
-                  <span *ngIf="title === 'Favorites'" class="fav-genre dir-info">
-                    {{(rem[content]?.title ? rem[content]?.title : rem[content]?.name)}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
-                    <span *ngIf="rem[content]?.director != null">Director: {{rem[content]?.director}}</span> <br>
-                    <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <span> {{rem[content]?.rating?.length}}/10 </span>
-
-                  </span>
-              </span>
-          </div>
-        </div>          
-      </div>  
+  <div class="modal trailer-modal {{title}}" (click)="$event.stopPropagation()">
+    <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
+      <span> &#10003;</span>
+    } </div>
+    <div class="modal-header">
+      @if (selected != null && showTrailer) {
+        <span class="header-title">{{selected?.title ? selected?.title : selected?.name}} ({{selected?.release_date ? (selected?.release_date | date: 'y') : selected?.first_air_date | date: 'y'}})</span>
+      }
+      <span class="right" (click)="closeModal()">X</span>
     </div>
-</div>
+    <div class="content">
+      @if (submitting) {
+        <app-spinner [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
+      }
+      <div id="topanchor">
+        @if (!showTrailer && noTrailerMsg) {
+          <div><h2>{{noTrailerMsg}}</h2></div>
+        }
+      </div>
+      @if (showTrailer) {
+        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selected?.backdrop_path +')' }">
+          @if (dialogUrl != null) {
+            <div class="col-trailer"><iframe [src]="dialogUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
+          }
+          <div class="col-overview">
+            @for (star of selected?.rating; track star) {
+              <span class="star-rating"> <span>☆</span> </span>
+              } <span> {{selected?.rating?.length}}/10 </span>
+              @if (selected?.details != null && selected?.details?.homepage != '') {
+                <span><a class="{{myMovies}} watch-now-btn" href="{{selected?.details?.homepage}}" target="_blank">Watch Now</a></span>
+                } <br>
+                <hr>
+                  <span>{{selected?.overview}} </span> <br>
+                  @if (selected?.credits) {
+                    <span class="row cast">
+                      @for (actor of selected?.credits?.cast; track actor; let i = $index) {
+                        <span class="col-cast">
+                          <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
+                            @if (actor?.profile_path) {
+                              <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}">
+                              } <br>
+                              {{actor?.name}} <br> ({{actor?.character}})
+                            </span>
+                          </span>
+                        }
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+              <div class="row">
+                <span class="rec-title">{{(title === 'Favorites' ? 'my picks '+ currentDate : title)}}  @if (title === 'Reminders') {
+                  <span class="copy-rem" (click)="copy(data, 'all', '')" title="Copy to clipboard">&#9745; </span>
+                } </span>
+
+                @if (title === 'Reminders') {
+                  <span class="reminderbar">
+                    <span class="tab" [ngClass]="{'active': showTitles === 'netflix'}" (click)="filterTitles('netflix')">Netflix</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'hbo'}" (click)="filterTitles('hbo')">HBO</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'prime'}" (click)="filterTitles('prime')">Prime</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'disney'}" (click)="filterTitles('disney')">Disney</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'hulu'}" (click)="filterTitles('hulu')">Hulu</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'apple'}" (click)="filterTitles('apple')">Apple</span>
+                    <span class="tab" [ngClass]="{'active': showTitles === 'youtube'}" (click)="filterTitles('youtube')">YouTube</span>
+                  </span>
+                }
+                @if (title === 'Trending') {
+                  <span class="reminderbar">
+                    <span class="tab" [ngClass]="{'active': content === 'movies'}" (click)="content = 'movies'; selected = selectedMovie; dialogUrl = trailerUrl; goTo()">Movies</span>
+                    <span class="tab" [ngClass]="{'active': content === 'tv'}" (click)="content = 'tv'; selected = selectedTV; dialogUrl = trailerUrlTV; goTo()">TV</span>
+                  </span>
+                }
+              </div>
+              @if (loading) {
+                <div class="row">
+                  @if (loading) {
+                    <app-spinner [size]="'lg'" [color]="'white'" [title]="loadingTitle"></app-spinner>
+                  }
+                </div>
+              }
+              @if (data != null && !loading) {
+                <div class="row">
+                  @if (data != null && data.length === 0) {
+                    <div class="no-rem">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
+                  }
+                  @for (rem of getData(data, content, title); track rem; let i = $index) {
+                    <div class="col related-col favorite-col" [ngClass]="{'dn': showTitles != '' && (typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider(rem?.provider) == ''}">
+                      <span class="item">
+                        @if (title === 'Reminders') {
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
+                            <div class="item-row">
+                              <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                                <span class="movie-index" (click)="rmv(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
+                              </span>
+                              <span class="copy-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                                <span class="clip" (click)="copy(rem[content], 'one', rem.dateAdded)">&#9745; <span class="tooltip">Copy</span></span>
+                              </span>
+                            </div>
+                            <div class="item-row">
+                              <span class="info">
+                                <p>@if (rem[content]?.credit1) {
+                                  <span>Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}} <br></span>
+                                }
+                                Genre: {{util.genres[rem[content]?.genre_ids[0]]}} <br>
+                                <!-- {{rem[content]?.details?.genres[0]?.name}} -->
+                                @for (star of rem[content]?.rating; track star) {
+                                  <span class="star-rating"> <span>☆</span> </span>
+                                  } <br>
+                                  <span class="trailer-link" (click)="openTrailer(rem[content])">Trailer</span> <br>
+                                  <span>Added: {{rem.dateAdded}}</span>
+                                </p>
+                              </span>
+                              @if (rem[content]?.provider != null) {
+                                <span class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
+                                  {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                                </span>
+                              }
+                            </div>
+                          </span>
+                        }
+                        @if (title === 'Trending' || title === 'Recommended') {
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem?.poster_path +')' }">
+                            <div class="item-row">
+                              <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                                <span class="movie-index" (click)="util.addItem(rem, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
+                              </span>
+                              <span class="fav-star">
+                                <span class="star" (click)="util.addItem(rem, 'fav')">☆ <span class="tooltip">Favorite</span></span>
+                              </span>
+                            </div>
+                            <div class="item-row">
+                              <span class="info">
+                                <p>@if (rem?.credit1) {
+                                  <span>Cast: {{rem?.credit1}}, {{rem?.credit2}} <br></span>
+                                }
+                                Genre: {{util.genres[rem?.genre_ids[0]]}} <br>
+                                <!-- {{rem?.details?.genres[0]?.name}} -->
+                                @for (star of rem?.rating; track star) {
+                                  <span class="star-rating"> <span>☆</span> </span>
+                                  } <br>
+                                  <span class="trailer-link" (click)="openTrailer(rem)">Trailer</span> <br>
+                                </p>
+                              </span>
+                              <span class="{{util.getProvider(rem?.provider)}} probar">
+                                {{util.getProvider(rem?.provider)}}
+                              </span>
+                            </div>
+                          </span>
+                        }
+                        @if (title === 'Favorites') {
+                          <span class="fav-genre">{{(rem[content]?.details?.genres[0]?.name ? rem[content]?.details?.genres[0]?.name : util.genres[rem[content]?.genre_ids[0]])}}</span>
+                        }
+                        @if (title === 'Favorites') {
+                          <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ rem[content]?.poster_path +')' }">
+                            <div class="item-row">
+                              <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                                <span class="movie-index" (click)="rmvFav(rem[content], data)">&#8722; <span class="tooltip">Remove</span> </span>
+                              </span>
+                            </div>
+                            <div class="item-row">
+                              <span class="info fav-info">
+                                <p>@if (rem[content]?.credit1) {
+                                  <span>Cast: {{rem[content]?.credit1}}, {{rem[content]?.credit2}}</span>
+                                }
+                                <!-- <span class="star-rating" *ngFor="let star of rem[content]?.rating"> <span>☆</span> </span> <br> -->
+                              </p>
+                            </span>
+                            @if (rem[content]?.provider != null) {
+                              <span class="{{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}} probar">
+                                {{typeOf(rem[content]?.provider) == 'object' ? util.getProvider(rem[content]?.provider) : rem[content]?.provider}}
+                              </span>
+                            }
+                          </div>
+                        </span>
+                      }
+                      @if (title === 'Favorites') {
+                        <span class="fav-genre dir-info">
+                          {{(rem[content]?.title ? rem[content]?.title : rem[content]?.name)}} ({{rem[content]?.release_date ? (rem[content]?.release_date | date: 'y') : rem[content]?.first_air_date | date: 'y'}}) <br>
+                          @if (rem[content]?.director != null) {
+                            <span>Director: {{rem[content]?.director}}</span>
+                            } <br>
+                            @for (star of rem[content]?.rating; track star) {
+                              <span class="star-rating"> <span>☆</span> </span>
+                              } <span> {{rem[content]?.rating?.length}}/10 </span>
+                            </span>
+                          }
+                        </span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>

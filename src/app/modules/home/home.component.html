@@ -1,39 +1,42 @@
 <div class="center">
-    <span *ngIf="error" class="error">{{error}}</span>
+  @if (error) {
+    <span class="error">{{error}}</span>
+  }
 </div>
 <!-- <div class="tabs">
-  <button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npy' ? 'Netflix' : provider === 'hha' ? 'HBO' : 'Netflix'}}</button>
-  <button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npy' ? 'Prime Video' : provider === 'hha' ?  'Hulu' : 'Disney+'}}</button>
-  <button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npy' ? 'YouTube TV' : provider === 'hha' ? 'Apple TV' : 'PBS Kids'}}</button>
+<button *ngIf="!submitting" class="netflix-btn {{provider}}" [ngClass]="{'active': myMovies === 'nf'}" (click)="myMovies = 'nf'; getSelectedMovies()">{{provider === 'npy' ? 'Netflix' : provider === 'hha' ? 'HBO' : 'Netflix'}}</button>
+<button *ngIf="!submitting" class="amz-btn {{provider}}" [ngClass]="{'active': myMovies === 'amz'}" (click)="myMovies = 'amz'; getSelectedMovies()">{{provider === 'npy' ? 'Prime Video' : provider === 'hha' ?  'Hulu' : 'Disney+'}}</button>
+<button *ngIf="!submitting && type === 'movies' && disney != null || !submitting &&  type === 'tv' && disneyTv.length > 0 " class="disney-btn {{provider}}" [ngClass]="{'active': myMovies === 'd'}" (click)="myMovies = 'd'; getSelectedMovies()">{{provider === 'npy' ? 'YouTube TV' : provider === 'hha' ? 'Apple TV' : 'PBS Kids'}}</button>
 </div> -->
 <div class="center">
 
   <div class="tabs">
     <select name="cat" id="cat" (change)="onChange($event.target.value)">
-        <option value="movies"> Movies </option>
-        <option value="tv"> TV </option>
+      <option value="movies"> Movies </option>
+      <option value="tv"> TV </option>
     </select>
     <select name="year" id="year" (change)="onYearChange($event.target.value)" [value]="defaultYear">
-        <option value="26"> 2026 </option>
-        <option value="25"> 2025 </option>
-        <option value="24"> 2024 </option>
-        <option value="23"> 2023 </option>
-        <option value="22"> 2022 </option>
-        <option value="21"> 2021 </option>
-        <option value="20"> 2020 </option>
-        <option value="19"> 2019 </option>
-        <option value="18"> 2018 </option>
-        <option value="17"> 2017 </option>
-        <option value="16"> 2016 </option>
-        <option value="15"> 2015 </option>
+      <option value="26"> 2026 </option>
+      <option value="25"> 2025 </option>
+      <option value="24"> 2024 </option>
+      <option value="23"> 2023 </option>
+      <option value="22"> 2022 </option>
+      <option value="21"> 2021 </option>
+      <option value="20"> 2020 </option>
+      <option value="19"> 2019 </option>
+      <option value="18"> 2018 </option>
+      <option value="17"> 2017 </option>
+      <option value="16"> 2016 </option>
+      <option value="15"> 2015 </option>
     </select>
     <!-- <select name="provider" id="provider" (change)="onProviderChange($event.target.value)">
-        <option value="npy"> Netflix </option>
-        <option value="hha"> HBO </option>
-        <option value="nkpkd"> Kids </option>
-    </select> -->
-  </div>
-  <div class="mobile-genre-bar center" *ngIf="providerGroup != 'nkpkd'">
+    <option value="npy"> Netflix </option>
+    <option value="hha"> HBO </option>
+    <option value="nkpkd"> Kids </option>
+  </select> -->
+</div>
+@if (providerGroup != 'nkpkd') {
+  <div class="mobile-genre-bar center">
     <button
       type="button"
       class="mobile-genre-trigger"
@@ -43,163 +46,185 @@
       {{activeGenreLabel}}
     </button>
   </div>
-  <div class="genres center kids" *ngIf="providerGroup === 'nkpkd'">
-  <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span> 
-  <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span> 
-  </div> 
+}
+@if (providerGroup === 'nkpkd') {
+  <div class="genres center kids">
+    <span class="btn" [ngClass]="{'active': genre === '16'}" (click)="setGenre('16')">Animation</span>
+    <span class="btn" [ngClass]="{'active': genre === '10751'}" (click)="setGenre('10751')">Family</span>
+  </div>
+}
 </div>
 
-<div class="genre-sheet-backdrop" *ngIf="genreMenuOpen" (click)="closeGenreMenu()">
-  <div class="genre-sheet" (click)="$event.stopPropagation()">
-    <div class="genre-sheet-header">
-      <span>Choose Genre</span>
-      <button type="button" class="genre-sheet-close" (click)="closeGenreMenu()">Close</button>
-    </div>
-    <div class="genre-sheet-actions">
-      <button
-        type="button"
-        class="genre-sheet-clear"
-        [ngClass]="{'active': genre === ''}"
-        (click)="clearGenre()">
-        All genres
-      </button>
-    </div>
-    <div class="genre-sheet-list">
-      <button
-        *ngFor="let option of genreOptions"
-        type="button"
-        class="genre-sheet-option"
-        [ngClass]="{'active': genre === option.value}"
-        (click)="setGenre(option.value)">
-        {{option.label}}
-      </button>
+@if (genreMenuOpen) {
+  <div class="genre-sheet-backdrop" (click)="closeGenreMenu()">
+    <div class="genre-sheet" (click)="$event.stopPropagation()">
+      <div class="genre-sheet-header">
+        <span>Choose Genre</span>
+        <button type="button" class="genre-sheet-close" (click)="closeGenreMenu()">Close</button>
+      </div>
+      <div class="genre-sheet-actions">
+        <button
+          type="button"
+          class="genre-sheet-clear"
+          [ngClass]="{'active': genre === ''}"
+          (click)="clearGenre()">
+          All genres
+        </button>
+      </div>
+      <div class="genre-sheet-list">
+        @for (option of genreOptions; track option) {
+          <button
+            type="button"
+            class="genre-sheet-option"
+            [ngClass]="{'active': genre === option.value}"
+            (click)="setGenre(option.value)">
+            {{option.label}}
+          </button>
+        }
+      </div>
     </div>
   </div>
-</div>
+}
 
-<div class="center load-msg" *ngIf="submitting">
+@if (submitting) {
+  <div class="center load-msg">
     <span>{{ type === 'movies' ? 'Fetching Movies...' : 'Fetching TV Info...' }}</span>
-</div>
-<div class="center load-spin" *ngIf="submitting">
+  </div>
+}
+@if (submitting) {
+  <div class="center load-spin">
     <div class="lds-ring">
       <div></div>
       <div></div>
       <div></div>
       <div></div>
     </div>
-</div>
-
-<div class="content-inside" *ngIf="!submitting">
-
-<div *ngIf="type === 'movies'">
-  <app-slider 
-  [title]="'netflix'" 
-  [items]="netflixMovies" 
-  [type]="type"
-  [sliderType]="'slide1'"
-  (open)="openTrailer($event.item)"></app-slider>
-  <app-slider 
-  [title]="'prime video'" 
-  [items]="primeMovies" 
-  [type]="type" 
-  [sliderType]="'slide2'"
-  (open)="openTrailer($event.item)"></app-slider>
-  <app-slider 
-  [title]="'disney+'" 
-  [items]="disneyMovies" 
-  [type]="type"
-  [sliderType]="'slide3'"
-  (open)="openTrailer($event.item)"></app-slider>
-  
-  <div *ngIf="maxMovies.length != 0 || huluMovies.length != 0">
-    <app-slider 
-    [title]="'max'" 
-    [items]="maxMovies" 
-    [type]="type"
-    [sliderType]="'slide4'"
-    (open)="openTrailer($event.item)"></app-slider>
-    <app-slider 
-    [title]="'hulu'" 
-    [items]="huluMovies" 
-    [type]="type" 
-    [sliderType]="'slide5'"
-    (open)="openTrailer($event.item)"></app-slider>
-    <span *ngIf="appleMovies.length != 0">
-      <app-slider 
-      [title]="'apple+'" 
-      [items]="appleMovies" 
-      [type]="type"
-      [sliderType]="'slide6'"
-      (open)="openTrailer($event.item)"></app-slider>
-    </span> 
   </div>
-</div>
+}
 
-<div *ngIf="type === 'tv'">
-  <app-slider 
-  [title]="'netflix'" 
-  [items]="netflixTvShows" 
-  [type]="type"
-  [sliderType]="'slide1'"
-  (open)="openTrailer($event.item)"></app-slider>
-  <app-slider 
-  [title]="'prime video'" 
-  [items]="primeTvShows" 
-  [type]="type" 
-  [sliderType]="'slide2'"
-  (open)="openTrailer($event.item)"></app-slider>
-  <app-slider 
-  [title]="'disney+'" 
-  [items]="disneyTvShows" 
-  [type]="type"
-  [sliderType]="'slide3'"
-  (open)="openTrailer($event.item)"></app-slider>
-  
-  <div *ngIf="maxTvShows.length != 0">
-    <app-slider 
-    [title]="'hbo max'" 
-    [items]="maxTvShows" 
-    [type]="type"
-    [sliderType]="'slide4'"
-    (open)="openTrailer($event.item)"></app-slider>
-    <app-slider 
-    [title]="'hulu'" 
-    [items]="huluTvShows" 
-    [type]="type" 
-    [sliderType]="'slide5'"
-    (open)="openTrailer($event.item)"></app-slider>
-    <span *ngIf="appleTvShows.length != 0">
-      <app-slider 
-      [title]="'apple+'" 
-      [items]="appleTvShows" 
-      [type]="type"
-      [sliderType]="'slide6'"
-      (open)="openTrailer($event.item)"></app-slider>
-    </span> 
+@if (!submitting) {
+  <div class="content-inside">
+    @if (type === 'movies') {
+      <div>
+        <app-slider
+          [title]="'netflix'"
+          [items]="netflixMovies"
+          [type]="type"
+          [sliderType]="'slide1'"
+        (open)="openTrailer($event.item)"></app-slider>
+        <app-slider
+          [title]="'prime video'"
+          [items]="primeMovies"
+          [type]="type"
+          [sliderType]="'slide2'"
+        (open)="openTrailer($event.item)"></app-slider>
+        <app-slider
+          [title]="'disney+'"
+          [items]="disneyMovies"
+          [type]="type"
+          [sliderType]="'slide3'"
+        (open)="openTrailer($event.item)"></app-slider>
+        @if (maxMovies.length != 0 || huluMovies.length != 0) {
+          <div>
+            <app-slider
+              [title]="'max'"
+              [items]="maxMovies"
+              [type]="type"
+              [sliderType]="'slide4'"
+            (open)="openTrailer($event.item)"></app-slider>
+            <app-slider
+              [title]="'hulu'"
+              [items]="huluMovies"
+              [type]="type"
+              [sliderType]="'slide5'"
+            (open)="openTrailer($event.item)"></app-slider>
+            @if (appleMovies.length != 0) {
+              <span>
+                <app-slider
+                  [title]="'apple+'"
+                  [items]="appleMovies"
+                  [type]="type"
+                  [sliderType]="'slide6'"
+                (open)="openTrailer($event.item)"></app-slider>
+              </span>
+            }
+          </div>
+        }
+      </div>
+    }
+    @if (type === 'tv') {
+      <div>
+        <app-slider
+          [title]="'netflix'"
+          [items]="netflixTvShows"
+          [type]="type"
+          [sliderType]="'slide1'"
+        (open)="openTrailer($event.item)"></app-slider>
+        <app-slider
+          [title]="'prime video'"
+          [items]="primeTvShows"
+          [type]="type"
+          [sliderType]="'slide2'"
+        (open)="openTrailer($event.item)"></app-slider>
+        <app-slider
+          [title]="'disney+'"
+          [items]="disneyTvShows"
+          [type]="type"
+          [sliderType]="'slide3'"
+        (open)="openTrailer($event.item)"></app-slider>
+        @if (maxTvShows.length != 0) {
+          <div>
+            <app-slider
+              [title]="'hbo max'"
+              [items]="maxTvShows"
+              [type]="type"
+              [sliderType]="'slide4'"
+            (open)="openTrailer($event.item)"></app-slider>
+            <app-slider
+              [title]="'hulu'"
+              [items]="huluTvShows"
+              [type]="type"
+              [sliderType]="'slide5'"
+            (open)="openTrailer($event.item)"></app-slider>
+            @if (appleTvShows.length != 0) {
+              <span>
+                <app-slider
+                  [title]="'apple+'"
+                  [items]="appleTvShows"
+                  [type]="type"
+                  [sliderType]="'slide6'"
+                (open)="openTrailer($event.item)"></app-slider>
+              </span>
+            }
+          </div>
+        }
+      </div>
+    }
+    @if (providerGroup === 'npy') {
+      <div class="center">
+        <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{activeGenreLabel}}</span>
+      </div>
+    }
   </div>
-</div>
-
-<div class="center" *ngIf="providerGroup === 'npy'">
-  <span class="more-btn" (click)="onProviderChange('hha')">Load More 20{{year}} {{activeGenreLabel}}</span>
-</div>
-
-</div>
-<div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
+}
+<div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
+  <span> &#10003;</span>
+} </div>
 
 <app-dialog
-[isOpen]="isOpen"
-[data]="related"
-[title]="'Recommended'"
-[type]="'something'"
-[showTitles]="''"
-[content]="type"
-[loading]="loading"
-[loadingTitle]="'Recommended'"
-[selectedMovie]="selectedMovie"
-[selected]="selected"
-[selectedTV]="''"
-[dialogUrl]="dialogUrl"
-[trailerUrl]="trailerUrl"
-[trailerUrlTV]="''"
-[showTrailer]="showTrailer"
+  [isOpen]="isOpen"
+  [data]="related"
+  [title]="'Recommended'"
+  [type]="'something'"
+  [showTitles]="''"
+  [content]="type"
+  [loading]="loading"
+  [loadingTitle]="'Recommended'"
+  [selectedMovie]="selectedMovie"
+  [selected]="selected"
+  [selectedTV]="''"
+  [dialogUrl]="dialogUrl"
+  [trailerUrl]="trailerUrl"
+  [trailerUrlTV]="''"
+  [showTrailer]="showTrailer"
 (close)="isOpen = false; showTrailer = false"></app-dialog>

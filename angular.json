@@ -31,6 +31,7 @@
               "src/styles.scss"
             ],
             "scripts": [],
+            "progress": false,
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
@@ -131,6 +132,7 @@
             "outputPath": "dist/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
+            "progress": false,
             "sourceMap": true,
             "optimization": false,
             "buildOptimizer": false

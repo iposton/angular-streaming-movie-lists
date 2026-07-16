@@ -1,79 +1,110 @@
 <div id="overlay" [ngClass]="{'active': isOpen}" (click)="closeModal()">
-    <div class="modal trailer-modal search" (click)="$event.stopPropagation()">
-      <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} <span *ngIf="util.reminderAlert === 'Reminder Added'"> &#10003;</span> </div>
-      <div class="modal-header">
-          <span class="header-title" *ngIf="selectedMovie != null && showTrailer">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
-          <span class="right" (click)="closeModal()">X</span>
-      </div>
-      <div class="content"> 
-        <app-spinner *ngIf="submitting" [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
-        <div id="topanchor">
-          <div *ngIf="!showTrailer && noTrailerMsg"><h2>{{noTrailerMsg}}</h2></div>
-        </div>
-        <div id="top" class="row" *ngIf="showTrailer" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selectedMovie?.backdrop_path +')' }">
-          <div *ngIf="trailerUrl != null" class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
-          <div class="col-overview">
-            <span class="star-rating" *ngFor="let star of selectedMovie?.rating"> <span>☆</span> </span> <span> {{selectedMovie?.rating?.length}}/10 </span> 
-            <span *ngIf="selectedMovie?.details != null && selectedMovie?.details?.homepage != ''"><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span> <br>
-            <hr>
-            <span>{{selectedMovie?.overview}} </span> <br>
-            
-            <span class="row cast" *ngIf="selectedMovie?.credits">
-              <span class="col-cast" *ngFor="let actor of selectedMovie?.credits?.cast; let i = index"> 
-                <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
-                    <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
-                    {{actor?.name}} <br> ({{actor?.character}})
-                </span>
-              </span>
-            </span>
-          </div>
-        </div> 
-        <div class="row search-row">
-          <span class="reminderbar search-tabs">
-            <span class="tab" [ngClass]="{'active': searchMode === 'title'}" (click)="setSearchMode('title')">Title</span>
-            <span class="tab" [ngClass]="{'active': searchMode === 'actor'}" (click)="setSearchMode('actor')">Actor</span>
-            <span class="tab" [ngClass]="{'active': searchMode === 'director'}" (click)="setSearchMode('director')">Director</span>
-          </span>
-          <input
-            (input)="doSearch($event)"
-            id="term"
-            type="search"
-            class="form-control search-input"
-            [placeholder]="searchMode === 'actor' ? 'search by actor name' : searchMode === 'director' ? 'search by director name' : 'search by title'">
-          <span class="rec-title" *ngIf="results != null">{{ results?.length ? 'Results' : (searchMode === 'actor' ? 'Search by actor' : searchMode === 'director' ? 'Search by director' : 'Search '+ dataService.type) }}</span>
-        </div>
-        <div class="row" *ngIf="results != null">
-          <div class="no-rem" *ngIf="results?.length === 0">Nothing matches this search.</div>
-         
-          <div [ngClass]="{'dn': item?.poster_path == null}" class="col related-col" *ngFor="let item of results">
-              <span class="item">
-                  <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
-                    <div class="item-row">
-                      <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
-                        <span class="movie-index" (click)="util.addItem(item, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
-                      </span>
-                      <span class="fav-star">
-                        <span class="star" (click)="util.addItem(item, 'fav')">☆ <span class="tooltip">Favorite</span></span>   
-                      </span>
-                    </div>
-                   <div class="item-row">
-                    <span class="info">
-                        <p>
-                          <span *ngIf="item?.credit1">Cast: {{item?.credit1}}, {{item?.credit2}} <br></span>
-                          Genre: {{util.genres[item.genre_ids[0]]}} <br>
-                          <span class="star-rating" *ngFor="let star of rating(item)"> <span>☆</span> </span> <br>
-                          <span class="trailer-link" (click)="openTrailer(item)">Trailer</span>
-                        </p> 
-                    </span>
-                    
-                    <span *ngIf="item?.provider != null" class="{{util.getProvider(item?.provider)}} probar">
-                      {{util.getProvider(item?.provider)}}
-                    </span>
-                    </div>
-                  </span>
-              </span>
-          </div>
-        </div>          
-      </div>  
+  <div class="modal trailer-modal search" (click)="$event.stopPropagation()">
+    <div id="snackbar" [ngClass]="{'show' : util.showSnack}">{{util.reminderAlert}} @if (util.reminderAlert === 'Reminder Added') {
+      <span> &#10003;</span>
+    } </div>
+    <div class="modal-header">
+      @if (selectedMovie != null && showTrailer) {
+        <span class="header-title">{{selectedMovie?.title ? selectedMovie?.title : selectedMovie?.name}} ({{selectedMovie?.release_date ? (selectedMovie?.release_date | date: 'y') : selectedMovie?.first_air_date | date: 'y'}})</span>
+      }
+      <span class="right" (click)="closeModal()">X</span>
     </div>
-</div>
+    <div class="content">
+      @if (submitting) {
+        <app-spinner [size]="'lg'" [color]="'white'" [title]="'Trailer'"></app-spinner>
+      }
+      <div id="topanchor">
+        @if (!showTrailer && noTrailerMsg) {
+          <div><h2>{{noTrailerMsg}}</h2></div>
+        }
+      </div>
+      @if (showTrailer) {
+        <div id="top" class="row" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.6) 80%), url(https://image.tmdb.org/t/p/w533_and_h300_bestv2/'+ selectedMovie?.backdrop_path +')' }">
+          @if (trailerUrl != null) {
+            <div class="col-trailer"><iframe [src]="trailerUrl" width="560" height="315" frameborder="0" allowfullscreen></iframe>  </div>
+          }
+          <div class="col-overview">
+            @for (star of selectedMovie?.rating; track star) {
+              <span class="star-rating"> <span>☆</span> </span>
+              } <span> {{selectedMovie?.rating?.length}}/10 </span>
+              @if (selectedMovie?.details != null && selectedMovie?.details?.homepage != '') {
+                <span><a class="{{myMovies}} watch-now-btn" href="{{selectedMovie?.details?.homepage}}" target="_blank">Watch Now</a></span>
+                } <br>
+                <hr>
+                  <span>{{selectedMovie?.overview}} </span> <br>
+                  @if (selectedMovie?.credits) {
+                    <span class="row cast">
+                      @for (actor of selectedMovie?.credits?.cast; track actor; let i = $index) {
+                        <span class="col-cast">
+                          <span [ngClass]="{'dn': i > 3 || actor?.profile_path == null, 'cast-item':  i &lt;= 3 && actor?.profile_path != null}">
+                            <img src="https://image.tmdb.org/t/p/w276_and_h350_face{{actor?.profile_path}}" alt="image of {{actor?.name}}"> <br>
+                            {{actor?.name}} <br> ({{actor?.character}})
+                          </span>
+                        </span>
+                      }
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+            <div class="row search-row">
+              <span class="reminderbar search-tabs">
+                <span class="tab" [ngClass]="{'active': searchMode === 'title'}" (click)="setSearchMode('title')">Title</span>
+                <span class="tab" [ngClass]="{'active': searchMode === 'actor'}" (click)="setSearchMode('actor')">Actor</span>
+                <span class="tab" [ngClass]="{'active': searchMode === 'director'}" (click)="setSearchMode('director')">Director</span>
+              </span>
+              <input
+                (input)="doSearch($event)"
+                id="term"
+                type="search"
+                class="form-control search-input"
+                [placeholder]="searchMode === 'actor' ? 'search by actor name' : searchMode === 'director' ? 'search by director name' : 'search by title'">
+              @if (results != null) {
+                <span class="rec-title">{{ results?.length ? 'Results' : (searchMode === 'actor' ? 'Search by actor' : searchMode === 'director' ? 'Search by director' : 'Search '+ dataService.type) }}</span>
+              }
+            </div>
+            @if (results != null) {
+              <div class="row">
+                @if (results?.length === 0) {
+                  <div class="no-rem">Nothing matches this search.</div>
+                }
+                @for (item of results; track item) {
+                  <div [ngClass]="{'dn': item?.poster_path == null}" class="col related-col">
+                    <span class="item">
+                      <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ item?.poster_path +')' }">
+                        <div class="item-row">
+                          <span class="item-col {{hoveredItem}}" (mouseover)="hoveredItem = 'hovered'" (mouseout)="hoveredItem = ''">
+                            <span class="movie-index" (click)="util.addItem(item, 'rem')">&#43; <span class="tooltip">Add Reminder</span> </span>
+                          </span>
+                          <span class="fav-star">
+                            <span class="star" (click)="util.addItem(item, 'fav')">☆ <span class="tooltip">Favorite</span></span>
+                          </span>
+                        </div>
+                        <div class="item-row">
+                          <span class="info">
+                            <p>
+                              @if (item?.credit1) {
+                                <span>Cast: {{item?.credit1}}, {{item?.credit2}} <br></span>
+                              }
+                              Genre: {{util.genres[item.genre_ids[0]]}} <br>
+                              @for (star of rating(item); track star) {
+                                <span class="star-rating"> <span>☆</span> </span>
+                                } <br>
+                                <span class="trailer-link" (click)="openTrailer(item)">Trailer</span>
+                              </p>
+                            </span>
+                            @if (item?.provider != null) {
+                              <span class="{{util.getProvider(item?.provider)}} probar">
+                                {{util.getProvider(item?.provider)}}
+                              </span>
+                            }
+                          </div>
+                        </span>
+                      </span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>

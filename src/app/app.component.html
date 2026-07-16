@@ -1,80 +1,88 @@
 <div class="container" [ngClass]="{'blur-bg': util.loadingMore === true}">
-<!-- [ngClass]="{'blur-bg': util.loadingMore === true}" -->
+  <!-- [ngClass]="{'blur-bg': util.loadingMore === true}" -->
   <app-dialog
-  [isOpen]="isRemOpen"
-  [data]="reminders"
-  [title]="dialogTitle"
-  [type]="'something'"
-  [showTitles]="''"
-  [content]="content"
-  [loading]="loading"
-  [loadingTitle]="loadingTitle"
-  [selectedMovie]="selectedMovie"
-  [selected]="selected"
-  [selectedTV]="selectedTV"
-  [dialogUrl]="dialogUrl"
-  [trailerUrl]="trailerUrl"
-  [trailerUrlTV]="trailerUrlTV"
-  [showTrailer]="showTrailer"
+    [isOpen]="isRemOpen"
+    [data]="reminders"
+    [title]="dialogTitle"
+    [type]="'something'"
+    [showTitles]="''"
+    [content]="content"
+    [loading]="loading"
+    [loadingTitle]="loadingTitle"
+    [selectedMovie]="selectedMovie"
+    [selected]="selected"
+    [selectedTV]="selectedTV"
+    [dialogUrl]="dialogUrl"
+    [trailerUrl]="trailerUrl"
+    [trailerUrlTV]="trailerUrlTV"
+    [showTrailer]="showTrailer"
   (close)="isRemOpen = false; showTrailer = false"></app-dialog>
 
-  <ng-container *ngIf="isSearchOpen">
+  @if (isSearchOpen) {
     <app-search-dialog
-    [isOpen]="isSearchOpen"
+      [isOpen]="isSearchOpen"
     (close)="isSearchOpen = false"></app-search-dialog>
-  </ng-container>
-  
-   
+  }
+
+
   <header class="navbar">
     <span class="left header-title">Streaming Lists</span>
-    <span *ngIf="!mobile"> 
-      <div class="center reminder-block">
+    @if (!mobile) {
+      <span>
+        <div class="center reminder-block">
           <span class="reminders-btn" (click)="openSearch()">Search</span>
-      </div>
-      <div class="right reminder-block">
-        <span class="reminders-btn" (click)="open('')">Reminders</span> 
-      </div>
-      <div class="right reminder-block">
-        <span class="reminders-btn" (click)="open('trending')">Trending</span> 
-      </div>
-      <div class="center reminder-block">
-        <span class="reminders-btn" (click)="open('favorites')">Favorites</span>
-      </div>
-    </span>
-    <span *ngIf="mobile" class="mobile-menu"> 
+        </div>
+        <div class="right reminder-block">
+          <span class="reminders-btn" (click)="open('')">Reminders</span>
+        </div>
+        <div class="right reminder-block">
+          <span class="reminders-btn" (click)="open('trending')">Trending</span>
+        </div>
+        <div class="center reminder-block">
+          <span class="reminders-btn" (click)="open('favorites')">Favorites</span>
+        </div>
+      </span>
+    }
+    @if (mobile) {
+      <span class="mobile-menu">
         <span (click)="toggleMenu()" class="title">{{!menu ? 'Menu' : 'X'}}</span>
-    </span>
+      </span>
+    }
   </header>
 
-  <div *ngIf="mobile && menu" class="mobile-menu-backdrop" (click)="closeMenu()">
-    <div class="mobile-list" (click)="$event.stopPropagation()">
-      <button type="button" class="mobile-list-item" (click)="openMenuItem('favorites')">Favorites</button>
-      <button type="button" class="mobile-list-item" (click)="openMenuItem('trending')">Trending</button>
-      <button type="button" class="mobile-list-item" (click)="openMenuItem('')">Reminders</button>
-      <button type="button" class="mobile-list-item" (click)="openSearch()">Search</button>
+  @if (mobile && menu) {
+    <div class="mobile-menu-backdrop" (click)="closeMenu()">
+      <div class="mobile-list" (click)="$event.stopPropagation()">
+        <button type="button" class="mobile-list-item" (click)="openMenuItem('favorites')">Favorites</button>
+        <button type="button" class="mobile-list-item" (click)="openMenuItem('trending')">Trending</button>
+        <button type="button" class="mobile-list-item" (click)="openMenuItem('')">Reminders</button>
+        <button type="button" class="mobile-list-item" (click)="openSearch()">Search</button>
+      </div>
     </div>
-  </div>
+  }
 
-  
+
   <div class="wrapper">
-      <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
   </div>
   <div class="push"></div>
 </div>
 
-<div *ngIf="util.loadingMore" class="fix-center">
-  <div class="center load-msg">
-    <span>Fetching More...</span>
-  </div>
-  <div class="center load-spin">
-    <div class="lds-ring">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+@if (util.loadingMore) {
+  <div class="fix-center">
+    <div class="center load-msg">
+      <span>Fetching More...</span>
+    </div>
+    <div class="center load-spin">
+      <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   </div>
-</div>
+}
 
 <footer>
   <div class="row">
@@ -83,33 +91,33 @@
       <span class="about" (click)="isOpen = true">About</span>
     </div>
     <div class="col">
-      <span>Data sourced from <img src="./assets/images/tmdb.svg" alt="logo"></span></div>  
-  </div>
-</footer>
-<div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false">
+      <span>Data sourced from <img src="./assets/images/tmdb.svg" alt="logo"></span></div>
+    </div>
+  </footer>
+  <div id="overlay" [ngClass]="{'active': isOpen}" (click)="isOpen = false">
     <div class="modal small" (click)="$event.stopPropagation()">
       <div class="modal-header">
-          <span class="header-title">About Streaming Lists</span>
-          <span class="right" (click)="isOpen = false">X</span>
+        <span class="header-title">About Streaming Lists</span>
+        <span class="right" (click)="isOpen = false">X</span>
       </div>
-      <div class="content">  
-          <p>Streaming Lists is a simpler way to find something worth watching without bouncing between streaming apps, search results, and social media lists.</p>
+      <div class="content">
+        <p>Streaming Lists is a simpler way to find something worth watching without bouncing between streaming apps, search results, and social media lists.</p>
 
-          <p>The app pulls together popular movies and TV recommendations from major platforms including Netflix, Prime Video, Disney+, Hulu, HBO Max, and Apple TV+.</p>
+        <p>The app pulls together popular movies and TV recommendations from major platforms including Netflix, Prime Video, Disney+, Hulu, HBO Max, and Apple TV+.</p>
 
-          <p>It is built with Angular 20, uses <code>@angular/ssr</code> for server-side rendering, and includes service worker support for Progressive Web App behavior.</p>
+        <p>It is built with Angular 20, uses <code>@angular/ssr</code> for server-side rendering, and includes service worker support for Progressive Web App behavior.</p>
 
-          <p>Data is provided by <a href="https://www.themoviedb.org/?language=en-US" alt="TMDB link" target="_blank">The Movie Database (TMDb)</a>.
-            <b>This product uses the TMDb API but is not endorsed or certified by TMDb.</b></p>
+        <p>Data is provided by <a href="https://www.themoviedb.org/?language=en-US" alt="TMDB link" target="_blank">The Movie Database (TMDb)</a>.
+        <b>This product uses the TMDb API but is not endorsed or certified by TMDb.</b></p>
 
-          <p>Built by Ian Poston in Los Angeles.</p>
-          
-      </div>  
+        <p>Built by Ian Poston in Los Angeles.</p>
+
+      </div>
       <div class="modal-footer">
-         Built by Ian Poston 2026
-            <a class="twitter-icon" href="https://twitter.com/intent/follow?screen_name=ianposton&commit=Log%20in%20and%20follow%20%40ianposton&session%5Busername_or_email%5D=ianposton&tw_p=followbutton&region=follow_link" target="_blank"> 
-              <img src="./assets/images/twitter.png" alt="twitter profile" /></a>
+        Built by Ian Poston 2026
+        <a class="twitter-icon" href="https://twitter.com/intent/follow?screen_name=ianposton&commit=Log%20in%20and%20follow%20%40ianposton&session%5Busername_or_email%5D=ianposton&tw_p=followbutton&region=follow_link" target="_blank">
+        <img src="./assets/images/twitter.png" alt="twitter profile" /></a>
       </div>
     </div>
-</div>
-<app-google-analytics-gtag></app-google-analytics-gtag>
+  </div>
+  <app-google-analytics-gtag></app-google-analytics-gtag>
