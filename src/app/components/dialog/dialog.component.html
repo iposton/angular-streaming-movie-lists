@@ -86,7 +86,7 @@
                     <div class="no-rem">There are no {{(title === 'Reminders' ? 'reminders' : 'favorites')}}.</div>
                   }
                   @for (rem of getData(data, content, title); track rem; let i = $index) {
-                    <div class="col related-col favorite-col" [ngClass]="{'dn': showTitles != '' && (typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider($safeNavigationMigration(rem?.provider)) == ''}">
+                    <div class="col related-col favorite-col" [ngClass]="{'dn': showTitles != '' && util.getProvider($safeNavigationMigration(rem[content]?.provider)) != showTitles, 'dn2': (content === 'movies' || content === 'tv') && util.getProvider($safeNavigationMigration(rem?.provider)) == ''}">
                       <span class="item">
                         @if (title === 'Reminders') {
                           <span class="bg" [ngStyle]="{'background': 'linear-gradient(-225deg, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 80%), url(https://image.tmdb.org/t/p/w440_and_h660_face'+ $safeNavigationMigration(rem[content]?.poster_path) +')' }">
@@ -113,8 +113,8 @@
                                 </p>
                               </span>
                               @if (rem[content]?.provider != null) {
-                                <span class="{{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}} probar">
-                                  {{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}}
+                                <span class="{{util.getProvider($safeNavigationMigration(rem[content]?.provider))}} probar">
+                                  {{util.getProviderLabel($safeNavigationMigration(rem[content]?.provider))}}
                                 </span>
                               }
                             </div>
@@ -144,7 +144,7 @@
                                 </p>
                               </span>
                               <span class="{{util.getProvider($safeNavigationMigration(rem?.provider))}} probar">
-                                {{util.getProvider($safeNavigationMigration(rem?.provider))}}
+                                {{util.getProviderLabel($safeNavigationMigration(rem?.provider))}}
                               </span>
                             </div>
                           </span>
@@ -168,8 +168,8 @@
                               </p>
                             </span>
                             @if (rem[content]?.provider != null) {
-                              <span class="{{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}} probar">
-                                {{typeOf($safeNavigationMigration(rem[content]?.provider)) == 'object' ? util.getProvider($safeNavigationMigration(rem[content]?.provider)) : rem[content]?.provider}}
+                              <span class="{{util.getProvider($safeNavigationMigration(rem[content]?.provider))}} probar">
+                                {{util.getProviderLabel($safeNavigationMigration(rem[content]?.provider))}}
                               </span>
                             }
                           </div>

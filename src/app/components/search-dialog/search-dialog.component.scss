@@ -17,6 +17,10 @@
   align-items: center;
   justify-content: center;
   min-height: 28px;
+  width: auto;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
 }
 
 .search-input {
@@ -25,6 +29,12 @@
   max-width: 420px;
   box-sizing: border-box;
   margin: 0;
+}
+
+.search-status {
+  min-height: 20px;
+  color: #ccc;
+  font-size: 14px;
 }
 
 @media (max-width: 500px) {

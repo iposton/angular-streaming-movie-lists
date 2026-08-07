@@ -49,23 +49,31 @@
             }
             <div class="row search-row">
               <span class="reminderbar search-tabs">
-                <span class="tab" [ngClass]="{'active': searchMode === 'title'}" (click)="setSearchMode('title')">Title</span>
-                <span class="tab" [ngClass]="{'active': searchMode === 'actor'}" (click)="setSearchMode('actor')">Actor</span>
-                <span class="tab" [ngClass]="{'active': searchMode === 'director'}" (click)="setSearchMode('director')">Director</span>
+                <button type="button" class="tab" [ngClass]="{'active': searchMode === 'title'}" [attr.aria-pressed]="searchMode === 'title'" (click)="setSearchMode('title')">Title</button>
+                <button type="button" class="tab" [ngClass]="{'active': searchMode === 'actor'}" [attr.aria-pressed]="searchMode === 'actor'" (click)="setSearchMode('actor')">Actor</button>
+                <button type="button" class="tab" [ngClass]="{'active': searchMode === 'director'}" [attr.aria-pressed]="searchMode === 'director'" (click)="setSearchMode('director')">Director</button>
               </span>
               <input
                 (input)="doSearch($event)"
                 id="term"
                 type="search"
                 class="form-control search-input"
+                [value]="searchTerm"
+                autocomplete="off"
+                aria-label="Search movies and TV shows"
                 [placeholder]="searchMode === 'actor' ? 'search by actor name' : searchMode === 'director' ? 'search by director name' : 'search by title'">
-              @if (results != null) {
+              @if (loading) {
+                <span class="search-status" role="status">Searching…</span>
+              } @else if (searchTerm.trim().length > 0 && searchTerm.trim().length < 3) {
+                <span class="search-status">Type at least 3 characters.</span>
+              }
+              @if (results != null && searchTerm.trim().length >= 3) {
                 <span class="rec-title">{{ results?.length ? 'Results' : (searchMode === 'actor' ? 'Search by actor' : searchMode === 'director' ? 'Search by director' : 'Search '+ dataService.type) }}</span>
               }
             </div>
             @if (results != null) {
               <div class="row">
-                @if (results?.length === 0) {
+                @if (hasSearched && results?.length === 0) {
                   <div class="no-rem">Nothing matches this search.</div>
                 }
                 @for (item of results; track item) {
@@ -95,7 +103,7 @@
                             </span>
                             @if (item?.provider != null) {
                               <span class="{{util.getProvider($safeNavigationMigration(item?.provider))}} probar">
-                                {{util.getProvider($safeNavigationMigration(item?.provider))}}
+                                {{util.getProviderLabel($safeNavigationMigration(item?.provider))}}
                               </span>
                             }
                           </div>

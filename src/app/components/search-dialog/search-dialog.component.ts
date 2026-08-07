@@ -1,8 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, Input, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core'
 import { DataService } from '../../services/data.service'
 import { UtilService } from '../../services/util.service'
 import { DomSanitizer } from '@angular/platform-browser'
 import { isPlatformBrowser } from '@angular/common'
+import { of, Subject, Subscription, timer } from 'rxjs'
+import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators'
 
 @Component({
     selector: 'app-search-dialog',
@@ -11,7 +13,7 @@ import { isPlatformBrowser } from '@angular/common'
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class SearchDialogComponent implements OnInit {
+export class SearchDialogComponent implements OnInit, OnDestroy {
   @Input('isOpen')
   public isOpen             :any;
   @Output() close = new EventEmitter();
@@ -29,6 +31,10 @@ export class SearchDialogComponent implements OnInit {
   public noTrailerMsg: string = ''
   public searchMode: 'title' | 'actor' | 'director' = 'title'
   public searchTerm: string = ''
+  public hasSearched: boolean = false
+
+  private readonly searchRequests = new Subject<{ term: string, mode: 'title' | 'actor' | 'director' }>()
+  private searchSubscription: Subscription
   
   constructor(public dataService: DataService, 
               public util: UtilService, 
@@ -42,15 +48,59 @@ export class SearchDialogComponent implements OnInit {
     this.selectedMovie = null; 
     this.trailerUrl = null;
     this.showTrailer = false;
+    this.searchTerm = '';
+    this.resetSearchState();
     this.close.emit(); 
   }
 
   ngOnInit(): void {
+    this.searchSubscription = this.searchRequests.pipe(
+      map(request => ({
+        term: request.term.trim().replace(/\s+/g, ' '),
+        mode: request.mode
+      })),
+      distinctUntilChanged((previous, current) =>
+        previous.term === current.term && previous.mode === current.mode
+      ),
+      switchMap(request => {
+        if (request.term.length < 3) {
+          return of({ state: 'idle', data: null });
+        }
+
+        // Keeping the delay inside switchMap cancels both the timer and any
+        // in-flight HTTP request as soon as the user types again.
+        return timer(350).pipe(
+          tap(() => {
+            this.loading = true;
+            this.hasSearched = false;
+          }),
+          switchMap(() => this.dataService.searchTrending(request.term, request.mode)),
+          map(data => ({ state: 'success', data })),
+          catchError(() => of({ state: 'error', data: null }))
+        );
+      })
+    ).subscribe(result => {
+      if (result.state === 'success') {
+        this.format(result.data);
+        this.hasSearched = true;
+        return;
+      }
+
+      this.loading = false;
+      if (result.state === 'error') {
+        this.results = [];
+        this.hasSearched = true;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
   }
 
   public doSearch(e) {
     this.searchTerm = e.target.value;
-    this.runSearch(this.searchTerm);
+    this.queueSearch();
   }
 
   public setSearchMode(mode: 'title' | 'actor' | 'director') {
@@ -59,7 +109,7 @@ export class SearchDialogComponent implements OnInit {
     }
 
     this.searchMode = mode;
-    this.runSearch(this.searchTerm);
+    this.queueSearch();
   }
 
   private resetSearchState() {
@@ -68,27 +118,16 @@ export class SearchDialogComponent implements OnInit {
     this.selectedMovie = null;
     this.trailerUrl = null;
     this.showTrailer = false;
+    this.hasSearched = false;
   }
 
-  private runSearch(term: string) {
-    if (term.length > 2) {
-      this.loading = true;
-      this.dataService.searchTrending(term, this.searchMode).subscribe(res => {
-        this.format(res);
-      }, () => {
-        this.loading = false;
-        this.results = [];
-      });
-    }
-
-    if (term.length === 0) {
+  private queueSearch() {
+    this.loading = false;
+    if (this.searchTerm.trim().length < 3) {
       this.resetSearchState();
     }
 
-    if (term.length > 0 && term.length < 3) {
-      this.results = []
-      this.loading = false
-    }
+    this.searchRequests.next({ term: this.searchTerm, mode: this.searchMode });
   }
 
   public format(data) {

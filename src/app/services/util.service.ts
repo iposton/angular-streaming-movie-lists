@@ -250,24 +250,10 @@ export class UtilService {
   try {
     if (pro === 'unknown' || pro == undefined) {
       return ''
+    } else if (typeof pro === 'string') {
+      return this.normalizeProviderName(pro)
     } else if (pro['flatrate'] != null) {
-      if (pro.flatrate[0].provider_name === 'Amazon Prime Video') {
-        return 'prime'
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'IMDB TV AMAZON CHANNEL') {
-        return 'imdb tv'
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'HBO') {
-        return 'max'
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'APPLE TV PLUS') {
-        return 'apple tv'
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'STARZ PLAY AMAZON CHANNEL') {
-        return 'starz'  
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'SPECTRUM ON DEMAND') {
-        return 'spectrum'
-      } else if (pro.flatrate[0].provider_name.toUpperCase() === 'PEACOCK PREMIUM') {
-        return 'peacock'
-      } else {
-        return pro.flatrate[0].provider_name.toLowerCase()
-      } 
+      return this.normalizeProviderName(pro.flatrate[0].provider_name)
     } else if (pro['buy'] != null) {
       return ''
     } else if (pro['rent'] != null) {
@@ -279,6 +265,32 @@ export class UtilService {
     console.log(e, 'error')
   }
 }
+
+ public getProviderLabel(pro) {
+   const provider = this.getProvider(pro)
+   const labels = {
+     'hbo': 'HBO Max',
+     'prime': 'Prime Video',
+     'apple tv': 'Apple TV+',
+     'imdb tv': 'IMDb TV'
+   }
+
+   return labels[provider] || provider
+ }
+
+ private normalizeProviderName(providerName: string) {
+   const name = providerName.trim().toUpperCase()
+
+   if (name === 'AMAZON PRIME VIDEO') return 'prime'
+   if (name === 'IMDB TV AMAZON CHANNEL') return 'imdb tv'
+   if (['HBO', 'MAX', 'HBO MAX', 'HBO MAX AMAZON CHANNEL', 'MAX AMAZON CHANNEL'].includes(name)) return 'hbo'
+   if (name === 'APPLE TV PLUS') return 'apple tv'
+   if (name === 'STARZ PLAY AMAZON CHANNEL') return 'starz'
+   if (name === 'SPECTRUM ON DEMAND') return 'spectrum'
+   if (name === 'PEACOCK PREMIUM') return 'peacock'
+
+   return providerName.trim().toLowerCase()
+ }
 
  public sanitize(item) {
    let key = null;
