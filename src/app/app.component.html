@@ -41,6 +41,13 @@
         <div class="center reminder-block">
           <span class="reminders-btn" (click)="open('favorites')">Favorites</span>
         </div>
+        <div class="center reminder-block">
+          @if (supabase.session$ | async) {
+            <span class="reminders-btn" (click)="signOut()">Sign out</span>
+          } @else {
+            <span class="reminders-btn" (click)="isAuthOpen = true">Sign in</span>
+          }
+        </div>
       </span>
     }
     @if (mobile) {
@@ -57,6 +64,11 @@
         <button type="button" class="mobile-list-item" (click)="openMenuItem('trending')">Trending</button>
         <button type="button" class="mobile-list-item" (click)="openMenuItem('')">Reminders</button>
         <button type="button" class="mobile-list-item" (click)="openSearch()">Search</button>
+        @if (supabase.session$ | async) {
+          <button type="button" class="mobile-list-item" (click)="signOut(); closeMenu()">Sign out</button>
+        } @else {
+          <button type="button" class="mobile-list-item" (click)="isAuthOpen = true; closeMenu()">Sign in</button>
+        }
       </div>
     </div>
   }
@@ -67,6 +79,26 @@
   </div>
   <div class="push"></div>
 </div>
+
+@if (isAuthOpen) {
+  <div class="auth-backdrop" (click)="isAuthOpen = false">
+    <form class="auth-card" (click)="$event.stopPropagation()" (ngSubmit)="submitAuth()">
+      <button type="button" class="auth-close" aria-label="Close sign in" (click)="isAuthOpen = false">×</button>
+      <div class="auth-mark" aria-hidden="true">SL</div>
+      <span class="auth-eyebrow">Your watchlist, everywhere</span>
+      <h2>Sync your lists</h2>
+      <p class="auth-copy">Save a movie here and find it waiting on every device.</p>
+      <label for="auth-email">Email address</label>
+      <input id="auth-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" [(ngModel)]="authEmail" required>
+      @if (authMessage) { <p class="auth-message">{{ authMessage }}</p> }
+      <button class="auth-submit" type="submit" [disabled]="authLoading">
+        {{ authLoading ? 'Sending your link…' : 'Send magic link' }}
+        @if (!authLoading) { <span aria-hidden="true">→</span> }
+      </button>
+      <p class="auth-footnote">No password needed. The link signs you in securely.</p>
+    </form>
+  </div>
+}
 
 @if (util.loadingMore) {
   <div class="fix-center">
@@ -107,6 +139,8 @@
 
         <p>It is built with Angular 22, uses <code>@angular/ssr</code> for server-side rendering, and includes service worker support for Progressive Web App behavior.</p>
 
+        <p>Password-free accounts use secure email magic links. Favorites and reminders sync across devices with Supabase, while a local browser cache keeps saved lists quick to open.</p>
+
         <p>Data is provided by <a href="https://www.themoviedb.org/?language=en-US" alt="TMDB link" target="_blank">The Movie Database (TMDb)</a>.
         <b>This product uses the TMDb API but is not endorsed or certified by TMDb.</b></p>
 
@@ -115,8 +149,11 @@
       </div>
       <div class="modal-footer">
         Built by Ian Poston 2026
-        <a class="twitter-icon" href="https://twitter.com/intent/follow?screen_name=ianposton&commit=Log%20in%20and%20follow%20%40ianposton&session%5Busername_or_email%5D=ianposton&tw_p=followbutton&region=follow_link" target="_blank">
-        <img src="./assets/images/twitter.png" alt="twitter profile" /></a>
+        <a class="x-icon" href="https://x.com/ianposton" target="_blank" rel="noopener noreferrer" aria-label="Follow Ian Poston on X">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </div>

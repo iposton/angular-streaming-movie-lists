@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +8,14 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class UtilService {
 
   public genres: any
-  public currentItem: string
+  public currentItem: any[]
   public reminders: any
   public showSnack: boolean = false
   public reminderAlert: string = ''
   public loadingMore: boolean
   public isMobile: boolean
 
-  constructor(private sanitizer: DomSanitizer) {
+  constructor(private sanitizer: DomSanitizer, private supabase: SupabaseService) {
     this.isMobile = false
     this.loadingMore = false
     this.genres =  
@@ -67,11 +68,11 @@ export class UtilService {
    public addItem(item, type) {
     let name = ''
     if (type === "rem") {
-      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : []
+      this.currentItem = this.supabase.getCachedList('reminder')
       this.reminders = this.currentItem
       name = "reminder"
     } else {
-      this.currentItem = (localStorage.getItem('movFavorites')!= undefined) ? JSON.parse(localStorage.getItem('movFavorites')) : []
+      this.currentItem = this.supabase.getCachedList('favorite')
       this.reminders = this.currentItem
       name = "favorite"
     }
@@ -113,7 +114,8 @@ export class UtilService {
           id: item.id
         })
 
-        localStorage.setItem('currentItem', JSON.stringify(this.reminders))
+        this.supabase.setCachedList('reminder', this.reminders)
+        this.supabase.saveItem(item, 'reminder').catch(() => this.snack('Saved on this device; cloud sync failed.'))
       } else {
         this.reminders.push({
           favorite: item,
@@ -121,7 +123,8 @@ export class UtilService {
           id: item.id
         })
         //this.reminders.length = 5
-        localStorage.setItem('movFavorites', JSON.stringify(this.reminders))
+        this.supabase.setCachedList('favorite', this.reminders)
+        this.supabase.saveItem(item, 'favorite').catch(() => this.snack('Saved on this device; cloud sync failed.'))
       }
         
 

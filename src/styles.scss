@@ -1345,6 +1345,25 @@ footer {
         img {
           width: 2%;
         }
+        .x-icon {
+          align-items: center;
+          color: #E5B4D5;
+          display: inline-flex;
+          margin-left: 8px;
+          transition: color 0.2s ease, transform 0.2s ease;
+          vertical-align: middle;
+
+          svg {
+            fill: currentColor;
+            height: 20px;
+            width: 20px;
+          }
+
+          &:hover {
+            color: #fff;
+            transform: translateY(-1px);
+          }
+        }
       }
       .content {
         overflow: scroll;
@@ -1355,16 +1374,6 @@ footer {
         width: 100%;
         max-width: 100vw;
         
-        .twitter-icon {
-          img {
-            width: 3%;
-          }
-        }
-
-        .twitter-icon:hover {
-          cursor: pointer;
-        }
-
         .search-row {
           position: relative;
           margin-top: 10px;

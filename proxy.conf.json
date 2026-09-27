@@ -1,0 +1,22 @@
+{
+  "/data": {
+    "target": "http://localhost:4000",
+    "secure": false
+  },
+  "/search": {
+    "target": "http://localhost:4000",
+    "secure": false
+  },
+  "/searchtv": {
+    "target": "http://localhost:4000",
+    "secure": false
+  },
+  "/searchtrending": {
+    "target": "http://localhost:4000",
+    "secure": false
+  },
+  "/trending": {
+    "target": "http://localhost:4000",
+    "secure": false
+  }
+}

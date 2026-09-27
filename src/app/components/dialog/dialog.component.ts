@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { UtilService } from '../../services/util.service';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
     selector: 'app-dialog',
@@ -50,7 +51,8 @@ export class DialogComponent implements OnInit {
   public currentDate: any;
 
   constructor( private dataService: DataService,
-               public util: UtilService) {
+               public util: UtilService,
+               private supabase: SupabaseService) {
     let today = new Date()
     this.currentDate = today.toLocaleDateString("en-US")
   }
@@ -60,7 +62,8 @@ export class DialogComponent implements OnInit {
     data.forEach((reminder, index) => {
       if(data[index].id === item.id) {
         data.splice(index, 1);
-        localStorage.setItem('currentItem', JSON.stringify(data));
+        this.supabase.setCachedList('reminder', data);
+        this.supabase.removeItem(item, 'reminder').catch(() => this.util.snack('Removed locally; cloud sync failed.'));
         this.selected = null; 
         this.dialogUrl = null;
         this.showTrailer = false;
@@ -73,7 +76,8 @@ export class DialogComponent implements OnInit {
       if(data[index].id === item.id) {
         data.splice(index, 1);
         //data.length = 5
-        localStorage.setItem('movFavorites', JSON.stringify(data));
+        this.supabase.setCachedList('favorite', data);
+        this.supabase.removeItem(item, 'favorite').catch(() => this.util.snack('Removed locally; cloud sync failed.'));
       }
     })  
   }

@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID, DOCUMENT, ChangeDetectionStrate
 import { Meta, Title } from '@angular/platform-browser';
 import { DataService } from './services/data.service';
 import { UtilService } from './services/util.service';
+import { SupabaseService } from './services/supabase.service';
 
 import { isPlatformBrowser } from '@angular/common';
 let myWindow = null
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit {
   public title = 'Streaming Lists | Netflix, Prime, Disney+, HBO, HULU';
   public dialogTitle: string = '';
   public reminders: any;
-  public currentItem: string;
+  public currentItem: any[];
   public content: string;
   public loading: boolean;
   public testBrowser: boolean
@@ -34,14 +35,37 @@ export class AppComponent implements OnInit {
   public showTrailer: any;
   public menu: boolean = false;
   public mobile: boolean = false;
+  public isAuthOpen: boolean = false;
+  public authEmail: string = '';
+  public authLoading: boolean = false;
+  public authMessage: string = '';
   constructor(
     private metaTagService: Meta,
     private titleService: Title,
     public dataService: DataService,
     public util: UtilService,
+    public supabase: SupabaseService,
     @Inject(PLATFORM_ID) platformId: string,
     @Inject(DOCUMENT) private document: Document
   ) { this.testBrowser = isPlatformBrowser(platformId) }
+
+  public async submitAuth() {
+    this.authMessage = '';
+    this.authLoading = true;
+    try {
+      await this.supabase.sendMagicLink(this.authEmail);
+      this.authMessage = 'Check your email for the sign-in link.';
+    } catch (error: any) {
+      this.authMessage = error?.message || 'Unable to sign in.';
+    } finally {
+      this.authLoading = false;
+    }
+  }
+
+  public async signOut() {
+    await this.supabase.signOut();
+    this.authMessage = 'Signed out.';
+  }
 
   public navigate(link) {
     myWindow = document.defaultView
@@ -130,7 +154,7 @@ export class AppComponent implements OnInit {
       this.content = 'favorite'
       this.dialogTitle = 'Favorites'
       this.isRemOpen = true
-      this.currentItem = (localStorage.getItem('movFavorites')!= undefined) ? JSON.parse(localStorage.getItem('movFavorites')) : []
+      this.currentItem = this.supabase.getCachedList('favorite')
       //this.selected = this.currentItem != null ? this.currentItem[0]['newReminder'] : null;
       //this.dataService.type = this.selected.media_type
       this.reminders = this.currentItem
@@ -146,7 +170,7 @@ export class AppComponent implements OnInit {
       this.content = 'newReminder'
       this.dialogTitle = 'Reminders'
       this.isRemOpen = true
-      this.currentItem = (localStorage.getItem('currentItem')!= undefined) ? JSON.parse(localStorage.getItem('currentItem')) : []
+      this.currentItem = this.supabase.getCachedList('reminder')
       this.selected = this.currentItem.length > 0 ? this.currentItem[0]['newReminder'] : null
       this.dataService.type = this.selected != null ? this.selected.media_type : ''
       try {
